@@ -1,0 +1,115 @@
+<?php
+
+/* @var $this \yii\web\View */
+/* @var $content string */
+
+use yii\helpers\Html;
+use yii\bootstrap\Nav;
+use yii\bootstrap\NavBar;
+use yii\widgets\Breadcrumbs;
+use app\assets\AppAsset;
+
+AppAsset::register($this);
+?>
+<?php $this->beginPage() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>">
+<head>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?= Html::csrfMetaTags() ?>
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
+</head>
+<body>
+<?php $this->beginBody() ?>
+
+<div class="wrap">
+    <?php
+    NavBar::begin([
+        'brandLabel' 	=> 'Photo Organizer',
+    	'brandUrl' 		=> null,
+        'options' 		=> [
+            'class' => 'navbar-inverse navbar-fixed-top',
+        ],
+    ]);
+    echo Nav::widget([
+        'options' 		=> [
+        		'class' => 'navbar-nav navbar-right'
+        ],
+    	'encodeLabels' 	=> false,
+        'items' 		=> [
+            [
+            	'label' 	=> '<span class="glyphicon glyphicon-home"></span> Home',
+            	'url'	 	=> ['/']            		
+            ],
+            [
+            	'label' 	=> '<span class="glyphicon glyphicon-info-sign"></span> About',
+            	'url' 		=> ['/site/about']
+            		
+            ],
+            [
+            	'label' 	=> '<span class="glyphicon glyphicon-envelope"></span> Contact',
+            	'url' 		=> ['/site/contact']
+            		
+            ],
+            Yii::$app->user->isGuest ? (
+            [	
+                'label' 	=> '<span class="glyphicon glyphicon-log-in"></span> Login',
+                'url' 		=> ['/user/login']            		
+        	]
+            ) : (
+            [
+        		'label' 	=> Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['class' => 'img-circle', 'width' => '30', 'height' => '30']),
+        		'items' 	=> [
+			        			[
+			        				'label' 	=> '<div style="width: 200px;">'
+			        									. Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['class' => 'img-circle', 'width' => '80', 'height' => '80', 'style' => 'float: left'])
+			        							   		. '<span>'
+			        										. '<br>&nbsp&nbsp'
+			        										. Yii::$app->user->identity->user_name
+			        										. '<br>&nbsp&nbsp'
+			        										. Yii::$app->user->identity->e_mail
+			        									. '</span>
+			        								</div>',
+			        				'url' 		=> null			        					
+			        			],
+        						'<br><li class="divider"></li>',
+			        			[
+			        				'label' 	=> 	'<ul class="list-inline">
+				        								<li>' . Html::a('<span class="glyphicon glyphicon-user"></span> Account Info', ['/account/index'], ['class'=>'btn btn-default']) . '</li> 
+				        								<li>'
+								        					. Html::beginForm(['/user/logout'], 'post', ['class' => 'navbar-form'])
+								        					. Html::submitButton(
+								        						'<span class="glyphicon glyphicon-log-out"></span> Logout',
+								        						['class' => 'btn btn-default']
+								        					)
+								        					. Html::endForm()
+								        				. '</li>
+			        								</ul>'
+			        			],
+        		],
+        	]
+            ),
+        	
+        ],
+    ]);
+    NavBar::end();
+    ?>
+
+    <div class="container">
+        <?= Breadcrumbs::widget([
+            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+        ]) ?>
+        <?= $content ?>
+   </div>
+</div>
+
+<footer class="footer">
+    
+</footer>
+
+<?php $this->endBody() ?>
+</body>
+</html>
+<?php $this->endPage() ?>
