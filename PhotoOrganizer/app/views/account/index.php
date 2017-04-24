@@ -8,7 +8,7 @@ use yii\bootstrap\Modal;
 
 $this->title = 'Account Info';
 $this->params['breadcrumbs'][] = $this->title;
-
+;;
 $this->registerJsFile('@web/js/account.js');
 
 $personalInfo = '<br>'
