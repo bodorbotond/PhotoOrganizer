@@ -26,6 +26,11 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php
+    
+    $profilePicturePath = Yii::$app->user->isGuest ? '' : Yii::$app->user->identity->profile_picture_path !== NULL ?
+     													  '@web/' . Yii::$app->user->identity->profile_picture_path : 
+    													  '@web/images/profile_picture.png';
+    
     NavBar::begin([
         'brandLabel' 	=> 'Photo Organizer',
     	'brandUrl' 		=> null,
@@ -60,11 +65,11 @@ AppAsset::register($this);
         	]
             ) : (
             [
-        		'label' 	=> Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['class' => 'img-circle', 'width' => '30', 'height' => '30']),
+        		'label' 	=> Html::img($profilePicturePath, ['class' => 'img-circle', 'width' => '30', 'height' => '30']),
         		'items' 	=> [
 			        			[
 			        				'label' 	=> '<div style="width: 200px;">'
-			        									. Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['class' => 'img-circle', 'width' => '80', 'height' => '80', 'style' => 'float: left'])
+			        									. Html::img($profilePicturePath, ['class' => 'img-circle', 'width' => '80', 'height' => '80', 'style' => 'float: left'])
 			        							   		. '<span>'
 			        										. '<br>&nbsp&nbsp'
 			        										. Yii::$app->user->identity->user_name
