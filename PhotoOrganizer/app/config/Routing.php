@@ -16,6 +16,7 @@ return Array(
     	'user/logout'			=> 'user/logout',
     	'user/signUp'			=> 'user/sign-up',
     	'user/verification'		=> 'user/sign-up-verification',
+    		
     	'account/index'			=> 'account/index',
     	'account/changeAccountPersonalInfo' => 'account/change-account-personal-info',
 		
