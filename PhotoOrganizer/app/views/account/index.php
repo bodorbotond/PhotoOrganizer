@@ -8,71 +8,61 @@ use yii\bootstrap\Modal;
 
 $this->title = 'Account Info';
 $this->params['breadcrumbs'][] = $this->title;
-;;
-$this->registerJsFile('@web/js/account.js');
+
+$this->registerCssFile('@web/css/account.css');
+
+
+
+// profle picture path(two way: - logged in user has choosen optionally own profile picture
+// 							    - logged in user has default profile picture from server
+
+$profilePicturePath = Yii::$app->user->identity->profile_picture_path !== NULL ?
+					  '@web/' . Yii::$app->user->identity->profile_picture_path :
+					  '@web/images/profile_picture.png';
+
+// loged in user's personal info (first element from tabs menu)
 
 $personalInfo = '<br>'
-				. Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['class' => 'img-circle', 'width' => '300', 'height' => '300']) 
+				// profile picture in larger size (in Bootstrap Modal)
+				. Html::a(Html::img($profilePicturePath, ['class' => 'img-circle', 'id' => 'ProfilePicture']), ['#ProfilePictureModal'], ['data-toggle' => 'modal']) 
 				. '<br><br>'
-				. Collapse::widget([
+				. Collapse::widget([						//Bootstrap Accordion Collapse
+					'encodeLabels' => false,
 				    'items' => [
 				        [
-				            'label' 	=> 'User Name',
-				            'content' 	=> /*'<span id="userName">' 
-				        					. Yii::$app->user->identity->user_name
-				        					. '</span>'
-				        					. Html::a('Save', ['#'], [
-				        												'id' => 'userNameSaveButton', 'style' => 'visibility: hidden;',
-				        												'class' => 'btn btn-default btn-sm pull-right'
-				        					 						  ]
-				        					),*/
-							        		Html::beginForm(['/account/changeAccountPersonalInfo'], 'post')
-							        				. Html::textInput('changeUserName', Yii::$app->user->identity->user_name, ['style' => 'border: none;'])
-							        				. '&nbsp&nbsp'
-							        				. Html::submitButton('Change', ['class' => 'btn btn-default btn-sm pull-right'])
-							        		. Html::endForm(),
-				        	'contentOptions' => ['onClick' => 'setEditable("userName", "userNameSaveButton");'],
+				            'label' 	=> '<h4>User Name</h4>',
+				            'content' 	=> Yii::$app->user->identity->user_name,
 				        ],
 				        [
-				            'label' 	=> 'Name',
-				            'content' 	=> [
-				            	'First Name: ' . Yii::$app->user->identity->user_name . Html::a('Change', ['#'], ['class' => 'btn btn-default btn-xs pull-right']),
-				            	'Last Name: ' . Yii::$app->user->identity->user_name . Html::a('Change', ['#'], ['class' => 'btn btn-default btn-xs pull-right']),
-				            ],
+				            'label' 	=> '<h4>Name</h4>',
+				            'content' 	=> 'First Name: ' . Yii::$app->user->identity->first_name .
+				            			   '<br>Last Name: ' . Yii::$app->user->identity->last_name
 				        ],
+			    		[
+				    		'label' 	=> '<h4>E-mail</h4>',
+				    		'content' 	=> Yii::$app->user->identity->e_mail,
+			    		],
 				    	[
-				    		'label' 	=> 'Gender',
-				    		'content' 	=> 'Male' . Html::a('Change', ['#'], ['class' => 'btn btn-default btn-sm pull-right']),
-				    	],
-				    	[
-				    		'label' 	=> 'Birthday',
-				    		'content' 	=> '1995.12.09' . Html::a('Change', ['#'], ['class' => 'btn btn-default btn-sm pull-right']),
+				    		'label' 	=> '<h4>Gender</h4>',
+				    		'content' 	=> Yii::$app->user->identity->gender,
 				    	],
 				    ]
-				]);
+				])
+				. '<br><br>'
+				. Html::a('Modify', ['/account/modifyPersonalInfo'], ['class' => 'btn btn-default']);
+
+// loged in user's account security (second element from tabs menu)
 
 $accountSecurity = '';
 
 ?>
+	
+	
+	<div class="site-account-info">
 
-<div class="site-account-info">
 	<h1><?= Html::encode($this->title) ?></h1>
-	
+		
 	<?php
-	/*Modal::begin([
-			'header' => '<h2>Change User Name</h2>',
-			'toggleButton' => ['label' => 'Change', 'class' => 'btn btn-default btn-sm pull-right'],
-	]);
-	
-	echo Html::beginForm(['/account/changeAccountPersonalInfo'], 'post')
-			. Html::label('User Name:', 'changeUserName')
-			. '&nbsp&nbsp'
-			. Html::textInput('changeUserName')
-			. '&nbsp&nbsp'
-			. Html::submitButton('Change', ['class' => 'btn btn-default'])
-		. Html::endForm();
-	
-	Modal::end();*/
 	echo Tabs::widget([										//Bootstrap Toggleable/Dynamic Tabs
 		'encodeLabels' 	=> false,
 		'items' 		=> [
@@ -87,31 +77,37 @@ $accountSecurity = '';
 	            'content' 	=> $accountSecurity,
 	            'options' 	=> ['class' => 'fade']
 	        ],
-	        [
-	            'label' 	=> 'Dropdown',
-	        	'options' 	=> ['class' => 'fade'],
-	            'items' 	=> [
-	                 [
-	                     'label' 	=> 'DropdownA',
-	                     'content' 	=> '',
-	                 ],
-	                 [
-	                     'label' 	=> 'DropdownB',
-	                     'content' 	=> '',
-	                 ],
-	                 [
-	                     'label' 	=> 'External Link',
-	                 	 'content' 	=> '',
-	                     'url' 		=> '',
-	                 ],
-	            ],
-	        ],
-			[
-				'label'		=>	'<i class="glyphicon glyphicon-king"></i> Disabled',
-				'headerOptions' => ['class' => 'disabled']
-			],
 	    ],
 	]);
+	
 	?>
+
+	<!-- Bootstrap Modal -->
+	
+	<div id="ProfilePictureModal" class="modal fade" role="dialog">
+	  <div class="modal-dialog modal-lg">
+	
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	    
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="modal-title">Profile Picture</h4>
+	      </div>
+	      
+	      <div class="modal-body">
+	        <?php
+	        echo Html::img($profilePicturePath, ['id' => 'ProfilePictureInModal'])
+	        . '<br>'
+	        . (Yii::$app->user->identity->profile_picture_path !== NULL ?								// if user has profile picture
+	          Html::a('Delete', ['/account/deleteProfilePicture'], ['class' => 'btn btn-danger']) :		// then use can delete it
+	          '');																						// else Delete button is not required
+	        ?>
+	      </div>
+	      
+	    </div>
+	
+	  </div>
+	</div>
 	
 </div>

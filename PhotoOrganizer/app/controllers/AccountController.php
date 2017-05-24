@@ -6,7 +6,10 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use app\models\Users;
+use app\models\AccountModifyPersonalInfoForm;
+use app\models\app\models;
 
 class AccountController extends Controller
 {
@@ -30,7 +33,8 @@ class AccountController extends Controller
                 'class' => VerbFilter::className(),				// HTTP request methods filter for each action
                 												// throw an HTTP 405 error when the method is not allowed
                 'actions' => [
-                	'index'  	=> ['get'],
+                	'index'  			 => ['get'],
+                	'modifyPersonalInfo' => ['get', 'post'],
                 ],
             ],
         ];
@@ -66,20 +70,45 @@ class AccountController extends Controller
     	}
     	
     	return $this->render('index', [
-    			
     	]);
     }
     
-    public function actionChangeAccountPersonalInfo()
+    public function actionModifyPersonalInfo()
     {
     	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
     	{
     		return $this->goHome();
     	}
     	
-    	$user = Users::findOne(Yii::$app->user->identity->id);
+    	$model = new AccountModifyPersonalInfoForm();
+    	
+    	if ($model->load(Yii::$app->request->post()))			// when post request is arrived
+    	{
+    		$model->profilePicture = UploadedFile::getInstance($model, 'profilePicture');
+    		if ($model->modify())								// when modify user's datas was successful
+    		{
+    			return $this->redirect(['/account/index']);		// redirect to user's account info page
+    		}
+    	}
     	 
-    	return $this->redirect(['/account/index']);
+    	return $this->render('modify', [
+    		'model' => $model,
+    	]);
+    }
+    
+    public function actionDeleteProfilePicture()
+    {
+    	$model = new AccountModifyPersonalInfoForm();
+    	
+    	if ($model->deleteProfilePicture())
+    	{
+	    	return $this->redirect(['/account/index']);
+    	}
+    }
+    
+    public function actionDeleteAccount()
+    {
+    	
     }
 
 }

@@ -17,8 +17,9 @@ return Array(
     	'user/signUp'			=> 'user/sign-up',
     	'user/verification'		=> 'user/sign-up-verification',
     		
-    	'account/index'			=> 'account/index',
-    	'account/changeAccountPersonalInfo' => 'account/change-account-personal-info',
+    	'account/index'						=> 'account/index',
+    	'account/modifyPersonalInfo' 		=> 'account/modify-personal-info',
+    	'account/deleteProfilePicture'		=> 'account/delete-profile-picture',
 		
 
     ),
