@@ -1,0 +1,13 @@
+
+#ProfilePicture
+{
+	width: 300px;
+	height: 300px;
+}
+
+#ProfilePictureInModal
+{
+	width : 100%;
+	height : auto;
+	margin : 0px 0px 10px 0px;
+}

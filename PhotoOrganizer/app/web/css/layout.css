@@ -1,0 +1,19 @@
+@CHARSET "ISO-8859-1";
+
+#ProfilePictureInMenu
+{
+	width: 30px;
+	height: 30px;
+}
+
+#DropdownAccountInfo
+{
+	width: 200px;
+}
+
+#ProfilePictureInDropdownAccountInfo
+{
+	width: 80px;
+	height: 80px;
+	float: left;
+}
