@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php 
     
-    $model->gender = Yii::$app->user->identity->gender;
+    $model->gender = Yii::$app->user->identity->gender;			// set user's gender (equal to gender from database)
     
     $form = ActiveForm::begin([
         'id' => 'modify-account-form',
@@ -29,7 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'labelOptions' 	=> ['class' => 'col-lg-2 control-label'],
         ],
     ]); ?>
-
+		
+		<!-- set user current datas by default values -->
+		
         <?= $form->field($model, 'userName')->textInput(['value' => Yii::$app->user->identity->user_name]) ?>
         
         <?= $form->field($model, 'firstName')->textInput(['value' => Yii::$app->user->identity->first_name]) ?>
