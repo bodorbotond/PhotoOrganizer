@@ -65,11 +65,11 @@ AppAsset::register($this);
         	]
             ) : (
             [
-        		'label' 	=> Html::img($profilePicturePath, ['class' => 'img-circle', 'width' => '30', 'height' => '30']),
+        		'label' 	=> Html::img($profilePicturePath, ['class' => 'img-circle', 'id' => 'ProfilePictureInMenu']),
         		'items' 	=> [
 			        			[
-			        				'label' 	=> '<div style="width: 200px;">'
-			        									. Html::img($profilePicturePath, ['class' => 'img-circle', 'width' => '80', 'height' => '80', 'style' => 'float: left'])
+			        				'label' 	=> '<div id="DropdownAccountInfo">'
+			        									. Html::img($profilePicturePath, ['class' => 'img-circle ProfilePictureInDropdownAccountInfo', 'id' => 'ProfilePictureInDropdownAccountInfo'])
 			        							   		. '<span>'
 			        										. '<br>&nbsp&nbsp'
 			        										. Yii::$app->user->identity->user_name
