@@ -39,8 +39,8 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         
-        <?= $model->hasErrors('userStatus') ? $form->errorSummary($model) : '' ?>
-        <?= $model->hasErrors('userStatus') ? Html::a('Verify', ['/user/verification'], ['class' => 'btn btn-danger']) . '<br><br>' : '' ?>
+        <?= $model->hasErrors('accountStatus') ? $form->errorSummary($model) : '' ?>
+        <?= $model->hasErrors('accountStatus') ? Html::a('Activate', ['/user/verification'], ['class' => 'btn btn-danger']) . '<br><br>' : '' ?>
 
     <?php ActiveForm::end(); ?>
     

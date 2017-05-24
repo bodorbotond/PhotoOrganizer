@@ -18,7 +18,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    public $userStatus = false;
+    public $accountStatus = false;
     private $_user = false;
 
 
@@ -33,11 +33,11 @@ class LoginForm extends Model
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
         	// userStatus must be a boolean value
-        	['userStatus', 'boolean'],
+        	['accountStatus', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
         	// userStatus is validates by validateUserStatus()
-        	[['userStatus'], 'validateUserStatus'],
+        	[['accountStatus'], 'validateAccountStatus'],
         ];
     }
 
@@ -61,15 +61,15 @@ class LoginForm extends Model
         }
     }
     
-    public function validateUserStatus($attribute, $params)
+    public function validateAccountStatus($attribute, $params)
     {
     	if (!$this->hasErrors()) 
     	{
     		$user = $this->getUser();
     	
-    		if (!$user || !$user->validateUserStatus()) 
+    		if (!$user || !$user->validateAccountStatus()) 
     		{
-    			$this->addError('userStatus', 'User must be verify registration!');
+    			$this->addError('accountStatus', 'User must be activate her/his account!');
     		}
     	}
     }

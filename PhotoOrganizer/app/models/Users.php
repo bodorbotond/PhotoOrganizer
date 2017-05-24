@@ -9,12 +9,17 @@ use Yii;
  *
  * @property integer $user_id
  * @property string $user_name
+ * @property string $first_name
+ * @property string $last_name
  * @property string $e_mail
+ * @property string $recovery_e_mail
  * @property string $password
+ * @property string $gender
  * @property string $profile_picture_path
  * @property string $auth_key
- * @property string $user_status
- * @property string $user_token
+ * @property string $account_status
+ * @property string $verification_key
+ * @property integer $two_step_verification
  *
  * @property Photos[] $photos
  */
@@ -34,13 +39,16 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['user_name', 'e_mail', 'password', 'auth_key', 'user_status', 'user_token'], 'required'],
-            [['user_name', 'e_mail', 'password'], 'string', 'max' => 50],
+            [['user_name', 'first_name', 'last_name', 'e_mail', 'password', 'gender', 'auth_key', 'account_status', 'verification_key'], 'required'],
+            [['two_step_verification'], 'integer'],
+            [['user_name', 'first_name', 'last_name', 'e_mail', 'recovery_e_mail', 'password'], 'string', 'max' => 50],
+            [['gender', 'account_status'], 'string', 'max' => 10],
             [['profile_picture_path'], 'string', 'max' => 200],
-            [['auth_key', 'user_status'], 'string', 'max' => 30],
-            [['user_token'], 'string', 'max' => 6],
+            [['auth_key'], 'string', 'max' => 30],
+            [['verification_key'], 'string', 'max' => 6],
             [['user_name'], 'unique'],
             [['e_mail'], 'unique'],
+            [['recovery_e_mail'], 'unique'],
         ];
     }
 
@@ -52,12 +60,17 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             'user_id' => 'User ID',
             'user_name' => 'User Name',
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
             'e_mail' => 'E Mail',
+            'recovery_e_mail' => 'Recovery E Mail',
             'password' => 'Password',
+            'gender' => 'Gender',
             'profile_picture_path' => 'Profile Picture Path',		// save just the photo's access path in the database
             'auth_key' => 'Auth Key',								// enable auto login when the session is destroyed
-            'user_status' => 'User Status',							// wheter the user activated the account(default inactive)
-            'user_token' => 'User Token',							// activation key what the server will send to the users in email
+            'account_status' => 'Account Status',					// wheter the user activated the account(default inactive)
+            'verification_key' => 'Verification Key',				// activation key what the server will send to the users in email
+            'two_step_verification' => 'Two Step Verification',
         ];
     }
 
@@ -109,13 +122,13 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     	return self::findOne(['e_mail' => $eMail]);
     }
     
-    public function validateUserStatus()								// check user activate her status
+    public function validateAccountStatus()								// check user activate her status
     {
-    	 return $this->user_status === 'active';
+    	return $this->account_status === 'active';
     }
     
-    public static function findByUserToken($userToken)					// find user whom user_token equal to given parameter
+    public static function findByVerificationKey($verificationKey)		// find user whom user_token equal to given parameter
     {
-    	return self::findOne(['user_token' => $userToken]);
+    	return self::findOne(['verification_key' => $verificationKey]);
     }
 }

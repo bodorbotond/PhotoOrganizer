@@ -27,9 +27,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?= $form->field($model, 'userName')->textInput() ?>
         
+        <?= $form->field($model, 'firstName')->textInput() ?>
+        
+        <?= $form->field($model, 'lastName')->textInput() ?>
+        
         <?= $form->field($model, 'eMail')->textInput() ?>
         
         <?= $form->field($model, 'password')->passwordInput() ?>
+        
+        <?= $form->field($model, 'gender')->radioList([
+        												'Female' => 'Female',
+        												'Male' 	=> 'Male'
+        											   ]);
+         ?>
         
         <?= $form->field($model, 'profilePicture')->fileInput()?>
 

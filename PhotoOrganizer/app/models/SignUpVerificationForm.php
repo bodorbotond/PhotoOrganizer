@@ -30,16 +30,16 @@ class SignUpVerificationForm extends Model
 	
 	public function validateVerificationKey($attribute, $params)
 	{
-		if(!Users::findByUserToken($this->verificationKey))
+		if(!Users::findByVerificationKey($this->verificationKey))
 		{
 			$this->addError($attribute, 'Wrong verification key!');
 		}
 		else
 		{
-			$user = Users::findByUserToken($this->verificationKey);
-			if ($user->user_status == 'active')
+			$user = Users::findByVerificationKey($this->verificationKey);
+			if ($user->account_status == 'active')
 			{
-				$this->addError($attribute, 'This account was already confirmed!');
+				$this->addError($attribute, 'This account was already activated!');
 			}
 		}
 	}
@@ -48,8 +48,8 @@ class SignUpVerificationForm extends Model
 	{
 		if ($this->validate())
 		{
-			$user = Users::findByUserToken($this->verificationKey);
-			$user->user_status = 'active';
+			$user = Users::findByVerificationKey($this->verificationKey);
+			$user->account_status = 'active';
 			return $user->update();
 		}
 		else 
