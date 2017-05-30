@@ -9,7 +9,8 @@ use yii\web\Controller;
 use yii\web\UploadedFile;
 use app\models\Users;
 use app\models\AccountModifyPersonalInfoForm;
-use app\models\app\models;
+use app\models\RecoveryEmailForm;
+use app\models\app;
 
 class AccountController extends Controller
 {
@@ -21,7 +22,7 @@ class AccountController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),			// action filter
-                'only' => ['index'],							// actions
+                'only' => ['index', 'modifyPersonalInfo', 'deleteProfilePicture', 'deleteAccount', 'addOrModifyRecoveryEmail', 'removeRecoveryEmail'],
                 'rules' => [
                     [											// allow authenticated users
                         'allow' => true,
@@ -33,8 +34,9 @@ class AccountController extends Controller
                 'class' => VerbFilter::className(),				// HTTP request methods filter for each action
                 												// throw an HTTP 405 error when the method is not allowed
                 'actions' => [
-                	'index'  			 => ['get'],
-                	'modifyPersonalInfo' => ['get', 'post'],
+                	'index'  			 		=> ['get'],
+                	'modifyPersonalInfo' 		=> ['get', 'post'],
+                	'addOrModifyRecoveryEmail'	=> ['get', 'post'],
                 ],
             ],
         ];
@@ -98,6 +100,11 @@ class AccountController extends Controller
     
     public function actionDeleteProfilePicture()
     {
+    	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
+    	{
+    		return $this->goHome();
+    	}
+    	
     	$model = new AccountModifyPersonalInfoForm();
     	
     	if ($model->deleteProfilePicture())
@@ -109,6 +116,40 @@ class AccountController extends Controller
     public function actionDeleteAccount()
     {
     	
+    }
+    
+    public function actionAddOrModifyRecoveryEmail()
+    {
+    	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
+    	{
+    		return $this->goHome();
+    	}
+    	
+    	$model = new RecoveryEmailForm();
+    	
+    	if ($model->load(Yii::$app->request->post()) && $model->addOrModifyRecoveryEmail())
+    	{
+    		return $this->redirect(['/account/index']);
+    	}
+    	
+    	return $this->render('addOrModifyRecoveryEmail', [
+    			'model' => $model,
+    	]);
+    }
+    
+    public function actionDeleteRecoveryEmail()
+    {
+    	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
+    	{
+    		return $this->goHome();
+    	}
+    	
+    	$model = new RecoveryEmailForm();
+    	
+    	if ($model->deleteRecoveryEmail())
+    	{
+    		return $this->redirect(['/account/index']);
+    	}
     }
 
 }

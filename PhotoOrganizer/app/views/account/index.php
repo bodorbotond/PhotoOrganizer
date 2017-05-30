@@ -31,29 +31,61 @@ $personalInfo = '<br>'
 				    'items' => [
 				        [
 				            'label' 	=> '<h4>User Name</h4>',
-				            'content' 	=> Yii::$app->user->identity->user_name,
+				            'content' 	=> '<b>' . Yii::$app->user->identity->user_name . '</b>',
 				        ],
 				        [
 				            'label' 	=> '<h4>Name</h4>',
-				            'content' 	=> 'First Name: ' . Yii::$app->user->identity->first_name .
-				            			   '<br>Last Name: ' . Yii::$app->user->identity->last_name
+				            'content' 	=> 'First Name: <b>' . Yii::$app->user->identity->first_name . '</b>' . 
+				            			   '<br>Last Name: <b>' . Yii::$app->user->identity->last_name . '</b>',
 				        ],
 			    		[
 				    		'label' 	=> '<h4>E-mail</h4>',
-				    		'content' 	=> Yii::$app->user->identity->e_mail,
+				    		'content' 	=> '<b>' . Yii::$app->user->identity->e_mail . '</b>',
 			    		],
 				    	[
 				    		'label' 	=> '<h4>Gender</h4>',
-				    		'content' 	=> Yii::$app->user->identity->gender,
+				    		'content' 	=> '<b>' . Yii::$app->user->identity->gender . '</b>',
 				    	],
 				    ]
 				])
 				. '<br><br>'
 				. Html::a('Modify', ['/account/modifyPersonalInfo'], ['class' => 'btn btn-default']);
 
+
+
 // loged in user's account security (second element from tabs menu)
 
-$accountSecurity = '';
+$accountSecurity = 	'<br>'
+					. Collapse::widget([
+						'encodeLabels'	=> false,
+						'items'			=> [
+								[
+									'label' 	=> '<h4>Change Password</h4>',
+									'content' 	=> '',
+								],
+								[
+									'label'		=> '<h4>Recovery E-mail Address</h4>',
+									'content' 	=> 'If you forget your password or cannot access your account, 
+													we will use this information to help you get back in.<br><br>'
+													.
+													(
+														Yii::$app->user->identity->recovery_e_mail !== NULL
+														?
+														'<b>' . Yii::$app->user->identity->recovery_e_mail . '</b>'
+														. '<br><br>' 
+														. Html::a('Modify Recovery E-mail', ['/account/addOrModifyRecoveryEmail'], ['class' => 'btn btn-default'])
+														. '&nbsp&nbsp'
+														. Html::a('Delete Recovery E-mail', ['/account/deleteRecoveryEmail'], ['class' => 'btn btn-default'])
+														:
+														Html::a('Add Recovery E-mail', ['/account/addOrModifyRecoveryEmail'], ['class' => 'btn btn-default'])
+													),
+								],
+								[
+									'label'		=> '<h4>Two Step Verification</h4>',
+									'content' 	=> '',
+								],
+						]
+					]);
 
 ?>
 	
@@ -82,6 +114,7 @@ $accountSecurity = '';
 	
 	?>
 
+	
 	<!-- Bootstrap Modal -->
 	
 	<div id="ProfilePictureModal" class="modal fade" role="dialog">
@@ -109,5 +142,7 @@ $accountSecurity = '';
 	
 	  </div>
 	</div>
+	
+	
 	
 </div>

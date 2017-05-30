@@ -20,6 +20,8 @@ return Array(
     	'account/index'						=> 'account/index',
     	'account/modifyPersonalInfo' 		=> 'account/modify-personal-info',
     	'account/deleteProfilePicture'		=> 'account/delete-profile-picture',
+    	'account/addOrModifyRecoveryEmail'	=> 'account/add-or-modify-recovery-email',
+    	'account/deleteRecoveryEmail'		=> 'account/delete-recovery-email',
 		
 
     ),
