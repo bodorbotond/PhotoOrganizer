@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-        <?= $form->field($model, 'recoveryEmail')->textInput() ?>
+        <?= $form->field($model, 'recoveryEmail')->textInput(['value' => Yii::$app->user->identity->recovery_e_mail]) ?>
 
         <div class="form-group">
             <div class="col-lg-offset-1 col-lg-11">
