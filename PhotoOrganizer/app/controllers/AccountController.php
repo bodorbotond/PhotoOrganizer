@@ -7,10 +7,12 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\UploadedFile;
+use app\models;
 use app\models\Users;
 use app\models\AccountModifyPersonalInfoForm;
 use app\models\RecoveryEmailForm;
-use app\models\app;
+use app\models\ChangePasswordForm;
+use app\models\ChangePasswordVerificationForm;
 
 class AccountController extends Controller
 {
@@ -22,7 +24,15 @@ class AccountController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),			// action filter
-                'only' => ['index', 'modifyPersonalInfo', 'deleteProfilePicture', 'deleteAccount', 'addOrModifyRecoveryEmail', 'removeRecoveryEmail'],
+                'only' 	=> [ 
+                			'index',
+                			'modifyPersonalInfo',
+                			'deleteProfilePicture', 
+                			'deleteAccount', 
+                			'addOrModifyRecoveryEmail', 
+                			'deleteRecoveryEmail', 
+                			'changePassword',
+                		   ],
                 'rules' => [
                     [											// allow authenticated users
                         'allow' => true,
@@ -34,9 +44,9 @@ class AccountController extends Controller
                 'class' => VerbFilter::className(),				// HTTP request methods filter for each action
                 												// throw an HTTP 405 error when the method is not allowed
                 'actions' => [
-                	'index'  			 		=> ['get'],
+                	'index'  			 		=> ['get', 'post'],
                 	'modifyPersonalInfo' 		=> ['get', 'post'],
-                	'addOrModifyRecoveryEmail'	=> ['get', 'post'],
+                	'addOrModifyRecoveryEmail'	=> ['get'],
                 ],
             ],
         ];
@@ -57,13 +67,7 @@ class AccountController extends Controller
             ],
         ];
     }
-
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    
+ 
     public function actionIndex()
     {
     	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
@@ -71,13 +75,12 @@ class AccountController extends Controller
     		return $this->goHome();
     	}
     	
-    	return $this->render('index', [
-    	]);
+    	return $this->render('index', []);
     }
     
     public function actionModifyPersonalInfo()
     {
-    	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
+    	if (Yii::$app->user->isGuest)
     	{
     		return $this->goHome();
     	}
@@ -100,7 +103,7 @@ class AccountController extends Controller
     
     public function actionDeleteProfilePicture()
     {
-    	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
+    	if (Yii::$app->user->isGuest)
     	{
     		return $this->goHome();
     	}
@@ -120,7 +123,7 @@ class AccountController extends Controller
     
     public function actionAddOrModifyRecoveryEmail()
     {
-    	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
+    	if (Yii::$app->user->isGuest)
     	{
     		return $this->goHome();
     	}
@@ -139,7 +142,7 @@ class AccountController extends Controller
     
     public function actionDeleteRecoveryEmail()
     {
-    	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
+    	if (Yii::$app->user->isGuest)
     	{
     		return $this->goHome();
     	}
@@ -150,6 +153,25 @@ class AccountController extends Controller
     	{
     		return $this->redirect(['/account/index']);
     	}
+    }
+    
+    public function actionChangePassword()
+    {
+    	if (Yii::$app->user->isGuest)
+    	{
+    		return $this->goHome();
+    	}
+    	
+    	$model = new ChangePasswordForm();
+    	
+    	if ($model->load(Yii::$app->request->post()) && $model->changePassword())
+    	{
+    		return $this->redirect(['/account/index']);
+    	}
+    	
+    	return $this->render('changePassword', [
+    			'model' => $model,
+    	]);
     }
 
 }

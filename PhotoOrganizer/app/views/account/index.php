@@ -1,10 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\BaseUrl;
 use yii\bootstrap\Collapse;
 use yii\bootstrap\Tabs;
 use yii\bootstrap\Modal;
+use yii\bootstrap\ActiveForm;
 
 $this->title = 'Account Info';
 $this->params['breadcrumbs'][] = $this->title;
@@ -23,6 +23,8 @@ $profilePicturePath = Yii::$app->user->identity->profile_picture_path !== NULL ?
 // loged in user's personal info (first element from tabs menu)
 
 $personalInfo = '<br>'
+				. 'Manage this basic information - your name, email, profile picture - to help others find you on Groups'
+				. '<br><br>'
 				// profile picture in larger size (in Bootstrap Modal)
 				. Html::a(Html::img($profilePicturePath, ['class' => 'img-circle', 'id' => 'ProfilePicture']), ['#ProfilePictureModal'], ['data-toggle' => 'modal']) 
 				. '<br><br>'
@@ -61,7 +63,11 @@ $accountSecurity = 	'<br>'
 						'items'			=> [
 								[
 									'label' 	=> '<h4>Change Password</h4>',
-									'content' 	=> '',
+									'content' 	=> 'Your password protects your account.<br>
+													Choose a strong password and don\'t reuse it for other accounts. '
+													. Html::a('Learn More', [''])
+													. '<br><br>'
+													. Html::a('Change Password', ['/account/changePassword'], ['class' => 'btn btn-default']),
 								],
 								[
 									'label'		=> '<h4>Recovery E-mail Address</h4>',
@@ -82,7 +88,10 @@ $accountSecurity = 	'<br>'
 								],
 								[
 									'label'		=> '<h4>Two Step Verification</h4>',
-									'content' 	=> '',
+									'content' 	=> 'You can add a second layer of protection with 2-Step Verification, 
+													which sends a single-use code to your phone for you to enter when you sign in. 
+													So even if somebody manages to steal your password, it is not enough to get into 
+													your account.',
 								],
 						]
 					]);
@@ -90,7 +99,7 @@ $accountSecurity = 	'<br>'
 ?>
 	
 	
-	<div class="site-account-info">
+<div class="site-account-info">
 
 	<h1><?= Html::encode($this->title) ?></h1>
 		
@@ -115,7 +124,7 @@ $accountSecurity = 	'<br>'
 	?>
 
 	
-	<!-- Bootstrap Modal -->
+	<!-- Bootstrap Modal For Profile Picture-->
 	
 	<div id="ProfilePictureModal" class="modal fade" role="dialog">
 	  <div class="modal-dialog modal-lg">
@@ -142,7 +151,6 @@ $accountSecurity = 	'<br>'
 	
 	  </div>
 	</div>
-	
 	
 	
 </div>

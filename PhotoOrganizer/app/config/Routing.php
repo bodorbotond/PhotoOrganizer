@@ -22,6 +22,7 @@ return Array(
     	'account/deleteProfilePicture'		=> 'account/delete-profile-picture',
     	'account/addOrModifyRecoveryEmail'	=> 'account/add-or-modify-recovery-email',
     	'account/deleteRecoveryEmail'		=> 'account/delete-recovery-email',
+    	'account/changePassword'			=> 'account/change-password',
 		
 
     ),
