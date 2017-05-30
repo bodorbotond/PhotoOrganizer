@@ -8,12 +8,17 @@ use `photo_organizer`;
 create table if not exists `users`(
   `user_id` tinyint(5) unsigned not null auto_increment,
   `user_name` varchar(50) not null unique,
+  `first_name` varchar(50) not null,
+  `last_name` varchar(50) not null,
   `e_mail` varchar(50) not null unique,
+  `recovery_e_mail` varchar(50) default null unique,
   `password` varchar(50) not null,
+  `gender` varchar(10) not null,
   `profile_picture_path` varchar(200) default null,
   `auth_key` varchar(30) not null,
-  `user_status` varchar(10) not null,
-  `user_token` varchar(6) not null,
+  `account_status` varchar(10) not null,
+  `verification_key` varchar(6) not null,
+  `two_step_verification` boolean not null default 0,
   primary key(`user_id`)
 );
   
