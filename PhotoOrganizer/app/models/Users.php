@@ -131,4 +131,5 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
     	return self::findOne(['verification_key' => $verificationKey]);
     }
+    
 }

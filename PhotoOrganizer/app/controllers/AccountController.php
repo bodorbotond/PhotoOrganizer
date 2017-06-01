@@ -32,6 +32,7 @@ class AccountController extends Controller
                 			'addOrModifyRecoveryEmail', 
                 			'deleteRecoveryEmail', 
                 			'changePassword',
+                			'twoStepVerification',
                 		   ],
                 'rules' => [
                     [											// allow authenticated users
@@ -44,9 +45,10 @@ class AccountController extends Controller
                 'class' => VerbFilter::className(),				// HTTP request methods filter for each action
                 												// throw an HTTP 405 error when the method is not allowed
                 'actions' => [
-                	'index'  			 		=> ['get', 'post'],
-                	'modifyPersonalInfo' 		=> ['get', 'post'],
-                	'addOrModifyRecoveryEmail'	=> ['get'],
+                	'index'  			 		=> ['get'],
+                	'modifyPersonalInfo' 		=> ['get', 'put', 'post'],
+                	'addOrModifyRecoveryEmail'	=> ['get', 'put', 'post'],
+                	'changePassword'			=> ['get', 'put', 'post'],
                 ],
             ],
         ];
@@ -72,7 +74,7 @@ class AccountController extends Controller
     {
     	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/user/login']);
     	}
     	
     	return $this->render('index', []);
@@ -82,7 +84,7 @@ class AccountController extends Controller
     {
     	if (Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/user/login']);
     	}
     	
     	$model = new AccountModifyPersonalInfoForm();
@@ -105,7 +107,7 @@ class AccountController extends Controller
     {
     	if (Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/user/login']);
     	}
     	
     	$model = new AccountModifyPersonalInfoForm();
@@ -125,7 +127,7 @@ class AccountController extends Controller
     {
     	if (Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/user/login']);
     	}
     	
     	$model = new RecoveryEmailForm();
@@ -144,7 +146,7 @@ class AccountController extends Controller
     {
     	if (Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/user/login']);
     	}
     	
     	$model = new RecoveryEmailForm();
@@ -159,7 +161,7 @@ class AccountController extends Controller
     {
     	if (Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/user/login']);
     	}
     	
     	$model = new ChangePasswordForm();
@@ -172,6 +174,24 @@ class AccountController extends Controller
     	return $this->render('changePassword', [
     			'model' => $model,
     	]);
+    }
+    
+    public function actionTwoStepVerification()
+    {
+    	if (Yii::$app->user->isGuest)
+    	{
+    		return $this->redirect(['/user/login']);
+    	}
+    	
+    	if (Yii::$app->request->post())
+    	{
+    		$user = Users::findOne(Yii::$app->user->identity->id);
+    		$user->two_step_verification = (Yii::$app->request->post('TwoStepVerificationCheckBox') ? 1 : 0);
+    		if ($user->update())
+    		{
+	    		$this->redirect(['/account/index']);
+    		}
+    	}
     }
 
 }

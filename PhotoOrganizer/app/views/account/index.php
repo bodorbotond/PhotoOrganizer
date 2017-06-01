@@ -11,8 +11,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCssFile('@web/css/account.css');
 
-
-
 // profle picture path(two way: - logged in user has choosen optionally own profile picture
 // 							    - logged in user has default profile picture from server
 
@@ -75,23 +73,36 @@ $accountSecurity = 	'<br>'
 													we will use this information to help you get back in.<br><br>'
 													.
 													(
-														Yii::$app->user->identity->recovery_e_mail !== NULL
+														Yii::$app->user->identity->recovery_e_mail !== NULL															// if user already has a recovery e-mail adress
 														?
-														'<b>' . Yii::$app->user->identity->recovery_e_mail . '</b>'
+														'<b>' . Yii::$app->user->identity->recovery_e_mail . '</b>'													// then display recovery e-mail adress
 														. '<br><br>' 
-														. Html::a('Modify Recovery E-mail', ['/account/addOrModifyRecoveryEmail'], ['class' => 'btn btn-default'])
+														. Html::a('Modify Recovery E-mail', ['/account/addOrModifyRecoveryEmail'], ['class' => 'btn btn-default'])	// Modify
 														. '&nbsp&nbsp'
-														. Html::a('Delete Recovery E-mail', ['/account/deleteRecoveryEmail'], ['class' => 'btn btn-default'])
+														. Html::a('Delete Recovery E-mail', ['/account/deleteRecoveryEmail'], ['class' => 'btn btn-default'])		// and Delete Recovery Email button
 														:
-														Html::a('Add Recovery E-mail', ['/account/addOrModifyRecoveryEmail'], ['class' => 'btn btn-default'])
+														Html::a('Add Recovery E-mail', ['/account/addOrModifyRecoveryEmail'], ['class' => 'btn btn-default'])		// else display Add Recovery Email button
 													),
 								],
 								[
 									'label'		=> '<h4>Two Step Verification</h4>',
-									'content' 	=> 'You can add a second layer of protection with 2-Step Verification, 
-													which sends a single-use code to your phone for you to enter when you sign in. 
+									'content' 	=> 'Each time you sign in to your account, you\'ll need your 
+													password and a verification code.
+													<br> 
+													You can add a second layer of protection with 2-Step Verification, 
+													which sends a single-use code to your e-mail for you to enter when you sign in. 
 													So even if somebody manages to steal your password, it is not enough to get into 
-													your account.',
+													your account.
+													<br><br>'
+													. Html::beginForm(['/account/twoStepVerification'], 'post')									// on/off two step verification form with one checkbox
+													. '<b>Two Step Verification</b>&nbsp&nbsp'
+													. Html::checkbox('TwoStepVerificationCheckBox',
+																	 Yii::$app->user->identity->two_step_verification === 1 ? true : false,		// if user's two step verification is active checkbox is checked
+																	 ['onchange' => 'this.form.submit()'])		// submit without submit button
+													. Html::endForm()
+													. (Yii::$app->user->identity->two_step_verification === 1 ?
+													'<br>Your account is protected with two step verification.' :								// and print this information 
+													''),
 								],
 						]
 					]);

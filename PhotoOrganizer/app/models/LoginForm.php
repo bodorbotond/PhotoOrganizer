@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * LoginForm is the model behind the login form.
@@ -82,7 +83,7 @@ class LoginForm extends Model
     {
         if ($this->validate()) 
         {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+        	return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
         return false;
     }
@@ -100,6 +101,60 @@ class LoginForm extends Model
         }
 
         return $this->_user;
+    }
+    
+    public function isActiveTwoStepVerification()			// check two step verification is active or not
+    {
+    	return ($this->_user->two_step_verification === 1 ? true : false);
+    }
+    
+    public function updateVerificationKeyInDataBase()
+    {
+    	$user = $this->getUser();    	
+    	$verificationKey = strval(rand(10000, 99999));    	 
+    	$user->verification_key = $verificationKey;
+    	return $user->update();    	
+    }
+    
+    public function sendEmail()
+    {
+    	$messageParams = [
+    			'userName'			=> $this->_user->user_name,
+    			'eMail'				=> $this->_user->e_mail,
+    			'verificationKey'	=> $this->_user->verification_key,
+    	];
+    	$message = $this->buildMessage($messageParams);
+    	
+    	return Yii::$app->mailer->compose('layouts\html', ['content' => $message])
+    	->setTo($this->_user->e_mail)
+    	->setFrom(Yii::$app->params['adminEmail'])
+    	->setSubject('Login to Photo Organizer Application')
+    	->setHtmlBody($message)
+    	->send();
+    }
+    
+    private function buildMessage($params)
+    {
+    	return '
+				<h1>Hi ' . $params['userName'] .',</h1>
+				<div>
+					<p>
+						You try to login for <b>Photo Organizer</b> with ' . $params['eMail'] . ' email address! <br>
+						Please confirm your login intention. Your activation key: <br>' .
+    						$params['verificationKey'] .
+    						'</p>' .
+    						Html::a('Confirm login', Url::home('http') . 'user/loginVerification') .
+    						'<p>
+						<b>Photo Organizer Team</b>
+					</p>
+				</div>
+				';
+    }
+    
+    public function loginWithTwoStepVerification($username)			// get user by username from session variable
+    {
+    	$user = Users::findOne(['user_name' => $username]);		
+    	return Yii::$app->user->login($user, $this->rememberMe ? 3600*24*30 : 0);
     }
     
 }
