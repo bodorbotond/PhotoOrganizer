@@ -41,6 +41,7 @@ class LoginForm extends Model
         	[['accountStatus'], 'validateAccountStatus'],
         ];
     }
+    
 
     /**
      * Validates the password.
@@ -62,6 +63,7 @@ class LoginForm extends Model
         }
     }
     
+    
     public function validateAccountStatus($attribute, $params)
     {
     	if (!$this->hasErrors()) 
@@ -74,6 +76,23 @@ class LoginForm extends Model
     		}
     	}
     }
+    
+    
+    /**
+     * Finds user by [[username]]
+     *
+     * @return User|null
+     */
+    public function getUser()
+    {
+    	if ($this->_user === false)
+    	{
+    		$this->_user = Users::findByUsername($this->username);
+    	}
+    
+    	return $this->_user;
+    }
+    
 
     /**
      * Logs in a user using the provided username and password.
@@ -87,28 +106,22 @@ class LoginForm extends Model
         }
         return false;
     }
-
-    /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
-     */
-    public function getUser()
+    
+    
+    public function loginWithTwoStepVerification($username)			// get user by username from session variable
     {
-        if ($this->_user === false) 
-        {
-            $this->_user = Users::findByUsername($this->username);
-        }
-
-        return $this->_user;
+    	$user = Users::findOne(['user_name' => $username]);
+    	return Yii::$app->user->login($user, $this->rememberMe ? 3600*24*30 : 0);
     }
+    
     
     public function isActiveTwoStepVerification()			// check two step verification is active or not
     {
     	return ($this->_user->two_step_verification === 1 ? true : false);
     }
     
-    public function updateVerificationKeyInDataBase()
+    
+    public function updateVerificationKeyInDataBase()		// insert new verification key to database for login verification
     {
     	$user = $this->getUser();    	
     	$verificationKey = strval(rand(10000, 99999));    	 
@@ -116,7 +129,8 @@ class LoginForm extends Model
     	return $user->update();    	
     }
     
-    public function sendEmail()
+    
+    public function sendEmail()								// send email with login verification key to user who want to login
     {
     	$messageParams = [
     			'userName'			=> $this->_user->user_name,
@@ -133,7 +147,8 @@ class LoginForm extends Model
     	->send();
     }
     
-    private function buildMessage($params)
+    
+    private function buildMessage($params)					// build email HTML content
     {
     	return '
 				<h1>Hi ' . $params['userName'] .',</h1>
@@ -149,12 +164,6 @@ class LoginForm extends Model
 					</p>
 				</div>
 				';
-    }
-    
-    public function loginWithTwoStepVerification($username)			// get user by username from session variable
-    {
-    	$user = Users::findOne(['user_name' => $username]);		
-    	return Yii::$app->user->login($user, $this->rememberMe ? 3600*24*30 : 0);
     }
     
 }

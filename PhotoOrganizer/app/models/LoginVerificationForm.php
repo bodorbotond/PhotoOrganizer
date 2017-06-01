@@ -29,7 +29,7 @@ class LoginVerificationForm extends Model
 	
 	public function validateVerificationKey($attribute, $params)
 	{
-		if (Yii::$app->getSession()->hasFlash('username'))
+		if (Yii::$app->getSession()->hasFlash('username'))				// check if username is in session
 		{
 			$username = Yii::$app->getSession()->getFlash('username');		// get username from session variable
 			$user = Users::findOne(['user_name' => $username]);				// get user
@@ -41,7 +41,7 @@ class LoginVerificationForm extends Model
 		}
 		else
 		{
-			$this->addError($attribute, 'Try to login again!');
+			$this->addError($attribute, 'Try to login again!');			// there is no username in session
 		}
 	}
 	
