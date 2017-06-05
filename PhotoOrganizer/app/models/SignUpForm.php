@@ -139,7 +139,7 @@ class SignUpForm extends Model
 						Please confirm your account. Your activation key: <br>' .
 						$params['verificationKey'] .
 					'</p>' .
-					Html::a('Confirm account', Url::home('http') . 'user/verification') .
+					Html::a('Confirm account', Url::home('http') . 'user/signUpVerification') .
 					'<p>
 						<b>Photo Organizer Team</b>
 					</p>

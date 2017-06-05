@@ -25,6 +25,9 @@ return Array(
     	'account/deleteRecoveryEmail'		=> 'account/delete-recovery-email',
     	'account/changePassword'			=> 'account/change-password',
     	'account/twoStepVerification'		=> 'account/two-step-verification',
+    	'account/addSecurityQuestions'		=> 'account/add-security-questions',
+    	'account/modifySecurityQuestions'	=> 'account/modify-security-questions',
+    	'account/deleteSecurityQuestions'	=> 'account/delete-security-questions',
 		
 
     ),

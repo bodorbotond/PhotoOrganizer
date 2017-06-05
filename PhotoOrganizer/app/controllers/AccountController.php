@@ -7,12 +7,15 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\UploadedFile;
+use yii\db\Query;
 use app\models;
 use app\models\Users;
 use app\models\AccountModifyPersonalInfoForm;
 use app\models\RecoveryEmailForm;
 use app\models\ChangePasswordForm;
-use app\models\ChangePasswordVerificationForm;
+use app\models\SecurityQuestionsForm;
+use app\models\SecurityQuestions;
+use app\models\UsersSequrityQuestions;
 
 class AccountController extends Controller
 {
@@ -33,6 +36,9 @@ class AccountController extends Controller
                 			'deleteRecoveryEmail', 
                 			'changePassword',
                 			'twoStepVerification',
+                			'addSecurityQuestions',
+                			'modifySecurityQuestions',
+                			'deleteSecurityQuestions',
                 		   ],
                 'rules' => [
                     [											// allow authenticated users
@@ -49,11 +55,15 @@ class AccountController extends Controller
                 	'modifyPersonalInfo' 		=> ['get', 'put', 'post'],
                 	'addOrModifyRecoveryEmail'	=> ['get', 'put', 'post'],
                 	'changePassword'			=> ['get', 'put', 'post'],
+                	'addSecurityQuestions'		=> ['get', 'put', 'post'],
+                	'modifySecurityQuestions'	=> ['get', 'put', 'post'],
+                	'deleteSecurityQuestions'	=> ['get', 'delete', 'post'],
                 ],
             ],
         ];
     }
 
+    
     /**
      * @inheritdoc
      */
@@ -70,6 +80,7 @@ class AccountController extends Controller
         ];
     }
  
+    
     public function actionIndex()
     {
     	if (Yii::$app->user->isGuest)						// if the user isn't logged in then he can't reached his profile page
@@ -77,8 +88,17 @@ class AccountController extends Controller
     		return $this->redirect(['/user/login']);
     	}
     	
-    	return $this->render('index', []);
+    	$query = new Query ();
+    	$query->select ('sq.question_text, usq.answer')					// get user's security questions and answers from database
+    		  ->from ('security_questions sq, users_sequrity_questions usq')
+    		  ->where ('sq.question_id = usq.question_id and usq.user_id = ' . Yii::$app->user->identity->user_id);
+    	$securityQuestionsAndAnswers = $query->all();
+    	
+    	return $this->render('index', [
+    			'securityQuestionsAndAnswers' => $securityQuestionsAndAnswers,
+    	]);
     }
+    
     
     public function actionModifyPersonalInfo()
     {
@@ -103,6 +123,7 @@ class AccountController extends Controller
     	]);
     }
     
+    
     public function actionDeleteProfilePicture()
     {
     	if (Yii::$app->user->isGuest)
@@ -118,10 +139,12 @@ class AccountController extends Controller
     	}
     }
     
+    
     public function actionDeleteAccount()
     {
     	
     }
+    
     
     public function actionAddOrModifyRecoveryEmail()
     {
@@ -142,6 +165,7 @@ class AccountController extends Controller
     	]);
     }
     
+    
     public function actionDeleteRecoveryEmail()
     {
     	if (Yii::$app->user->isGuest)
@@ -156,6 +180,7 @@ class AccountController extends Controller
     		return $this->redirect(['/account/index']);
     	}
     }
+    
     
     public function actionChangePassword()
     {
@@ -176,6 +201,7 @@ class AccountController extends Controller
     	]);
     }
     
+    
     public function actionTwoStepVerification()
     {
     	if (Yii::$app->user->isGuest)
@@ -192,6 +218,79 @@ class AccountController extends Controller
 	    		$this->redirect(['/account/index']);
     		}
     	}
+    }
+    
+    
+    public function actionAddSecurityQuestions()
+    {
+    	if (Yii::$app->user->isGuest)
+    	{
+    		return $this->redirect(['/user/login']);
+    	}
+    	
+    	$model = new SecurityQuestionsForm();    	
+    	$securityQuestions = $model->getQuestions();
+    	$securityQuestionIdsAndAnswers = Array();
+    	
+    	if ($model->load(Yii::$app->request->post()) && $model->addQuestions())
+    	{
+    		return $this->redirect(['/account/index']);
+    	}
+    	
+    	return $this->render('addOrModifySecurityQuestions', [
+    			'model' 						=> $model,
+    			'securityQuestions'				=> $securityQuestions,
+    			'securityQuestionIdsAndAnswers'	=> $securityQuestionIdsAndAnswers,
+    	]);
+    }
+    
+    
+    public function actionModifySecurityQuestions()
+    {
+    	if (Yii::$app->user->isGuest)
+    	{
+    		return $this->redirect(['/user/login']);
+    	}
+    	
+    	$model = new SecurityQuestionsForm();
+    	$securityQuestions = $model->getQuestions();						// get all security question for dropDownList    	
+    	$securityQuestionIdsAndAnswers = UsersSequrityQuestions::find()										// get user's security question ids and answers from database for modify functionality
+    																->select(['question_id', 'answer'])		// (the already insert datas as default values for form)
+    																->where(['user_id' => Yii::$app->user->identity->user_id])
+    																->all();
+    	 
+    	if ($model->load(Yii::$app->request->post()) && $model->modifyQuestions())
+    	{
+    		return $this->redirect(['/account/index']);
+    	}
+    	
+    	return $this->render('addOrModifySecurityQuestions', [
+    			'model' 						=> $model,
+    			'securityQuestions'				=> $securityQuestions,
+    			'securityQuestionIdsAndAnswers'	=> $securityQuestionIdsAndAnswers,
+    	]);
+    }
+    
+    
+    public function actionDeleteSecurityQuestions()
+    {
+    	if (Yii::$app->user->isGuest)
+    	{
+    		return $this->redirect(['/user/login']);
+    	}
+    	
+    	$model = new SecurityQuestionsForm();
+    	
+    	if ($model->deleteQuestions())
+    	{
+    		return $this->redirect(['/account/index']);
+    	}
+    	else
+    	{
+    		print_r($model->getErrors());
+    		//return $this->redirect(['/account/index']);
+    	}
+
     }
 
 }

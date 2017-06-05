@@ -49,7 +49,7 @@ $personalInfo = '<br>'
 				    ]
 				])
 				. '<br><br>'
-				. Html::a('Modify', ['/account/modifyPersonalInfo'], ['class' => 'btn btn-default']);
+				. Html::a('Modify Personal Info', ['/account/modifyPersonalInfo'], ['class' => 'btn btn-default']);
 
 
 
@@ -103,6 +103,25 @@ $accountSecurity = 	'<br>'
 													. (Yii::$app->user->identity->two_step_verification === 1 ?
 													'<br>Your account is protected with two step verification.' :								// and print this information 
 													''),
+								],
+								[
+									'label'		=> '<h4>Security Questions</h4>',
+									'content'	=> 'Security questions help in verify that you\'re the person requesting access to 
+													your account.'
+													. (count($securityQuestionsAndAnswers) === 0
+													?
+													'<br><br>You don\'t have any sequrity questions.<br><br>'
+													. Html::a('Add Security Questions', ['/account/addSecurityQuestions'], ['class' => 'btn btn-default'])
+													:
+													'<br><br>Your security questions:<br><br>'
+													. $securityQuestionsAndAnswers[0]['question_text']
+													. '<br>&emsp;&emsp;<b>' . $securityQuestionsAndAnswers[0]['answer'] . '</b><br><br>'
+													. $securityQuestionsAndAnswers[1]['question_text']
+													. '<br>&emsp;&emsp;<b>' . $securityQuestionsAndAnswers[1]['answer'] . '</b><br>'
+													. '<br><br>'
+													. Html::a('Modify Security Questions', ['/account/modifySecurityQuestions'], ['class' => 'btn btn-default'])
+													. '&nbsp&nbsp'
+													. Html::a('Delete Security Questions', ['/account/deleteSecurityQuestions'], ['class' => 'btn btn-default'])),	
 								],
 						]
 					]);
