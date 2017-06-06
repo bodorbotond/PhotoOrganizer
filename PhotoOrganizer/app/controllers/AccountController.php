@@ -53,7 +53,9 @@ class AccountController extends Controller
                 'actions' => [
                 	'index'  			 		=> ['get'],
                 	'modifyPersonalInfo' 		=> ['get', 'put', 'post'],
+                	'deleteProfilePicture'		=> ['get', 'put'],
                 	'addOrModifyRecoveryEmail'	=> ['get', 'put', 'post'],
+                	'deleteRecoveryEmail'		=> ['get', 'put'],
                 	'changePassword'			=> ['get', 'put', 'post'],
                 	'addSecurityQuestions'		=> ['get', 'put', 'post'],
                 	'modifySecurityQuestions'	=> ['get', 'put', 'post'],
@@ -92,10 +94,10 @@ class AccountController extends Controller
     	$query->select ('sq.question_text, usq.answer')					// get user's security questions and answers from database
     		  ->from ('security_questions sq, users_sequrity_questions usq')
     		  ->where ('sq.question_id = usq.question_id and usq.user_id = ' . Yii::$app->user->identity->user_id);
-    	$securityQuestionsAndAnswers = $query->all();
+    	$usersSecurityQuestionsAndAnswers = $query->all();
     	
     	return $this->render('index', [
-    			'securityQuestionsAndAnswers' => $securityQuestionsAndAnswers,
+    			'usersSecurityQuestionsAndAnswers' => $usersSecurityQuestionsAndAnswers,
     	]);
     }
     
@@ -229,7 +231,7 @@ class AccountController extends Controller
     	}
     	
     	$model = new SecurityQuestionsForm();    	
-    	$securityQuestions = $model->getQuestions();
+    	$securityQuestions = $model->getQuestions();		// get all security question for dropDownList    	
     	$securityQuestionIdsAndAnswers = Array();
     	
     	if ($model->load(Yii::$app->request->post()) && $model->addQuestions())
@@ -284,11 +286,6 @@ class AccountController extends Controller
     	if ($model->deleteQuestions())
     	{
     		return $this->redirect(['/account/index']);
-    	}
-    	else
-    	{
-    		print_r($model->getErrors());
-    		//return $this->redirect(['/account/index']);
     	}
 
     }

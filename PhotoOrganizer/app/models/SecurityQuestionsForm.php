@@ -92,9 +92,7 @@ class SecurityQuestionsForm extends Model
 	{
 		if ($this->validate())
 		{
-			$userSecurityQuestionAndAnswers = UsersSequrityQuestions::find()
-																		->where(['user_id' => Yii::$app->user->identity->user_id])
-																		->all();
+			$userSecurityQuestionAndAnswers = UsersSequrityQuestions::getUserSecurityQuestions();
 			
 			// modify first question
 			$userSecurityQuestionAndAnswers[0]->question_id = $this->firstQuestion;
@@ -115,9 +113,7 @@ class SecurityQuestionsForm extends Model
 	
 	public function deleteQuestions()
 	{
-		$userSecurityQuestionAndAnswers = UsersSequrityQuestions::find()
-																	->where(['user_id' => Yii::$app->user->identity->user_id])
-																	->all();
+		$userSecurityQuestionAndAnswers = UsersSequrityQuestions::getUserSecurityQuestions();
 		
 		if ($userSecurityQuestionAndAnswers[0]->delete() && $userSecurityQuestionAndAnswers[1]->delete())
 		{

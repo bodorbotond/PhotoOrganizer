@@ -108,16 +108,16 @@ $accountSecurity = 	'<br>'
 									'label'		=> '<h4>Security Questions</h4>',
 									'content'	=> 'Security questions help in verify that you\'re the person requesting access to 
 													your account.'
-													. (count($securityQuestionsAndAnswers) === 0
+													. (count($usersSecurityQuestionsAndAnswers) === 0
 													?
 													'<br><br>You don\'t have any sequrity questions.<br><br>'
 													. Html::a('Add Security Questions', ['/account/addSecurityQuestions'], ['class' => 'btn btn-default'])
 													:
 													'<br><br>Your security questions:<br><br>'
-													. $securityQuestionsAndAnswers[0]['question_text']
-													. '<br>&emsp;&emsp;<b>' . $securityQuestionsAndAnswers[0]['answer'] . '</b><br><br>'
-													. $securityQuestionsAndAnswers[1]['question_text']
-													. '<br>&emsp;&emsp;<b>' . $securityQuestionsAndAnswers[1]['answer'] . '</b><br>'
+													. $usersSecurityQuestionsAndAnswers[0]['question_text']
+													. '<br>&emsp;&emsp;<b>' . $usersSecurityQuestionsAndAnswers[0]['answer'] . '</b><br><br>'
+													. $usersSecurityQuestionsAndAnswers[1]['question_text']
+													. '<br>&emsp;&emsp;<b>' . $usersSecurityQuestionsAndAnswers[1]['answer'] . '</b><br>'
 													. '<br><br>'
 													. Html::a('Modify Security Questions', ['/account/modifySecurityQuestions'], ['class' => 'btn btn-default'])
 													. '&nbsp&nbsp'

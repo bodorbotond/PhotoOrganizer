@@ -67,4 +67,11 @@ class UsersSequrityQuestions extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
     }
+    
+    public static function getUserSecurityQuestions()
+    {
+    	return self::find()
+						->where(['user_id' => Yii::$app->user->identity->user_id])
+						->all();
+    }
 }
