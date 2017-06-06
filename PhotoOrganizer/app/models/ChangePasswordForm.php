@@ -17,12 +17,12 @@ class ChangePasswordForm extends Model
         return [
             // oldPassword, newPassword, confirmedNewPassword are required
             [['oldPassword', 'newPassword', 'confirmedNewPassword'], 'required'],
-        	// oldPassword is validated by validateoldPassword()
-        	[['oldPassword'], 'validateoldPassword'],
-        	// newPassword is validated by validatenewPassword()
-        	[['newPassword'], 'validatenewPassword'],
-        	// confirmedNewPassword is validated by validateconfirmedNewPassword()
-        	[['confirmedNewPassword'], 'validateconfirmedNewPassword'],
+        	// oldPassword is validated by validateOldPassword()
+        	[['oldPassword'], 'validateOldPassword'],
+        	// newPassword is validated by validateNewPassword()
+        	[['newPassword'], 'validateNewPassword'],
+        	// confirmedNewPassword is validated by validateConfirmedNewPassword()
+        	[['confirmedNewPassword'], 'validateConfirmedNewPassword'],
         		
         ];
     }
@@ -36,7 +36,7 @@ class ChangePasswordForm extends Model
     	];
     }
     
-    public function validateoldPassword($attribute, $params)
+    public function validateOldPassword($attribute, $params)
     {
     	$user = Users::findOne(Yii::$app->user->identity->id);
     	
@@ -46,7 +46,7 @@ class ChangePasswordForm extends Model
     	}
     }
     
-    public function validatenewPassword($attribute, $params)
+    public function validateNewPassword($attribute, $params)
     {
     	if (strlen($this->newPassword) < 8 || strlen($this->newPassword) > 50)
     	{
@@ -66,7 +66,7 @@ class ChangePasswordForm extends Model
     	}
     }
     
-    public function validateconfirmedNewPassword($attribute, $params)
+    public function validateConfirmedNewPassword($attribute, $params)
     {
     	// check newPassword and confirmedNewPassword is the same newPassword
     	if ($this->newPassword !== $this->confirmedNewPassword)
@@ -77,13 +77,17 @@ class ChangePasswordForm extends Model
     
     public function changePassword()
     {
-    	$user = Users::findOne(Yii::$app->user->identity->id);
+    	$user = Users::findOne(Yii::$app->user->identity->user_id);    	
+    	$oldPassword = new OldPasswords();								// insert old password to database (this may help if the user forgot password)
     	
     	if ($this->validate())
     	{
     		$user->password = crypt($this->newPassword, 'salt');
     		
-    		if ($user->update())
+    		$oldPassword->user_id = Yii::$app->user->identity->user_id;
+    		$oldPassword->old_password = crypt($this->oldPassword, 'salt');
+    		
+    		if ($user->update() && $oldPassword->save())
     		{
     			return true;
     		}
