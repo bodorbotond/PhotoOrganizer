@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php ActiveForm::end(); ?>
     
-    <?= Html::a('Forgot password?', ['']) ?>
+    <?= Html::a('Forgot password?', ['/user/userIdentify']) ?>
     <br>
     Don't have an account?
     <?= Html::a('Sign Up!', ['/user/signUp'])?>

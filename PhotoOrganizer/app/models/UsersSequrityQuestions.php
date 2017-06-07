@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "users_sequrity_questions".
@@ -73,5 +74,23 @@ class UsersSequrityQuestions extends \yii\db\ActiveRecord
     	return self::find()
 						->where(['user_id' => Yii::$app->user->identity->user_id])
 						->all();
+    }
+    
+    public static function getUserSecurityQuestionsByUserId($id)
+    {  	
+    	$query = new Query();
+    	 
+    	$query->select ('sq.question_text')					// get user's security questions by user id
+    		  ->from ('security_questions sq, users_sequrity_questions usq')
+    		  ->where ('sq.question_id = usq.question_id and usq.user_id = ' . $id);
+    	 
+    	return $query->all();
+    }
+    
+    public static function getUserSecurityAnswersByUserId($id)
+    {    	
+    	return self::find()									// get user's security answers by user id
+    					->where(['user_id' => $id])
+    					->all();
     }
 }

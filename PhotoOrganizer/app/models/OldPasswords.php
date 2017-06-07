@@ -55,4 +55,12 @@ class OldPasswords extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
     }
+    
+    public static function findByUserId($id)			// find all old passwords by username
+    {    	
+    	return self::find()
+    					->where(['user_id' => $id])
+    					->all();
+    }
+
 }

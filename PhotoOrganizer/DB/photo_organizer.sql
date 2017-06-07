@@ -22,15 +22,49 @@ create table if not exists `users`(
   primary key(`user_id`)
 );
   
-  create table if not exists `photos`(
+create table if not exists `photos`(
   `photo_id` tinyint(5) unsigned not null auto_increment,
   `user_id` tinyint(5) unsigned not null,
   `photo_name` varchar(50) not null,
   `photo_type` varchar(25) not null,
-  `photo_path` blob not null,
-  `photo_size` varchar(25) not null default '',
+  `photo_path` varchar(200) not null,
+  `photo_size` varchar(25) not null,
   `photo_height` int(8) not null,
   `photo_width` int(8) not null,
   primary key(`photo_id`),
   constraint `UserPhotoId` foreign key (`user_id`) references `users` (`user_id`)
 );
+
+create table if not exists `security_questions`(
+  `question_id` tinyint(2) unsigned not null auto_increment,
+  `question_text` varchar(200) not null,
+  primary key(`question_id`)
+);
+
+create table if not exists `users_sequrity_questions`(
+  `u_s_q_id` tinyint(5) unsigned not null auto_increment,
+  `user_id` tinyint(5) unsigned not null,
+  `question_id` tinyint(2) unsigned not null,
+  `answer` varchar(200) not null,
+  primary key(`u_s_q_id`),
+  constraint `UserId` foreign key (`user_id`) references `users` (`user_id`),
+  constraint `QuestionId` foreign key (`question_id`) references `security_questions` (`question_id`)
+);
+
+create table if not exists `old_passwords`(
+  `old_password_id` tinyint(5) unsigned not null auto_increment,
+  `user_id` tinyint(5) unsigned not null,
+  `old_password` varchar(50) not null,
+  primary key(`old_password_id`),
+  constraint `UserIdOldPassword` foreign key (`user_id`) references `users` (`user_id`)
+);
+
+
+-- upload security_questons table
+
+insert into security_questions (question_text) values ('What was the name of your elementaryprimary school?');
+insert into security_questions (question_text) values ('What is your favorite book?');
+insert into security_questions (question_text) values ('What is your favorite moovie?');
+insert into security_questions (question_text) values ('What is your favorite food?');
+insert into security_questions (question_text) values ('What is your pet\'s name?');
+insert into security_questions (question_text) values ('What was your childhood nickname?');
