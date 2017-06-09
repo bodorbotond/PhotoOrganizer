@@ -1,9 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\models\site;
 
 use Yii;
 use yii\base\Model;
+use app\utility\email\UserContactSendEmail;
 
 /**
  * ContactForm is the model behind the contact form.
@@ -11,10 +12,9 @@ use yii\base\Model;
 class ContactForm extends Model
 {
     public $name;
-    public $email;
+    public $eMail;
     public $subject;
     public $body;
-    public $verifyCode;
 
 
     /**
@@ -24,22 +24,20 @@ class ContactForm extends Model
     {
         return [
             // name, email, subject and body are required
-            [['name', 'email', 'subject', 'body'], 'required'],
+            [['name', 'eMail', 'subject', 'body'], 'required'],
             // email has to be a valid email address
-            ['email', 'email'],
-            // verifyCode needs to be entered correctly
-            ['verifyCode', 'captcha'],
+            ['eMail', 'email'],
         ];
     }
-
-    /**
-     * @return array customized attribute labels
-     */
+    
     public function attributeLabels()
     {
-        return [
-            'verifyCode' => 'Verification Code',
-        ];
+    	return [
+    			'name' 		=> 'Name',
+    			'eMail' 	=> 'E-mail',
+    			'subject'	=> 'Subject',
+    			'body' 		=> 'Body',
+    	];
     }
 
     /**
@@ -47,18 +45,13 @@ class ContactForm extends Model
      * @param string $email the target email address
      * @return boolean whether the model passes validation
      */
-    public function contact($email)
+    public function contact()
     {
-        if ($this->validate()) {
-            Yii::$app->mailer->compose()
-                ->setTo($email)
-                ->setFrom([$this->email => $this->name])
-                ->setSubject($this->subject)
-                ->setTextBody($this->body)
-                ->send();
-
-            return true;
+        if ($this->validate())
+        {
+        	return UserContactSendEmail::sendEMail($this->name, $this->eMail, $this->subject, $this->body);
         }
+        
         return false;
     }
 }

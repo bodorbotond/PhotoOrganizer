@@ -3,6 +3,8 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+$this->registerCssFile('@web/css/layout.css');
+
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -58,6 +60,16 @@ AppAsset::register($this);
             	'url' 		=> ['/site/contact']
             		
             ],
+        	[
+        		'label'		=> '<span class="glyphicon glyphicon-picture"></span> Photos',
+        		'url'		=> ['/'],
+        		'visible'	=> !Yii::$app->user->isGuest,	
+        	],
+        	[
+        		'label'		=> '<span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span> Groups',
+        		'url'		=> ['/'],
+        		'visible'	=> !Yii::$app->user->isGuest,
+        	],
             Yii::$app->user->isGuest ? (
             [	
                 'label' 	=> '<span class="glyphicon glyphicon-log-in"></span> Login',
