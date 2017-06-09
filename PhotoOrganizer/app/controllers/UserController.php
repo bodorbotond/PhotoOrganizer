@@ -12,19 +12,18 @@ use app\utility\IdentifyUser;
 use app\utility\SessionManager;
 use app\utility\email\ForgotPasswordSendEmail;
 use app\utility\email\LoginVerificationSendEmail;
-use app\models\user\ChangePasswordForm;
 use app\models\Users;
-use app\models\LoginForm;
-use app\models\LoginVerificationForm;
-use app\models\SignUpForm;
-use app\models\SignUpVerificationForm;
-use app\models\UserIdentifyForm;
-use app\models\ForgotPasswordVerificationKeyForm;
-use app\models\ForgotPasswordSecurityQuestionsForm;
-use app\models\ForgotPasswordOldPasswordsForm;
-use app\models\UsersSequrityQuestions;
-use app\models\OldPasswords;
-use yii\web\yii\web;
+use app\models\auth\LoginForm;
+use app\models\auth\LoginVerificationForm;
+use app\models\auth\SignUpForm;
+use app\models\auth\SignUpVerificationForm;
+use app\models\forgotPassword\UserIdentifyForm;
+use app\models\forgotPassword\ForgotPasswordVerificationKeyForm;
+use app\models\forgotPassword\ForgotPasswordSecurityQuestionsForm;
+use app\models\forgotPassword\ForgotPasswordOldPasswordsForm;
+use app\models\forgotPassword\ChangePasswordForm;
+use app\models\tables\UsersSequrityQuestions;
+use app\models\tables\OldPasswords;
 
 class UserController extends Controller
 {

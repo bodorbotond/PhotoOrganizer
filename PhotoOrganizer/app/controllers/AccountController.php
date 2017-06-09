@@ -8,14 +8,13 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\db\Query;
-use app\models;
 use app\models\Users;
-use app\models\AccountModifyPersonalInfoForm;
-use app\models\RecoveryEmailForm;
-use app\models\ChangePasswordForm;
-use app\models\SecurityQuestionsForm;
-use app\models\SecurityQuestions;
-use app\models\UsersSequrityQuestions;
+use app\models\account\AccountModifyPersonalInfoForm;
+use app\models\account\RecoveryEmailForm;
+use app\models\account\ChangePasswordForm;
+use app\models\account\SecurityQuestionsForm;
+use app\models\tables\SecurityQuestions;
+use app\models\tables\UsersSequrityQuestions;
 
 class AccountController extends Controller
 {
