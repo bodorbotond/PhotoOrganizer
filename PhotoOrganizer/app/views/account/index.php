@@ -49,7 +49,7 @@ $personalInfo = '<br>'
 				    ]
 				])
 				. '<br><br>'
-				. Html::a('Modify Personal Info', ['/account/modifyPersonalInfo'], ['class' => 'btn btn-default']);
+				. Html::a('Modify Personal Info', ['/account/perosnalInfo/modify'], ['class' => 'btn btn-default']);
 
 
 
@@ -65,7 +65,7 @@ $accountSecurity = 	'<br>'
 													Choose a strong password and don\'t reuse it for other accounts. '
 													. Html::a('Learn More', [''])
 													. '<br><br>'
-													. Html::a('Change Password', ['/account/changePassword'], ['class' => 'btn btn-default']),
+													. Html::a('Change Password', ['/account/security/changePassword'], ['class' => 'btn btn-default']),
 								],
 								[
 									'label'		=> '<h4>Recovery E-mail Address</h4>',
@@ -77,11 +77,11 @@ $accountSecurity = 	'<br>'
 														?
 														'<b>' . Yii::$app->user->identity->recovery_e_mail . '</b>'													// then display recovery e-mail adress
 														. '<br><br>' 
-														. Html::a('Modify Recovery E-mail', ['/account/addOrModifyRecoveryEmail'], ['class' => 'btn btn-default'])	// Modify
+														. Html::a('Modify Recovery E-mail', ['/account/security/recoveryEmail/addOrModify'], ['class' => 'btn btn-default'])	// Modify
 														. '&nbsp&nbsp'
-														. Html::a('Delete Recovery E-mail', ['/account/deleteRecoveryEmail'], ['class' => 'btn btn-default'])		// and Delete Recovery Email button
+														. Html::a('Delete Recovery E-mail', ['/account/security/recoveryEmail/delete'], ['class' => 'btn btn-default'])		// and Delete Recovery Email button
 														:
-														Html::a('Add Recovery E-mail', ['/account/addOrModifyRecoveryEmail'], ['class' => 'btn btn-default'])		// else display Add Recovery Email button
+														Html::a('Add Recovery E-mail', ['/account/security/recoveryEmail/addOrModify'], ['class' => 'btn btn-default'])		// else display Add Recovery Email button
 													),
 								],
 								[
@@ -94,7 +94,7 @@ $accountSecurity = 	'<br>'
 													So even if somebody manages to steal your password, it is not enough to get into 
 													your account.
 													<br><br>'
-													. Html::beginForm(['/account/twoStepVerification'], 'post')									// on/off two step verification form with one checkbox
+													. Html::beginForm(['/account/security/twoStepVerification'], 'post')									// on/off two step verification form with one checkbox
 													. '<b>Two Step Verification</b>&nbsp&nbsp'
 													. Html::checkbox('TwoStepVerificationCheckBox',
 																	 Yii::$app->user->identity->two_step_verification === 1 ? true : false,		// if user's two step verification is active checkbox is checked
@@ -111,7 +111,7 @@ $accountSecurity = 	'<br>'
 													. (count($usersSecurityQuestionsAndAnswers) === 0
 													?
 													'<br><br>You don\'t have any sequrity questions.<br><br>'
-													. Html::a('Add Security Questions', ['/account/addSecurityQuestions'], ['class' => 'btn btn-default'])
+													. Html::a('Add Security Questions', ['/account/security/securityQuestions/add'], ['class' => 'btn btn-default'])
 													:
 													'<br><br>Your security questions:<br><br>'
 													. $usersSecurityQuestionsAndAnswers[0]['question_text']
@@ -119,9 +119,9 @@ $accountSecurity = 	'<br>'
 													. $usersSecurityQuestionsAndAnswers[1]['question_text']
 													. '<br>&emsp;&emsp;<b>' . $usersSecurityQuestionsAndAnswers[1]['answer'] . '</b><br>'
 													. '<br><br>'
-													. Html::a('Modify Security Questions', ['/account/modifySecurityQuestions'], ['class' => 'btn btn-default'])
+													. Html::a('Modify Security Questions', ['/account/security/securityQuestions/modify'], ['class' => 'btn btn-default'])
 													. '&nbsp&nbsp'
-													. Html::a('Delete Security Questions', ['/account/deleteSecurityQuestions'], ['class' => 'btn btn-default'])),	
+													. Html::a('Delete Security Questions', ['/account/security/securityQuestions/delete'], ['class' => 'btn btn-default'])),	
 								],
 						]
 					]);
@@ -171,9 +171,9 @@ $accountSecurity = 	'<br>'
 	        <?php
 	        echo Html::img($profilePicturePath, ['id' => 'ProfilePictureInModal'])
 	        . '<br>'
-	        . (Yii::$app->user->identity->profile_picture_path !== NULL ?								// if user has profile picture
-	          Html::a('Delete', ['/account/deleteProfilePicture'], ['class' => 'btn btn-danger']) :		// then use can delete it
-	          '');																						// else Delete button is not required
+	        . (Yii::$app->user->identity->profile_picture_path !== NULL ?											// if user has profile picture
+	          Html::a('Delete', ['/account/perosnalInfo/deleteProfilePicture'], ['class' => 'btn btn-danger']) :	// then use can delete it
+	          '');																									// else Delete button is not required
 	        ?>
 	      </div>
 	      

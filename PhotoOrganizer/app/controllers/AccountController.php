@@ -27,11 +27,11 @@ class AccountController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),			// action filter
-                'only' 	=> [ 
+                'only' 	=> [ 									// all aplied actions
                 			'index',
                 			'modifyPersonalInfo',
                 			'deleteProfilePicture', 
-                			'deleteAccount', 
+                			//'deleteAccount', 
                 			'addOrModifyRecoveryEmail', 
                 			'deleteRecoveryEmail', 
                 			'changePassword',
@@ -40,10 +40,19 @@ class AccountController extends Controller
                 			'modifySecurityQuestions',
                 			'deleteSecurityQuestions',
                 		   ],
-                'rules' => [
-                    [											// allow authenticated users
-                        'allow' => true,
-                        'roles' => ['@'],
+                'rules' => [									// access rules
+                    [											
+                        'allow' 	=> true,					// allow
+                    	'actions'	=> [						// these actions
+                    					'index',
+                    					'modifyPersonalInfo', 'deleteProfilePicture',
+                    					//'deleteAccount',
+                    					'addOrModifyRecoveryEmail', 'deleteRecoveryEmail',
+                    					'changePassword',
+                    					'twoStepVerification',
+                    					'addSecurityQuestions', 'modifySecurityQuestions', 'deleteSecurityQuestions',
+                    					],
+                        'roles' 	=> ['@'],					// authenticated users
                     ],
                 ],
             ],
@@ -54,9 +63,11 @@ class AccountController extends Controller
                 	'index'  			 		=> ['get'],
                 	'modifyPersonalInfo' 		=> ['get', 'put', 'post'],
                 	'deleteProfilePicture'		=> ['get', 'put'],
+                	//'deleteAccount'				=> ['get', 'delete', 'post'],
                 	'addOrModifyRecoveryEmail'	=> ['get', 'put', 'post'],
                 	'deleteRecoveryEmail'		=> ['get', 'put'],
                 	'changePassword'			=> ['get', 'put', 'post'],
+                	'twoStepVerification'		=> ['get', 'put', 'post'],
                 	'addSecurityQuestions'		=> ['get', 'put', 'post'],
                 	'modifySecurityQuestions'	=> ['get', 'put', 'post'],
                 	'deleteSecurityQuestions'	=> ['get', 'delete', 'post'],
