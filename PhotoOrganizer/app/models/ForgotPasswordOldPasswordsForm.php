@@ -37,7 +37,7 @@ class ForgotPasswordOldPasswordsForm extends Model
 		
 		$user = IdentifyUser::getUserFromSessionByUsernameOrEmail();	// get user by username or email
 		
-		if (crypt($this->oldPassword, 'salt') === $user->password)		// if entered old password is recently password
+		if ($user->validatePassword($this->oldPassword))					// if entered old password is recently password
 		{
 			$this->addError($attribute, 'You use this password recently!');
 		}
@@ -51,13 +51,11 @@ class ForgotPasswordOldPasswordsForm extends Model
 	
 	public function oldPasswordFoundByUserId($id)							// check exists any old password which is equal to entered password
 	{																			// old passwords are queried by user id
-		//echo '<br><br><br>';
 		foreach (OldPasswords::findByUserId($id) as $key=>$value)
 		{
-			//echo $value['old_password'] .'&nbsp;&nbsp;' . crypt($this->oldPassword, 'salt') . '<br>';
-			if (hash_equals(crypt($value['old_password'], 'salt'), $this->oldPassword))
-			{
-				return true;
+			if ($value->validatePassword($this->oldPassword))						// if entered old password is equal
+			{																		// to at least one old password
+				return true;															// return true
 			}
 		}
 		return false;

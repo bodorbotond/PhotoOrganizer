@@ -82,10 +82,10 @@ class ChangePasswordForm extends Model
     	
     	if ($this->validate())
     	{
-    		$user->password = crypt($this->newPassword, 'salt');
+    		$user->password = crypt($this->newPassword, '_J9..rasm');
     		
     		$oldPassword->user_id = Yii::$app->user->identity->user_id;
-    		$oldPassword->old_password = crypt($this->oldPassword, 'salt');
+    		$oldPassword->old_password = crypt($this->oldPassword, '_J9..rasm');
     		
     		if ($user->update() && $oldPassword->save())
     		{

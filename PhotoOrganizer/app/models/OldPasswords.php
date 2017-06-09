@@ -62,5 +62,10 @@ class OldPasswords extends \yii\db\ActiveRecord
     					->where(['user_id' => $id])
     					->all();
     }
+    
+    public function validatePassword($password)
+    {
+    	return hash_equals($this->old_password, crypt($password, '_J9..rasm'));
+    }
 
 }

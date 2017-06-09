@@ -125,12 +125,12 @@ class SignUpForm extends Model
 		$user = new Users();
 		
 		if ($this->validate())												// if entered datas are validate then insert datas to database and send email to entered email adress
-		{
+		{			
 			$user->user_name 		= $this->userName;
 			$user->first_name		= $this->firstName;
 			$user->last_name		= $this->lastName;
 			$user->e_mail 			= $this->eMail;
-			$user->password 		= crypt($this->password, 'salt');
+			$user->password 		= crypt($this->password, '_J9..rasm');;
 			$user->gender			= $this->gender;
 			
 			if (!empty($this->profilePicture->baseName))					// if user want to choose optional profile picture then save to the server
@@ -156,10 +156,7 @@ class SignUpForm extends Model
 				}
 			}
 		}
-		else
-		{
-			return false;	
-		}
+		return false;
 		
 	}
 }

@@ -114,7 +114,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     
     public function validatePassword($password)
     {
-    	return hash_equals($this->password, crypt($password, 'salt'));
+    	return hash_equals($this->password, crypt($password, '_J9..rasm'));
     }
     
     public static function findByEMail($eMail)

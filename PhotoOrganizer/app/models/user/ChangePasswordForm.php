@@ -87,11 +87,11 @@ class ChangePasswordForm extends Model
     	if ($this->validate())
     	{
     		$oldPassword->user_id = $user->user_id;
-    		$oldPassword->old_password = crypt($user->password, 'salt');
+    		$oldPassword->old_password = crypt($user->password, '_J9..rasm');
     		
-    		$user->password = crypt($this->newPassword, 'salt');
+    		$user->password = crypt($this->newPassword, '_J9..rasm');
     		
-    		if ($user->update() && $oldPassword->save())
+    		if ($oldPassword->save() && $user->update())
     		{
     			return true;
     		}
