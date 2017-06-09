@@ -6,10 +6,9 @@ use Yii;
 use yii\validators\EmailValidator;
 use yii\validators\FileValidator;
 use yii\helpers\FileHelper;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\base\Model;
 use yii\base\Security;
+use app\utility\email\SignUpVerificationSendEmail;
 use app\models\Users;
 
 class SignUpForm extends Model
@@ -79,6 +78,7 @@ class SignUpForm extends Model
 			$this->addError($attribute, 'The length of First Name must be between 0 and 50 character!');
 		}
 	}
+	
 	public function validateLastName($attribute, $params)
 	{
 		if (strlen($this->lastName) > 50)
@@ -112,39 +112,12 @@ class SignUpForm extends Model
 		{
 			$this->addError($attribute, 'The password must be at least 8 characters!');
 		}
+		
 		// check the password contains at least one character and at least one number and at least one special character(all characters that's not a digit or a-Z)
 		if (!preg_match('/[a-zA-Z]+/', $this->password) || !preg_match('/\d+/', $this->password) || !preg_match('/[^a-zA-Z\d]+/', $this->password))
 		{
 			$this->addError($attribute, 'The password must be contain at least one number, one special character and one letter!');
 		}
-	}
-	
-	private function sendEMail($eMail, $message)
-	{
-		return Yii::$app->mailer->compose('layouts\html', ['content' => $message])
-				->setTo($eMail)
-				->setFrom(Yii::$app->params['adminEmail'])
-				->setSubject('Registration to Photo Organizer Application')
-				->setHtmlBody($message)
-				->send();
-	}
-	
-	private function buildMessage($params)
-	{
-		return '
-				<h1>Hi ' . $params['userName'] .',</h1>
-				<div>
-					<p>
-						Thanks for signing up for <b>Photo Organizer</b> with ' . $params['eMail'] . ' email address! <br>
-						Please confirm your account. Your activation key: <br>' .
-						$params['verificationKey'] .
-					'</p>' .
-					Html::a('Confirm account', Url::home('http') . 'user/signUpVerification') .
-					'<p>
-						<b>Photo Organizer Team</b>
-					</p>
-				</div>
-				';
 	}
 	
 	public function signUp()
@@ -159,6 +132,7 @@ class SignUpForm extends Model
 			$user->e_mail 			= $this->eMail;
 			$user->password 		= crypt($this->password, 'salt');
 			$user->gender			= $this->gender;
+			
 			if (!empty($this->profilePicture->baseName))					// if user want to choose optional profile picture then save to the server
 			{
 				$path = 'uploads/' . $this->userName;						// directory path into the server where the signed up user save the profile picure
@@ -171,16 +145,13 @@ class SignUpForm extends Model
 			$user->auth_key 		= Yii::$app->security->generateRandomString(30);
 			$user->account_status	= 'inactive';								// default set the user status inactive (set active by activation key in the email)
 			$user->verification_key	= strval(rand(10000, 99999));				// convert a five digit number to string
+			
 			if($user->save())													// if user saved into database successful
 			{
-				$message = $this->buildMessage([										// build message
-						'userName'			=> $user->user_name,
-						'eMail'				=> $user->e_mail,
-						'verificationKey' 	=> $user->verification_key
-						
-				]);
-				if ($this->sendEMail($user->e_mail, $message))							// send confirmation email to users's email adress
-				{
+				if (SignUpVerificationSendEmail::sendEMail($user->e_mail, [ 'userName'			=> $user->user_name,
+																			'eMail'				=> $user->e_mail,
+																			'verificationKey' 	=> $user->verification_key]))
+				{						// send confirmation email to users's email adress
 					return true;
 				}
 			}

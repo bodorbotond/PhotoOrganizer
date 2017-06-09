@@ -11,6 +11,7 @@ use yii\web\Session;
 use app\utility\IdentifyUser;
 use app\utility\SessionManager;
 use app\utility\email\ForgotPasswordSendEmail;
+use app\utility\email\LoginVerificationSendEmail;
 use app\models\user\ChangePasswordForm;
 use app\models\Users;
 use app\models\LoginForm;
@@ -35,12 +36,39 @@ class UserController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),			// action filter
-                'only' => ['logout'],							// actions
-                'rules' => [
-                    [											// allow authenticated users
-                        'allow' => true,
-                        'roles' => ['@'],
+                'only' => [										// all aplied actions
+                			'index',
+                			'login', 'loginVerification',
+                			'signUp', 'signUpVerification',
+                			'logout',
+                			'userIdentify',
+                			'forgotPassword',
+                			'forgotPasswordSendToEmailAdress', 'forgotPasswordSendToRecoveryEmailAdress', 'forgotPasswordVerificationKey',
+                			'forgotPasswordSecurityQuestions',
+                			'forgotPasswordOldPasswords',
+                			'forgotPasswordChangePassword',
+                		  ], 
+                'rules' => [									// access rules
+                    [
+                        'allow' 	=> true,						// allow
+                    	'actions'	=> ['logout', 'index'],			// logout and index actions
+                        'roles' 	=> ['@'],						// authenticated users
                     ],
+                	[
+                		'allow' 	=> true,						// allow
+                		'actions'	=> [							// these actions
+                						'index',
+                						'login', 'loginVerification',
+                						'signUp', 'signUpVerification',
+										'userIdentify', 
+                						'forgotPassword',
+                						'forgotPasswordSendToEmailAdress', 'forgotPasswordSendToRecoveryEmailAdress', 'forgotPasswordVerificationKey',
+                						'forgotPasswordSecurityQuestions',
+                						'forgotPasswordOldPasswords',
+                						'forgotPasswordChangePassword',                						              						
+                						],					
+                		'roles' 	=> ['?'],						// guest users (not yet authenticated)
+                	],
                 ],
             ],
             'verbs' => [
@@ -53,8 +81,14 @@ class UserController extends Controller
                     'logout' 				=> ['post'],
                 	'signUp' 				=> ['get', 'put', 'post'],
                 	'signUpVerification' 	=> ['get', 'post'],
-                	'usernameValidation'	=> ['get', 'post'],
+                	'userIdentify'			=> ['get', 'post'],
                 	'forgotPassword'		=> ['get'],
+                	'forgotPasswordSendToEmailAdress'			=> ['get'],
+                	'forgotPasswordSendToRecoveryEmailAdress'	=> ['get'],
+                	'forgotPasswordVerificationKey'				=> ['get', 'post'],
+                	'forgotPasswordSecurityQuestions'			=> ['get', 'post'],
+                	'forgotPasswordOldPasswords'				=> ['get', 'post'],
+                	'forgotPasswordChangePassword'				=> ['get', 'put', 'post'],
                 ],
             ],
         ];
@@ -97,12 +131,12 @@ class UserController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest)
-        {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
+    	if (!Yii::$app->user->isGuest)			// if user is logged in
+    	{
+    		return $this->redirect(['/']);			//redirect to home page (user can't reach login until he/she log out)
+    	}
+    	
+    	$model = new LoginForm();
         
         if ($model->load(Yii::$app->request->post()) && $model->validate())		// if post request is arrived and input data are correct
         {
@@ -110,9 +144,11 @@ class UserController extends Controller
         	{
         		Yii::$app->getSession()
         			->setFlash('username', Yii::$app->request->post()['LoginForm']['username']);	// set username in session variable
-        		if ($model->updateVerificationKeyInDataBase() && $model->sendEmail())				// if update verification key in database was successful and email was sent successfuly
-        		{
-        			$this->redirect(['/user/loginVerification']);										// redirect to verification page
+        		$user = $model->getUser();															// get user by entered username
+        		if ($model->updateVerificationKeyInDataBase() && LoginVerificationSendEmail::sendEmail($user->e_mail, ['userName' 			=> $user->user_name,
+	    																												'verificationKey'	=> $user->verification_key]))
+        		{																					// if update verification key in database was successful and email was sent successfuly
+        			$this->redirect(['/user/login/loginVerification']);										// redirect to verification page
         		}
         	}
         	else 																	// else (two step verification is not active)
@@ -132,21 +168,22 @@ class UserController extends Controller
     
     public function actionLoginVerification()				// verification key at login when two step verification is active
     {
-    	if (!Yii::$app->user->isGuest)						// if the user is logged in then he can't reached the verification page
+    	
+    	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
-    	 
+    	
     	$model = new LoginVerificationForm();
     	 
     	if ($model->load(Yii::$app->request->post()) && $model->verification())		// if post request is arrived and verification key is correct
     	{
     		$model = new LoginForm();
-    		$username = Yii::$app->getSession()->getFlash('username');				// get username from session variable
-    		if ($model->loginWithTwoStepVerification($username))					// if login was successfull
+    		$username = Yii::$app->getSession()->getFlash('username');					// get username from session variable
+    		if ($model->loginWithTwoStepVerification($username))						// if login was successfull
     		{
-    			Yii::$app->getSession()->removeFlash('username');						// remove username variable from session
-    			return $this->redirect(['/']);											// redirect to homepage
+    			Yii::$app->getSession()->removeFlash('username');							// remove username variable from session
+    			return $this->redirect(['/']);												// redirect to homepage
     		}
     	}
     	 
@@ -177,9 +214,9 @@ class UserController extends Controller
     
     public function actionSignUp()
     {
-    	if (!Yii::$app->user->isGuest)						// if the user is logged in then can't sign up
+    	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
     	$model = new SignUpForm();
@@ -189,7 +226,7 @@ class UserController extends Controller
     		$model->profilePicture = UploadedFile::getInstance($model, 'profilePicture');
     		if ($model->signUp())											// when insert datas to database was successful
     		{
-    			return $this->redirect(['/user/signUpVerification']);			// redirect to verification page
+    			return $this->redirect(['/user/signUp/signUpVerification']);			// redirect to verification page
     		}
     	}
     	
@@ -201,9 +238,9 @@ class UserController extends Controller
     
     public function actionSignUpVerification()
     {
-    	if (!Yii::$app->user->isGuest)						// if the user is logged in then he can't reached the verification page
+    	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
     	$model = new SignUpVerificationForm();
@@ -226,7 +263,7 @@ class UserController extends Controller
     {
     	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
     	$model = new UserIdentifyForm();
@@ -244,12 +281,12 @@ class UserController extends Controller
     
     public function actionForgotPassword()
     {
-    	if (!Yii::$app->user->isGuest)						// if the user is logged in then he can't reached forgot password page
+    	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
-    	}									// open session
+    		return $this->redirect(['/']);
+    	}
     	
-    	if (SessionManager::checkSessionArray(['username', 'email']))		// if exists identified username or email
+    	if (SessionManager::checkSessionArray(['username', 'email']))	// if exists identified username or email
     	{
     		return $this->render('forgotPassword', []);						// render a page where the user can choose password remembering option
     	}
@@ -264,12 +301,12 @@ class UserController extends Controller
     {
     	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
-    	if (!SessionManager::checkSessionArray(['username', 'email']))		// if doesn't exists identified username or email
+    	if (!SessionManager::checkSessionArray(['username', 'email']))	// if doesn't exists identified username or email
     	{
-    		return $this->redirect(['/user/userIdentify']);		// redirect to user identify page
+    		return $this->redirect(['/user/userIdentify']);					// redirect to user identify page
     	}
     	
     	$user = IdentifyUser::getUserFromSessionByUsernameOrEmail();
@@ -286,12 +323,12 @@ class UserController extends Controller
     {
     	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
-    	if (!SessionManager::checkSessionArray(['username', 'email']))		// if doesn't exists identified username or email
+    	if (!SessionManager::checkSessionArray(['username', 'email']))	// if doesn't exists identified username or email
     	{
-    		return $this->redirect(['/user/userIdentify']);				// redirect to user identify page
+    		return $this->redirect(['/user/userIdentify']);					// redirect to user identify page
     	}
     	
     	$user = IdentifyUser::getUserFromSessionByUsernameOrEmail();
@@ -307,7 +344,7 @@ class UserController extends Controller
     	else 													// else (if user has not recovery e-mail)
     	{
     		SessionManager::setSession('errorMessage', 'This account does not contain recovery e-mail adress!');	// set errorMessage
-    		return $this->redirect(['/user/forgotPassword']);													// and redirect to forgotPassword page to choose another remembering password option
+    		return $this->redirect(['/user/forgotPassword']);														// and redirect to forgotPassword page to choose another remembering password option
     	}
     }
     
@@ -316,19 +353,19 @@ class UserController extends Controller
     {
     	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
     	if (!SessionManager::checkSessionArray(['username', 'email']))	// if doesn't exists identified username or email
     	{
-    		return $this->redirect(['/user/userIdentify']);				// redirect to user identify page
+    		return $this->redirect(['/user/userIdentify']);					// redirect to user identify page
     	}
     	
     	$model = new ForgotPasswordVerificationKeyForm();
     	
     	if ($model->load(Yii::$app->request->post()) && $model->validate())		// if entered key was correct
     	{
-    		SessionManager::setSession('changePasswordPermission', true);					// set permission to change password
+    		SessionManager::setSession('changePasswordPermission', true);			// set permission to change password
     		return $this->redirect(['/user/forgotPassword/changePassword']);		// redirect to change password page
     	}    	
     	
@@ -342,20 +379,20 @@ class UserController extends Controller
     {
     	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
     	if (!SessionManager::checkSessionArray(['username', 'email']))	// if doesn't exists identified username or email
     	{
-    		return $this->redirect(['/user/userIdentify']);				// redirect to user identify page
+    		return $this->redirect(['/user/userIdentify']);					// redirect to user identify page
     	}
     	
     	$user = IdentifyUser::getUserFromSessionByUsernameOrEmail();
     	
-	    if (count(UsersSequrityQuestions::getUserSecurityAnswersByUserId($user->user_id)) === 0)	// if user has no security questions
+	    if (count(UsersSequrityQuestions::findByUserId($user->user_id)) === 0)	// if user has no security questions
 	    {
 			SessionManager::setSession('errorMessage', 'This account does not contain security questions!');	// set error message
-			return $this->redirect(['/user/forgotPassword']);												// and redirect to forgotPassword page to choose another remembering password option
+			return $this->redirect(['/user/forgotPassword']);													// and redirect to forgotPassword page to choose another remembering password option
 	    }
     	
     	$model = new ForgotPasswordSecurityQuestionsForm();
@@ -363,7 +400,7 @@ class UserController extends Controller
     	
     	if ($model->load(Yii::$app->request->post()) && $model->validate())	// if answers was correct
     	{
-    		SessionManager::setSession('changePasswordPermission', true);				// set permission to change password
+    		SessionManager::setSession('changePasswordPermission', true);		// set permission to change password
     		return $this->redirect(['/user/forgotPassword/changePassword']);	// redirect to change password page
     	}
     	 
@@ -378,27 +415,27 @@ class UserController extends Controller
     {
     	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
-    	if (!SessionManager::checkSessionArray(['username', 'email']))		// if doesn't exists identified username or email
+    	if (!SessionManager::checkSessionArray(['username', 'email']))	// if doesn't exists identified username or email
     	{
-    		return $this->redirect(['/user/userIdentify']);				// redirect to user identify page
+    		return $this->redirect(['/user/userIdentify']);					// redirect to user identify page
     	}
     	
     	$user = IdentifyUser::getUserFromSessionByUsernameOrEmail();
     	
     	if (count(OldPasswords::findByUserId($user->user_id)) === 0)	// if user has no old passwords
 	    {
-	    	SessionManager::setSession('errorMessage', 'Never changed password with this account!');		// set error message	
-	    	return $this->redirect(['/user/forgotPassword']);										// and redirect to forgotPassword page to choose another remembering password option
+	    	SessionManager::setSession('errorMessage', 'Never changed password with this account!');	// set error message	
+	    	return $this->redirect(['/user/forgotPassword']);											// and redirect to forgotPassword page to choose another remembering password option
 	    }
     	
     	$model = new ForgotPasswordOldPasswordsForm();
     	
     	if ($model->load(Yii::$app->request->post()) && $model->validate())		// if entered old password was correct
     	{
-    		SessionManager::setSession('changePasswordPermission', true);					// set permission to change password
+    		SessionManager::setSession('changePasswordPermission', true);			// set permission to change password
     		return $this->redirect(['/user/forgotPassword/changePassword']);		// redirect to change password form
     	}
     
@@ -412,20 +449,20 @@ class UserController extends Controller
     {
     	if (!Yii::$app->user->isGuest)
     	{
-    		return $this->goHome();
+    		return $this->redirect(['/']);
     	}
     	
     	if (!SessionManager::checkSessionArray(['username', 'email']))		// if doesn't exists identified username or email
     	{
-    		return $this->redirect(['/user/userIdentify']);				// redirect to user identify page
+    		return $this->redirect(['/user/userIdentify']);						// redirect to user identify page
     	}
     	
     	$model = new ChangePasswordForm();
     	
     	if ($model->load(Yii::$app->request->post()) && $model->changePassword())	// if entered old password save and update Users table (new password) were successfully
     	{
-    		SessionManager::deleteSessionArray(['username', 'email', 'changePasswordPermission']);		// delete session variables
-    		return $this->redirect(['/user/login']);									// redirect to login page
+    		SessionManager::deleteSessionArray(['username', 'email', 'changePasswordPermission']);	// delete session variables
+    		return $this->redirect(['/user/login']);												// redirect to login page
     	}
     	
     	return $this->render('changePassword', [
@@ -434,4 +471,3 @@ class UserController extends Controller
     }
 
 }
-

@@ -76,6 +76,13 @@ class UsersSequrityQuestions extends \yii\db\ActiveRecord
 						->all();
     }
     
+    public static function findByUserId($id)
+    {
+    	return self::find()									// get user's security answers by user id
+    				->where(['user_id' => $id])
+    				->all();
+    }
+    
     public static function getUserSecurityQuestionsByUserId($id)
     {  	
     	$query = new Query();
@@ -87,10 +94,4 @@ class UsersSequrityQuestions extends \yii\db\ActiveRecord
     	return $query->all();
     }
     
-    public static function getUserSecurityAnswersByUserId($id)
-    {    	
-    	return self::find()									// get user's security answers by user id
-    					->where(['user_id' => $id])
-    					->all();
-    }
 }

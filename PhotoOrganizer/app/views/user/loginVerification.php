@@ -11,7 +11,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-login-verification">
     <h1><?= Html::encode($this->title) ?></h1>
 	
-	<p>We sent you an email with your verification key.</p>
+	<p>We sent you an email with your verification key. If you enter a wrong verification key or reload page 
+	you have to login again. Please do not reload page.</p>
     <p>Please fill out the following field to verification:</p>
 
     <?php $form = ActiveForm::begin([

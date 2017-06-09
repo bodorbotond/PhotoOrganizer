@@ -1,9 +1,9 @@
 <?php
 
 /*
- static class for send email to users who forgot her/his passwords
+this class provide send e-mail functionality to users whom two step verification is active
 
- email is sended by call sendEmail() method
+email is sended by call sendEmail() method
  		- attributes:
 			- $eMail (string): target e-mail adress
 			- $messageParams (array<string>): $messageParams['userName'] 		=> username,
@@ -16,33 +16,35 @@ use Yii;
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-class ForgotPasswordSendEmail
+
+class LoginVerificationSendEmail
 {
-	
-	public static function sendEMail($eMail, $messageParams)
+
+	public static function sendEmail($eMail, $messageParams)		// send email with login verification key
 	{
 		$message = self::buildMessage($messageParams);
-		
+		 
 		return Yii::$app->mailer
 				->compose('layouts\html', ['content' => $message])
 				->setTo($eMail)
 				->setFrom(Yii::$app->params['adminEmail'])
-				->setSubject('Password Remembering on Photo Organizer Website')
+				->setSubject('Login to Photo Organizer Website')
 				->setHtmlBody($message)
 				->send();
 	}
 	
-	private static function buildMessage($messageParams)
+	
+	private static function buildMessage($messageParams)			// build email HTML content
 	{
 		return '<h1>Hi ' . $messageParams['userName'] .',</h1>
 				<div>
 					<p>
-						It looks like forgot your password on <b>Photo Organizer</b> website. <br>
-						Please confirm your change password intention. <br>
-						Your verification key: ' .
+						You try to login for <b>Photo Organizer</b> website. <br>
+						Please confirm your login intention. <br>
+						Your activation key: <br>' .
 							$messageParams['verificationKey'] .
 							'</p>' .
-							Html::a('Verification', Url::home('http') . 'user/forgotPassword/verificationKey') .
+							Html::a('Confirm login', Url::home('http') . 'user/login/loginVerification') .
 							'<p>
 						<b>Photo Organizer Team</b>
 					</p>

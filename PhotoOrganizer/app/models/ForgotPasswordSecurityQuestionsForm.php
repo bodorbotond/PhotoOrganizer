@@ -62,6 +62,6 @@ class ForgotPasswordSecurityQuestionsForm extends Model
 	public function getUsersSecurityAnswers()							// return user's security answers from UsersSecurityQuestions table
 	{
 		$user = IdentifyUser::getUserFromSessionByUsernameOrEmail();					// return user by username or email (from session)
-		return UsersSequrityQuestions::getUserSecurityAnswersByUserId($user->user_id);	// return user's security answer by user id
+		return UsersSequrityQuestions::findByUserId($user->user_id);	// return user's security answer by user id
 	}
 }
