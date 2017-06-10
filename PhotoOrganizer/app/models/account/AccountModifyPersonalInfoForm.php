@@ -114,17 +114,14 @@ class AccountModifyPersonalInfoForm extends Model
 			$user->gender			= $this->gender;
 			if (!empty($this->profilePicture->baseName))					// if user want to modify optional profile picture then save to the server
 			{
-				$path = 'uploads/' . $this->userName;						// directory path into the server where the signed up user save the profile picure
+				$path = 'uploads/' . $user->user_id;						// directory path in the server where the user save the photos
 				if (!file_exists($path))									// if user doesn't have directory for photos on server 
 				{
 					FileHelper::createDirectory($path, 0755, false);			
 				}
 				else 
 				{
-					if (count(glob('$path/*')) !== 0)								//
-					{
-						unlink($user->profile_picture_path);						// delete old profile picture
-					}
+					unlink($user->profile_picture_path);						// delete old profile picture
 				}
 				$this->profilePicture->saveAs($path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension);
 				$user->profile_picture_path = $path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension;
