@@ -133,12 +133,18 @@ class SignUpForm extends Model
 			$user->password 		= crypt($this->password, '_J9..rasm');;
 			$user->gender			= $this->gender;
 			
+			// create user's folder on server where user can save profile picture
+			$path = 'uploads/' . (Users::find()->select('max(user_id)')->scalar() + 1);		// directory path (name = user id)
+			FileHelper::createDirectory($path, 0755, false);								// parameters:	path of the directory to be created
+			//																								the permission to be set for the created directory (0755 = everything for owner, read and execute for others)
+			//																								whether to create parent directories if they do not exist
+			
+			// create folder in user's folder where user can save photos
+			$photosPath = 'uploads/' . (Users::find()->select('max(user_id)')->scalar() + 1) . '/' . (Users::find()->select('max(user_id)')->scalar() + 1);
+			FileHelper::createDirectory($photosPath, 0755, false);
+			
 			if (!empty($this->profilePicture->baseName))					// if user want to choose optional profile picture then save to the server
 			{
-				$path = 'uploads/' . (Users::find()->select('max(user_id)')->scalar() + 1);		// directory path (name = user id) in the server where the signed up user save the photos
-				FileHelper::createDirectory($path, 0755, false);			// parameters:	path of the directory to be created
-																			//				the permission to be set for the created directory (0755 = everything for owner, read and execute for others)
-																			//				whether to create parent directories if they do not exist
 				$this->profilePicture->saveAs($path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension);
 				$user->profile_picture_path = $path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension;
 			}

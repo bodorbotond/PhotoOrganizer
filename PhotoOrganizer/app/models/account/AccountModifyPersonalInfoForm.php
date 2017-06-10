@@ -103,27 +103,26 @@ class AccountModifyPersonalInfoForm extends Model
 	
 	public function modify()
 	{
-		$user = Users::findOne(Yii::$app->user->identity->id);				// get logged in user
+		$user = Users::findOne(Yii::$app->user->identity->id);	// get logged in user
 		
-		if ($this->validate())												// if entered datas are validate then update user's datas
+		if ($this->validate())								// if entered datas are validate then update user's datas
 		{
 			$user->user_name 		= $this->userName;
 			$user->first_name		= $this->firstName;
 			$user->last_name		= $this->lastName;
 			$user->e_mail 			= $this->eMail;
 			$user->gender			= $this->gender;
-			if (!empty($this->profilePicture->baseName))					// if user want to modify optional profile picture then save to the server
+			
+			if (!empty($this->profilePicture->baseName))	// if user want to modify optional profile picture then save on the server
 			{
-				$path = 'uploads/' . $user->user_id;						// directory path in the server where the user save the photos
-				if (!file_exists($path))									// if user doesn't have directory for photos on server 
+	
+				if ($user->profile_picture_path !== null)		// if user has already profile picture
 				{
-					FileHelper::createDirectory($path, 0755, false);			
+					unlink($user->profile_picture_path);			// delete old profile picture
 				}
-				else 
-				{
-					unlink($user->profile_picture_path);						// delete old profile picture
-				}
-				$this->profilePicture->saveAs($path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension);
+				
+				$path = 'uploads/' . $user->user_id;			// directory path in the server where the user save the photos
+				$this->profilePicture->saveAs($path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension);		// save new profile picture
 				$user->profile_picture_path = $path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension;
 			}
 			
