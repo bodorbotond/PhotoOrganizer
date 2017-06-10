@@ -135,7 +135,7 @@ class SignUpForm extends Model
 			
 			if (!empty($this->profilePicture->baseName))					// if user want to choose optional profile picture then save to the server
 			{
-				$path = 'uploads/' . (count(Users::find()->all()) + 1);		// directory path (name = user id) in the server where the signed up user save the photos
+				$path = 'uploads/' . (Users::find()->select('max(user_id)')->scalar() + 1);		// directory path (name = user id) in the server where the signed up user save the photos
 				FileHelper::createDirectory($path, 0755, false);			// parameters:	path of the directory to be created
 																			//				the permission to be set for the created directory (0755 = everything for owner, read and execute for others)
 																			//				whether to create parent directories if they do not exist
