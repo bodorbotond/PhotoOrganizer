@@ -2,6 +2,8 @@
 
 /* @var $this yii\web\View */
 
+$this->registerCssFile('@web/css/abbout.css');
+
 use yii\helpers\Html;
 
 $this->title = 'About Photo Organizer';
@@ -44,6 +46,17 @@ $this->params['breadcrumbs'][] = $this->title;
 		
   			<h4><b>Our Team:</b></h4>
   			<br><br>
+  			
+  			<div id="teamMemberContainer">
+  			
+	  			<div class="teamMember">
+	  				<?= Html::a(Html::img('@web/images/boti_profile_picture.jpg', ['id' => 'TeamProfilePicture']), ['']); ?>
+	  				<p class="text-center "><b>Boti</b></p>
+	  			</div>
+
+	  			<br id="ClearBoth">
+  			
+  			</div>
   			
 		</div>
 		

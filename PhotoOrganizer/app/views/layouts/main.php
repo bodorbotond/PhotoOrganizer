@@ -62,12 +62,12 @@ AppAsset::register($this);
             ],
         	[
         		'label'		=> '<span class="glyphicon glyphicon-picture"></span> Photos',
-        		'url'		=> ['/'],
+        		'url'		=> ['/photos/index'],
         		'visible'	=> !Yii::$app->user->isGuest,	
         	],
         	[
         		'label'		=> '<span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span> Groups',
-        		'url'		=> ['/'],
+        		'url'		=> ['/groups/index'],
         		'visible'	=> !Yii::$app->user->isGuest,
         	],
             Yii::$app->user->isGuest ? (

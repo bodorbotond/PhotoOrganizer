@@ -9,8 +9,9 @@ return Array(
     		
 		'/' 			=> 'site/index',
     		
-    	"site/about" 	=> "site/about",
-		"site/contact" 	=> "site/contact",
+    	"site/about" 			=> "site/about",
+    	"site/about/team/boti"	=> "site/team",
+		"site/contact" 			=> "site/contact",
     		
     	'user/login'						=> 'user/login',
     	'user/login/loginVerification'		=> 'user/login-verification',
@@ -37,6 +38,8 @@ return Array(
     	'account/security/securityQuestions/add'		=> 'account/add-security-questions',
     	'account/security/securityQuestions/modify'		=> 'account/modify-security-questions',
     	'account/security/securityQuestions/delete'		=> 'account/delete-security-questions',
+    		
+    	'photo/index'	=> 'photo/index',
 		
 
     ),
