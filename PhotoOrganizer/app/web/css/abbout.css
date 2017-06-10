@@ -1,0 +1,36 @@
+@CHARSET "ISO-8859-1";
+
+.centered 
+{ 
+	float: none;
+    display: block;
+    margin: 0 auto;
+}
+
+.well b
+{
+	color: #B8860B;
+}
+
+.teamMember
+{
+	float:left;
+	width: 155px;
+	margin: 10px 10px 10px 10px;
+}
+
+.teamMember a img
+{
+	height: 90%;
+	width: 100%;
+}
+
+#ClearBoth
+{
+	clear: both;
+}
+
+h1
+{
+	color: #B8860B;
+}
