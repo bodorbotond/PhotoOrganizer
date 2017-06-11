@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 
-$this->registerCssFile('@web/css/abbout.css');
+$this->registerCssFile('@web/css/about.css');
 
 use yii\helpers\Html;
 

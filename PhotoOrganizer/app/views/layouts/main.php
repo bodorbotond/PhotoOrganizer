@@ -61,7 +61,7 @@ AppAsset::register($this);
             		
             ],
         	[
-        		'label'		=> '<span class="glyphicon glyphicon-picture"></span> Photos',
+        		'label'		=> '<span class="glyphicon glyphicon-picture"></span> My Photos',
         		'url'		=> ['/photos/index'],
         		'visible'	=> !Yii::$app->user->isGuest,	
         	],

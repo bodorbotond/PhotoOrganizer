@@ -9,8 +9,6 @@ use yii\bootstrap\ActiveForm;
 $this->title = 'Account Info';
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerCssFile('@web/css/account.css');
-
 // profle picture path(two way: - logged in user has choosen optionally own profile picture
 // 							    - logged in user has default profile picture from server
 
