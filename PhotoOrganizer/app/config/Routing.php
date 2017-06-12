@@ -44,7 +44,7 @@ return Array(
     	'photos/show/size'			=> 'photos/show-by-size',
     	'photos/show/visibility'	=> 'photos/show-by-visibility',
     	'photos/show/uploadDate'	=> 'photos/show-by-upload-date',
-    	'photos/select'				=> 'photos/select'
+    	'photos/select/<a:\w+>'		=> 'photos/select',
 		
 
     ),

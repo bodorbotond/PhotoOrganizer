@@ -1,8 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Collapse;
 use yii\bootstrap\ActiveForm;
+use yii\bootstrap\Alert;
 use yii\widgets\ListView;
 use yii\bootstrap\Dropdown;
 
@@ -13,7 +15,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-my-photos">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
+	
+	<?= Alert::widget(['options' => ['id' => 'SelectErrorMessage', 'class' => 'alert-danger'], 'body' => 'There is no selected photo!']); ?>
+    <div id="SelectErrorMessage" class="danger"></div>
+    
     <br><br>
 		
 	<?php if(count($userPhotos) === 0) : ?>									<!-- if user has not any photos,
@@ -71,12 +76,12 @@ $this->params['breadcrumbs'][] = $this->title;
 			        echo Dropdown::widget([
 			            'items' => [
 			                [
-			                	'label' 	=> '<div id="SelectButton">Select</div>',
+			                	'label' 	=> '<div id="SelectButton" class="dropDownButton">Select</div>',
 			                	'encode' 	=> false,
 			                	'options' 	=> ['onclick' => 'changeSelectVisibility()']
 			        		],
 			                [
-			                	'label' 	=> '<div id="SelectAllButton">Select All</div>',
+			                	'label' 	=> '<div id="SelectAllButton" class="dropDownButton">Select All</div>',
 			                	'encode' 	=> false,
 			                	'options' 	=> ['onclick' => 'changeAllSelectVisibility()']
 			        		],
@@ -99,7 +104,27 @@ $this->params['breadcrumbs'][] = $this->title;
 			    ?>
 			</div>
 			
-			<div class="btn btn-default" onclick="submitSelectButton()">Delete</div>
+			<div class="dropdown inline">
+			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Set Visibility To <b class="caret"></b></a>
+			    <?php
+			        echo Dropdown::widget([
+			            'items' => [
+			                [
+			                	'label' 	=> '<div id="PrivateButton" class="dropDownButton">Private</div>',
+			                	'encode' 	=> false,
+			                	'options' 	=> ['onclick' => 'changePhotosVisibilityToPrivate(\'' . Url::home('http') . '\')']
+			        		],
+			                [
+			                	'label' 	=> '<div id="PublicButton" class="dropDownButton">Public</div>',
+			                	'encode' 	=> false,
+			                	'options' 	=> ['onclick' => 'changePhotosVisibilityToPublic(\'' . Url::home('http') . '\')']
+			        		],
+			            ],
+			        ]);
+			    ?>
+			</div>
+			
+			<div class="btn btn-default" onclick="deletePhotos(' <?= Url::home('http'); ?>')">Delete</div>
 			
 		</div>
 		
@@ -110,7 +135,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<div class="well">
 				
 				<?php
-				echo Html::beginForm(['/photos/select'], 'post', ['id' => 'SelectForm']);		// select form
+				echo Html::beginForm([''], 'post', ['id' => 'SelectForm']);		// select form
 				
 				foreach ($userPhotos as $photo):												// loop in user's photos
 				?>

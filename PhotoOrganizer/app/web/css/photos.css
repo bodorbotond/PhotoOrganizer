@@ -1,5 +1,9 @@
 @CHARSET "ISO-8859-1";
 
+
+/* upload form */
+
+
 #UploadPhotoButton
 {
     display: none;
@@ -13,36 +17,33 @@
     cursor: pointer;
 }
 
-#PhotosMenu
+
+/* error message when there are no selected photos */
+
+
+#SelectErrorMessage
 {
-	position: relative;
+	width: 50%;
+	display: none;
 }
+
+
+/* photos menu when user's have uploaded photos */
 
 .inline
 {
 	display: inline;
 }
 
-#SelectButton
+.dropDownButton
 {
 	font-size:larger;
 	color: #181818;
 	cursor: pointer;
 }
 
-#SelectAllButton
-{
-	font-size:larger;
-	color: #181818;
-	cursor: pointer;
-}
+/* user's photos */
 
-#DeleteButton
-{
-	position: absolute;
-	left: 172px;
-	top: 0px;
-}
 
 .clearBoth
 {
@@ -98,6 +99,10 @@
   	padding: 10px;
   	display: none;
 }
+
+
+/* photos show by criteria */
+
 
 .site-show-by h3, .black
 {

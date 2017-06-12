@@ -176,28 +176,47 @@ class PhotosController extends Controller
 	// working with selected pictures
 	
 	
-	public function actionSelect()
+	public function actionSelect($a)
 	{
+
 		if (Yii::$app->user->isGuest)
 		{
 			return $this->redirect(['/user/login']);
 		}
 		
-		if (count(Yii::$app->request->post()) === 0)		// if there are no selected photo
+		if (count(Yii::$app->request->post()) !== 0)		// if there are selected photo with post request
 		{
-			return $this->redirect(['/photos/index']);			// redirect to index page
-		}
-		
-		if(Yii::$app->request->post())						// if post request arrived
-		{
-			foreach (Photos::find()->all() as $photo)
+			foreach (Photos::findByUserId(Yii::$app->user->identity->user_id) as $photo)		// get all logged in user's photos
 			{
 				// in check box name is not allowed . character => 
 				// that is why . character must replace with _ character
 				if (Yii::$app->request->post(str_replace('.', '_', $photo->photo_path)))
 				{
-					$photo->delete();				// delete from database
-					unlink($photo->photo_path);		// delete from server	
+					
+					if ($a === 'd')				// if action == delete
+					{
+						$photo->delete();				// delete from database
+						unlink($photo->photo_path);		// delete from server
+					}
+
+					if ($a === 'pr')			// if action == set photos visibility to private
+					{
+						if ($photo->photo_visibility !== 'private')		// if photo's visibility is not equal yet private
+						{
+							$photo->photo_visibility = 'private';			// set to private
+							$photo->update();
+						}
+					}
+					
+					if ($a === 'pb')			// if action == set photos visibility to public
+					{
+						if ($photo->photo_visibility !== 'public')		// if photo's visibility is not equal yet public
+						{
+							$photo->photo_visibility = 'public';			// set to public
+							$photo->update();
+						}
+					}
+					
 				}
 			}
 		}
