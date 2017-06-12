@@ -2,8 +2,8 @@
 
 #ProfilePictureInMenu
 {
-	width: 25px;
-	height: 25px;
+	width: 20px;
+	height: 20px;
 }
 
 #DropdownAccountInfo
@@ -16,4 +16,9 @@
 	width: 80px;
 	height: 80px;
 	float: left;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	color: #B8860B;
 }

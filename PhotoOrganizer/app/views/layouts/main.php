@@ -46,6 +46,18 @@ AppAsset::register($this);
         ],
     	'encodeLabels' 	=> false,
         'items' 		=> [
+        	/*[
+        		'label'		=> '<form class="navbar-form">
+							      <div class="input-group">
+							        <input type="text" class="form-control" placeholder="Search">
+							        <div class="input-group-btn">
+							          <button class="btn btn-default" type="submit">
+							            <i class="glyphicon glyphicon-search"></i>
+							          </button>
+							        </div>
+							      </div>
+							    </form>'
+        	],*/
             [
             	'label' 	=> '<span class="glyphicon glyphicon-home"></span> Home',
             	'url'	 	=> ['/']            		
@@ -64,6 +76,11 @@ AppAsset::register($this);
         		'label'		=> '<span class="glyphicon glyphicon-picture"></span> My Photos',
         		'url'		=> ['/photos/index'],
         		'visible'	=> !Yii::$app->user->isGuest,	
+        	],
+        	[
+        		'label'		=> '<span class="glyphicon glyphicon-picture"></span> <span class="glyphicon glyphicon-picture"></span> My Albums',
+        		'url'		=> ['/albums/index'],
+        		'visible'	=> !Yii::$app->user->isGuest,
         	],
         	[
         		'label'		=> '<span class="glyphicon glyphicon-user"></span><span class="glyphicon glyphicon-user"></span> Groups',

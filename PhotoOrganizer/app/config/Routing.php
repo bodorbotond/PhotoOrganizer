@@ -39,7 +39,12 @@ return Array(
     	'account/security/securityQuestions/modify'		=> 'account/modify-security-questions',
     	'account/security/securityQuestions/delete'		=> 'account/delete-security-questions',
     		
-    	'photo/index'	=> 'photo/index',
+    	'photos/index'				=> 'photos/index',
+    	'photos/show/extension'		=> 'photos/show-by-extension',
+    	'photos/show/size'			=> 'photos/show-by-size',
+    	'photos/show/visibility'	=> 'photos/show-by-visibility',
+    	'photos/show/uploadDate'	=> 'photos/show-by-upload-date',
+    	'photos/select'				=> 'photos/select'
 		
 
     ),

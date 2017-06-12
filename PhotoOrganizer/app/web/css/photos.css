@@ -1,0 +1,105 @@
+@CHARSET "ISO-8859-1";
+
+#UploadPhotoButton
+{
+    display: none;
+}
+
+#LabelForUploadPhotoButton
+{
+	font-size: larger;
+    display: inline-block;
+    padding: 12px 24px;
+    cursor: pointer;
+}
+
+#PhotosMenu
+{
+	position: relative;
+}
+
+.inline
+{
+	display: inline;
+}
+
+#SelectButton
+{
+	font-size:larger;
+	color: #181818;
+	cursor: pointer;
+}
+
+#SelectAllButton
+{
+	font-size:larger;
+	color: #181818;
+	cursor: pointer;
+}
+
+#DeleteButton
+{
+	position: absolute;
+	left: 172px;
+	top: 0px;
+}
+
+.clearBoth
+{
+	clear:both;
+}
+
+.userPhoto
+{
+    position: relative;
+    width: 32%;
+    float: left;
+	margin: 2px;
+}
+    
+.userPhoto img
+{
+	width: 100%;
+  	height: auto;
+}
+.userPhoto div
+{
+	opacity: 0;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	height: auto;
+	padding: 2px 5px 2px 5px;
+	color: #ffffff;
+	background: #B8860B;
+	text-align: left;
+	-webkit-transition: opacity 500ms;
+	-moz-transition: opacity 500ms;
+	-o-transition: opacity 500ms;
+	transition: opacity 500ms;        
+}
+
+.userPhoto:hover div
+{
+	opacity: 0.7;
+}
+
+.imageSelectCheckBox
+{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	/* Double-sized Checkboxes */
+  	-ms-transform: scale(2); /* IE */
+  	-moz-transform: scale(2); /* FF */
+  	-webkit-transform: scale(2); /* Safari and Chrome */
+  	-o-transform: scale(2); /* Opera */
+  	padding: 10px;
+  	display: none;
+}
+
+.site-show-by h3, .black
+{
+	color: #181818;
+}

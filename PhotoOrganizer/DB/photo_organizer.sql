@@ -24,13 +24,17 @@ create table if not exists `users`(
   
 create table if not exists `photos`(
   `photo_id` tinyint(5) unsigned not null auto_increment,
-  `user_id` tinyint(5) unsigned not null,
-  `photo_name` varchar(50) not null,
-  `photo_type` varchar(25) not null,
+  `user_id` tinyint(5) unsigned not null,  
   `photo_path` varchar(200) not null,
-  `photo_size` varchar(25) not null,
+  `photo_extension` varchar(10) not null,
+  `photo_size` int(10) not null,
   `photo_height` int(8) not null,
   `photo_width` int(8) not null,
+  `photo_title` varchar(25),
+  `photo_tag` varchar(25),
+  `photo_description` varchar(200),
+  `photo_visibility` varchar(10),
+  `photo_upload_date` varchar(10) not null,
   primary key(`photo_id`),
   constraint `UserPhotoId` foreign key (`user_id`) references `users` (`user_id`)
 );

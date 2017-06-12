@@ -25,7 +25,7 @@ class AppAsset extends AssetBundle
     	'css/photos.css',
     ];
     public $js = [
-    	'js/account.js',	
+    	'js/photo.js',	
     ];
     public $depends = [
         'yii\web\YiiAsset',

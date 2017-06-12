@@ -7,6 +7,11 @@
     margin: 0 auto;
 }
 
+.site-about h4
+{
+	color: #181818;
+}
+
 .well b
 {
 	color: #B8860B;
@@ -28,9 +33,4 @@
 #ClearBoth
 {
 	clear: both;
-}
-
-h1
-{
-	color: #B8860B;
 }
