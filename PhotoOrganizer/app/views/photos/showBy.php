@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     
     <?php if($showBy === 'Extension'): ?>				<!-- if show by photo's extension -->
 
-		<h3>Photos of jpg extension:</h3>
+		<h3 class="black">Photos of jpg extension:</h3>
 			<h4> <?= count($jpgPhotos); ?> </h4>
 		
 		<?php foreach($jpgPhotos as $photo): ?>					<!-- jpg photos -->
@@ -32,8 +32,9 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 		<?php endforeach; ?>
 		
+		<br class="clearBoth"></br>
 		
-		<h3>Photos of png extension:</h3>
+		<h3 class="black">Photos of png extension:</h3>
 			<h4> <?= count($pngPhotos); ?> </h4>
 		
 		<?php foreach($pngPhotos as $photo): ?>					<!-- png photos -->
@@ -46,6 +47,8 @@ $this->params['breadcrumbs'][] = $this->title;
     		</div>
 		
 		<?php endforeach; ?>
+		
+		<br class="clearBoth"></br>
 		
 	<?php elseif($showBy === 'Size'): ?>						<!-- if show by photo's size -->
 	
@@ -61,10 +64,12 @@ $this->params['breadcrumbs'][] = $this->title;
 			</div>
 		
 		<?php endforeach; ?>
+		
+		<br class="clearBoth"></br>
 	
 	<?php elseif($showBy === 'Visibility'): ?>				<!-- if show by photo's visibility -->
 	
-		<h3>Private photos:</h3>
+		<h3 class="black">Private photos:</h3>
 			<h4> <?= count($privatePhotos); ?> </h4>
 		
 		<?php foreach($privatePhotos as $photo): ?>				<!-- private photos -->
@@ -78,7 +83,9 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 		<?php endforeach; ?>
 		
-		<h3>Public photos:</h3>
+		<br class="clearBoth"></br>
+
+		<h3 class="black">Public photos:</h3>
 			<h4> <?= count($publicPhotos); ?> </h4>
 		
 		<?php foreach($publicPhotos as $photo): ?>					<!-- public photos -->
@@ -92,9 +99,11 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 		<?php endforeach; ?>
 		
+		<br class="clearBoth"></br>
+		
 	<?php else: ?>
 		
-		<h3>Photos made in 2017:</h3>
+		<h3 class="black">Photos made in 2017:</h3>
 			<h4> <?= count($photos2017); ?> </h4>
 		
 		<?php foreach ($photos2017 as $photo): ?>					<!-- public photos -->
@@ -107,6 +116,8 @@ $this->params['breadcrumbs'][] = $this->title;
     		</div>
 		
 		<?php endforeach; ?>
+		
+		<br class="clearBoth"></br>
 
 	<?php endif; ?>	
     
