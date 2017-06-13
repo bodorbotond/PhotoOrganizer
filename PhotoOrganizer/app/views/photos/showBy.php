@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 $this->title = 'Show By ' . $showBy;
-$this->params['breadcrumbs'][] = ['label' => 'My Photos', 'url' => ['/photos/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Photos', 'url' => ['/photos/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 

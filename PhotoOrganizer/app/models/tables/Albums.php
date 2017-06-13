@@ -62,7 +62,19 @@ class Albums extends \yii\db\ActiveRecord
         return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
     }
     
-    public static function findByUserIdAndAlbumName($id, $albumName)
+    public static function findByAlbumId($id)
+    {
+    	return self::findOne(['album_id' => $id]);
+    }
+    
+    public static function findByUserId($id)		// for validate album name (CreateAlbumForm.php) at create album
+    {
+    	return self::find()
+    	->where(['user_id' => $id])
+    	->all();
+    }
+    
+    public static function findByUserIdAndAlbumName($id, $albumName)		// for validate album name (CreateAlbumForm.php) at create album
     {
     	return self::find()
     					->where(['user_id' => $id, 'album_name' => $albumName])

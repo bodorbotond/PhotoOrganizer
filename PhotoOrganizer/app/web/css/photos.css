@@ -14,17 +14,6 @@
 	font-size: larger;
     display: inline-block;
     padding: 12px 24px;
-    cursor: pointer;
-}
-
-
-/* error message when there are no selected photos */
-
-
-#SelectErrorMessage
-{
-	width: 50%;
-	display: none;
 }
 
 

@@ -8,16 +8,13 @@ use yii\bootstrap\Alert;
 use yii\widgets\ListView;
 use yii\bootstrap\Dropdown;
 
-$this->title = 'My Photos';
+$this->title = 'Photos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="site-my-photos">
 
     <h1><?= Html::encode($this->title) ?></h1>
-	
-	<?= Alert::widget(['options' => ['id' => 'SelectErrorMessage', 'class' => 'alert-danger'], 'body' => 'There is no selected photo!']); ?>
-    <div id="SelectErrorMessage" class="danger"></div>
     
     <br><br>
 		
@@ -153,19 +150,19 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 		<br><br>
 			
-		<div id="UserPhotos" class="text-center" onclick="checkSelection()">				<!-- user's photos -->
+		<div id="UserPhotos" onclick="checkSelection()">				<!-- user's photos -->
 			
 			<div class="well">
 				
 				<?php
 				echo Html::beginForm([''], 'post', ['id' => 'SelectForm']);		// select form
 				
-				foreach ($userPhotos as $photo):												// loop in user's photos
+				foreach ($userPhotos as $photo):	// loop in user's photos
 				?>
 				
 					<div class="userPhoto">
 					
-						<?= Html::img('@web/' . $photo->photo_path); ?>											<!-- user's photo -->
+						<?= Html::a(Html::img('@web/' . $photo->photo_path), ['']); ?>											<!-- user's photo -->
 						
 						<?= Html::checkbox($photo->photo_path, false, ['class' => 'imageSelectCheckBox']); ?>	<!-- select checkbox (checkbox's name = photo access path on the server,
 																												but checkbox's name is not allowed . character, it is replaced with _ character) -->

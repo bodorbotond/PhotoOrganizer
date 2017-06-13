@@ -73,6 +73,7 @@ create table if not exists `albums`(
   `album_name` varchar(20) not null,
   `album_visibility` varchar(10) not null,
   `album_create_date` varchar(10) not null,
+  `is_empty` boolean not null default 1,
   primary key(`album_id`),
   constraint `AlbumUserId` foreign key (`user_id`) references `users` (`user_id`)
 );
@@ -92,6 +93,7 @@ create table if not exists `groups`(
   `group_name` varchar(20) not null,
   `group_visibility` varchar(10) not null,
   `group_create_date` varchar(10) not null,
+  `is_empty` boolean not null default 1,
   primary key(`group_id`),
   constraint `GroupUserId` foreign key (`user_id`) references `users` (`user_id`)
 );

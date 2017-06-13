@@ -7,10 +7,10 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\db\Query;
-use app\models\groups\CreateGroupForm;
-use app\models\tables\Groups;
+use app\models\albums\CreateAlbumForm;
+use app\models\tables\Albums;
 
-class GroupsController extends Controller
+class AlbumsController extends Controller
 {
 
 	
@@ -38,8 +38,8 @@ class GroupsController extends Controller
 						'class' => VerbFilter::className(),				// HTTP request methods filter for each action
 						// throw an HTTP 405 error when the method is not allowed
 						'actions' => [
-								'index'  => ['get'],
-								'create' => ['get', 'put', 'post'],
+								'index' 	=> ['get'],
+								'create' 	=> ['get', 'put', 'post'],
 						],
 				],
 		];
@@ -67,10 +67,10 @@ class GroupsController extends Controller
 			return $this->redirect(['/user/login']);
 		}
 		
-		$userGroups = Groups::findByUserId(Yii::$app->user->identity->user_id);
+		$userAlbums = Albums::findByUserId(Yii::$app->user->identity->user_id);
 		
 		return $this->render('index', [
-				'userGroups' => $userGroups,
+				'userAlbums' => $userAlbums,
 		]);
 	}
 	
@@ -81,38 +81,38 @@ class GroupsController extends Controller
 		{
 			return $this->redirect(['/user/login']);
 		}
-	
-		$model = new CreateGroupForm();
+		
+		$model = new CreateAlbumForm();
 		
 		if ($model->load(Yii::$app->request->post()) && $model->create())
 		{
-			return $this->redirect(['/groups/index']);
+			return $this->redirect(['/albums/index']);
 		}
-	
+		
 		return $this->render('create', [
 				'model' => $model,
 		]);
 	}
 	
 	
-	public function actionViewGroup($id)
+	public function actionViewAlbum($id)
 	{
 		if (Yii::$app->user->isGuest)
 		{
 			return $this->redirect(['/user/login']);
 		}
-	
-		$group = Groups::findByGroupId($id);
-	
+		
+		$album = Albums::findByAlbumId($id);
+		
 		$query = new Query ();
-		$query->select ('u.user_name, u.profile_picture_path')					// get user's album's names and photos path which are belong to these albums
-			  ->from ('users u, groups_users gu')
-			  ->where ('u.user_id = gu.user_id and gu.group_id = ' . $id);
-		$groupUsers = $query->all();
-	
-		return $this->render('viewGroup', [
-				'group' 		=> $group,
-				'groupUsers' 	=> $groupUsers,
+		$query->select ('p.photo_path')					// get user's album's names and photos path which are belong to these albums
+		 	  ->from ('photos p, albums_photos ap')
+		 	  ->where ('p.photo_id = ap.photo_id and ap.album_id = ' . $id);
+		 $albumPhotos = $query->all();
+		
+		return $this->render('viewAlbum', [
+				'album' 		=> $album,
+				'albumPhotos' 	=> $albumPhotos,
 		]);
 	}
 	

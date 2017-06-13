@@ -80,7 +80,19 @@ class Groups extends \yii\db\ActiveRecord
         return $this->hasMany(GroupsUsers::className(), ['group_id' => 'group_id']);
     }
     
-    public static function findByUserIdAndGroupName($id, $groupName)
+    public static function findByGroupId($id)
+    {
+    	return self::findOne(['group_id' => $id]);
+    }
+    
+    public static function findByUserId($id)
+    {
+    	return self::find()
+    					->where(['user_id' => $id])
+    					->all();
+    }
+    
+    public static function findByUserIdAndGroupName($id, $groupName)		// for validate group name (CreateGroupForm.php) at create group
     {
     	return self::find()
 				    	->where(['user_id' => $id, 'group_name' => $groupName])

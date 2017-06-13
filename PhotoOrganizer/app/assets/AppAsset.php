@@ -22,6 +22,7 @@ class AppAsset extends AssetBundle
     	'css/account.css',
     	'css/layout.css',
     	'css/photos.css',
+    	'css/albums.css',
     ];
     public $js = [
     	'js/photos.js',	

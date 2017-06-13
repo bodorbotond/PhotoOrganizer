@@ -22,14 +22,16 @@ class PhotosController extends Controller
 						'class' => AccessControl::className(),			// action filter
 						'only' => [										// all aplied actions
 								'index', 
-								'showByExtension', 'showBySize', 'showByVisibility', 'showByUploadDate'
+								'showByExtension', 'showBySize', 'showByVisibility', 'showByUploadDate',
+								'select',
 						],
 						'rules' => [									// access rules
 								[
-									'allow' 	=> true,						// allow
-									'actions'	=> [							// these actions
-													'index',
-													'showByExtension', 'showBySize', 'showByVisibility', 'showByUploadDate'
+									'allow' 	=> true,				// allow
+									'actions'	=> [					// these actions
+														'index',
+														'showByExtension', 'showBySize', 'showByVisibility', 'showByUploadDate',
+														'select',
 													],
 									'roles' 	=> ['@'],						// authenticated users
 								],
@@ -41,9 +43,10 @@ class PhotosController extends Controller
 						'actions' => [
 								'index'  			=> ['get', 'put', 'post'],
 								'showByExtension' 	=> ['get'],
-								'showBySize'		 => ['get'],
+								'showBySize'		=> ['get'],
 								'showByVisibility' 	=> ['get'],
 								'showByUploadDate' 	=> ['get'],
+								'select'			=> ['get', 'put', 'post'],
 						],
 				],
 		];
@@ -192,12 +195,6 @@ class PhotosController extends Controller
 				// that is why . character must replace with _ character
 				if (Yii::$app->request->post(str_replace('.', '_', $photo->photo_path)))
 				{
-					
-					if ($a === 'd')				// if action == delete
-					{
-						$photo->delete();				// delete from database
-						unlink($photo->photo_path);		// delete from server
-					}
 
 					if ($a === 'pr')			// if action == set photos visibility to private
 					{
@@ -215,6 +212,17 @@ class PhotosController extends Controller
 							$photo->photo_visibility = 'public';			// set to public
 							$photo->update();
 						}
+					}
+					
+					if ($a === 'd')				// if action == delete
+					{
+						$photo->delete();				// delete from database
+						unlink($photo->photo_path);		// delete from server
+					}
+					
+					if ($a === 'e')				// if action == edit
+					{
+						return $this->redirect(['/account/index']);
 					}
 					
 				}
