@@ -46,6 +46,11 @@ return Array(
     	'photos/show/uploadDate'	=> 'photos/show-by-upload-date',
     	'photos/select/<a:\w+>'		=> 'photos/select',
 		
-
+		'albums/index'	=> 'albums/index',
+    	'albums/create' => 'albums/create',
+    		
+    	'groups/index'	=> 'groups/index',
+    	'groups/create'	=> 'groups/create',
+    		
     ),
 );

@@ -5,6 +5,10 @@ create database if not exists `photo_organizer` default character set utf8;
 
 use `photo_organizer`;
 
+
+-- upload security_questons table
+
+
 create table if not exists `users`(
   `user_id` tinyint(5) unsigned not null auto_increment,
   `user_name` varchar(50) not null unique,
@@ -33,7 +37,7 @@ create table if not exists `photos`(
   `photo_title` varchar(25),
   `photo_tag` varchar(25),
   `photo_description` varchar(200),
-  `photo_visibility` varchar(10),
+  `photo_visibility` varchar(10) not null,
   `photo_upload_date` varchar(10) not null,
   primary key(`photo_id`),
   constraint `UserPhotoId` foreign key (`user_id`) references `users` (`user_id`)
@@ -63,8 +67,56 @@ create table if not exists `old_passwords`(
   constraint `UserIdOldPassword` foreign key (`user_id`) references `users` (`user_id`)
 );
 
+create table if not exists `albums`(
+  `album_id` tinyint(5) unsigned not null auto_increment,
+  `user_id` tinyint(5) unsigned not null,
+  `album_name` varchar(20) not null,
+  `album_visibility` varchar(10) not null,
+  `album_create_date` varchar(10) not null,
+  primary key(`album_id`),
+  constraint `AlbumUserId` foreign key (`user_id`) references `users` (`user_id`)
+);
+
+create table if not exists `albums_photos`(
+  `albums_photos_id` tinyint(5) unsigned not null auto_increment,
+  `album_id` tinyint(5) unsigned not null,
+  `photo_id` tinyint(5) unsigned not null,
+  primary key(`albums_photos_id`),
+  constraint `APAlbumId` foreign key (`album_id`) references `albums` (`album_id`),
+  constraint `APPhotoId` foreign key (`photo_id`) references `photos` (`photo_id`)
+);
+
+create table if not exists `groups`(
+  `group_id` tinyint(5) unsigned not null auto_increment,
+  `user_id` tinyint(5) unsigned not null,
+  `group_name` varchar(20) not null,
+  `group_visibility` varchar(10) not null,
+  `group_create_date` varchar(10) not null,
+  primary key(`group_id`),
+  constraint `GroupUserId` foreign key (`user_id`) references `users` (`user_id`)
+);
+
+create table if not exists `groups_users`(
+  `groups_users_id` tinyint(5) unsigned not null auto_increment,
+  `group_id` tinyint(5) unsigned not null,
+  `user_id` tinyint(5) unsigned not null,
+  primary key(`groups_users_id`),
+  constraint `GUAlbumId` foreign key (`group_id`) references `groups` (`group_id`),
+  constraint `GUPhotoId` foreign key (`user_id`) references `users` (`user_id`)
+);
+
+create table if not exists `groups_photos`(
+  `groups_photos_id` tinyint(5) unsigned not null auto_increment,
+  `group_id` tinyint(5) unsigned not null,
+  `photo_id` tinyint(5) unsigned not null,
+  primary key(`groups_photos_id`),
+  constraint `GPAlbumId` foreign key (`group_id`) references `groups` (`group_id`),
+  constraint `GPPhotoId` foreign key (`photo_id`) references `photos` (`photo_id`)
+);
+
 
 -- upload security_questons table
+
 
 insert into security_questions (question_text) values ('What was the name of your elementaryprimary school?');
 insert into security_questions (question_text) values ('What is your favorite book?');
