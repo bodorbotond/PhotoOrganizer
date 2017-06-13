@@ -2,8 +2,6 @@
 
 /* @var $this yii\web\View */
 
-$this->registerCssFile('@web/css/about.css');
-
 use yii\helpers\Html;
 
 $this->title = 'About Photo Organizer';

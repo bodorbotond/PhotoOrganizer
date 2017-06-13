@@ -89,3 +89,47 @@ a.desc:after {
     padding: 10px 20px;
     margin: 0 0 15px 0;
 }
+
+
+/* about page */
+
+
+.centered 
+{ 
+	float: none;
+    display: block;
+    margin: 0 auto;
+}
+
+.site-about h4
+{
+	color: #181818;
+}
+
+.well b
+{
+	color: #B8860B;
+}
+
+.teamMember
+{
+	float:left;
+	width: 155px;
+	margin: 10px 10px 10px 10px;
+}
+
+.teamMember a img
+{
+	height: 90%;
+	width: 100%;
+}
+
+#ClearBoth
+{
+	clear: both;
+}
+
+h1, h2, h3, h4
+{
+	color: #B8860B;
+}

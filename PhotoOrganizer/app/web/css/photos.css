@@ -35,6 +35,11 @@
 	display: inline;
 }
 
+.hidden
+{
+	display: none;
+}
+
 .dropDownButton
 {
 	font-size:larger;
