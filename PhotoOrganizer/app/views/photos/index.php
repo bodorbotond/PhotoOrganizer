@@ -78,33 +78,54 @@ $this->params['breadcrumbs'][] = $this->title;
 			                [
 			                	'label' 	=> '<div id="SelectButton" class="dropDownButton">Select</div>',
 			                	'encode' 	=> false,
-			                	'options' 	=> ['onclick' => 'changeSelectVisibility()']
+			                	'options' 	=> ['onclick' => 'setCheckBoxesVisible()']
 			        		],
 			                [
 			                	'label' 	=> '<div id="SelectAllButton" class="dropDownButton">Select All</div>',
 			                	'encode' 	=> false,
-			                	'options' 	=> ['onclick' => 'changeAllSelectVisibility()']
+			                	'options' 	=> ['onclick' => 'setAllCheckBoxesVisibleAndChecked()']
 			        		],
+			            	[
+			            		'label' 	=> '<div id="ClearSelectionButton" class="dropDownButton">Clear Selection</div>',
+			            		'encode' 	=> false,
+			            		'options' 	=> ['onclick' => 'clearSelection()']
+			            	],
 			            ],
 			        ]);
 			    ?>			    
 			</div>
 			
-			<div class="dropdown inline">
-			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Organize <b class="caret"></b></a>
+			<div id="AddToButton" class="dropdown inline">
+			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Add To <b class="caret"></b></a>
 			    <?php
 			        echo Dropdown::widget([
 			            'items' => [
-			                ['label' => 'Extension', 'url' => ['/photos/show/extension']],
-			                ['label' => 'Size', 'url' => ['/photos/show/size']],
-			            	['label' => 'Visibility', 'url' => ['/photos/show/visibility']],
-			            	['label' => 'Upload Date', 'url' => ['/photos/show/uploadDate']],
+			                [
+			                	'label' => 'Albums',
+			                	'ecncode' => false,
+			                	'items' => [
+			                					[
+			                						'label' => '<div class="dropDownButton">Sub Album</div>',
+			                						'encode' => false,
+			                					],
+			        						]
+			        		],
+			                [
+			                	'label' => 'Groups',
+			                	'ecncode' => false,
+			                	'items' => [
+			                					[
+			                						'label' => '<div class="dropDownButton">Sub Group</div>',
+			                						'encode' => false,
+			                					],
+			        						]
+			            	],
 			            ],
 			        ]);
 			    ?>
 			</div>
 			
-			<div class="dropdown inline">
+			<div id="SetVisibilityButton" class="dropdown inline">
 			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Set Visibility To <b class="caret"></b></a>
 			    <?php
 			        echo Dropdown::widget([
@@ -112,25 +133,27 @@ $this->params['breadcrumbs'][] = $this->title;
 			                [
 			                	'label' 	=> '<div id="PrivateButton" class="dropDownButton">Private</div>',
 			                	'encode' 	=> false,
-			                	'options' 	=> ['onclick' => 'changePhotosVisibilityToPrivate(\'' . Url::home('http') . '\')']
+			                	'options' 	=> ['onclick' => 'submitForm(\'' . Url::home('http') . '\', \'pr\')']
 			        		],
 			                [
 			                	'label' 	=> '<div id="PublicButton" class="dropDownButton">Public</div>',
 			                	'encode' 	=> false,
-			                	'options' 	=> ['onclick' => 'changePhotosVisibilityToPublic(\'' . Url::home('http') . '\')']
+			                	'options' 	=> ['onclick' => 'submitForm(\'' . Url::home('http') . '\', \'pb\')']
 			        		],
 			            ],
 			        ]);
 			    ?>
 			</div>
 			
-			<div class="btn btn-default" onclick="deletePhotos(' <?= Url::home('http'); ?>')">Delete</div>
+			<div id="EditButton" class="btn btn-default" onclick="submitForm(' <?= Url::home('http'); ?>', 'e')">Edit</div>
+			
+			<div id="DeleteButton" class="btn btn-default" onclick="deletePhotos(' <?= Url::home('http'); ?>')">Delete</div>
 			
 		</div>
 		
 		<br><br>
 			
-		<div class="text-center">				<!-- user's photos -->
+		<div id="UserPhotos" class="text-center" onclick="checkSelection()">				<!-- user's photos -->
 			
 			<div class="well">
 				
@@ -161,6 +184,10 @@ $this->params['breadcrumbs'][] = $this->title;
 				<br class="clearBoth" />
 				
 			</div>
+			
+		</div>
+		
+		<div class="text-center">
 		
 			<br><br>							<!-- uploads more photo form-->
 			
