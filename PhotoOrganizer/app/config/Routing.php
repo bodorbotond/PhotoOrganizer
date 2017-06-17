@@ -7,11 +7,11 @@ return Array(
     'showScriptName' => false,
     'rules' => Array (
     		
-		'/' 			=> 'site/index',
+		'/' => 'site/index',
     		
-    	"site/about" 			=> "site/about",
-    	"site/about/team/boti"	=> "site/team",
-		"site/contact" 			=> "site/contact",
+    	"site/about" 							=> "site/about",
+    	"site/about/employees/profile/<id:\d+>"	=> "site/view-employee-profile",
+		"site/contact" 							=> "site/contact",
     		
     	'user/login'						=> 'user/login',
     	'user/login/loginVerification'		=> 'user/login-verification',

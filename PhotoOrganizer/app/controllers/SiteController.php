@@ -7,9 +7,12 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use app\models\site\ContactForm;
+use app\models\tables\Employees;
 
 class SiteController extends Controller
 {
+	
+	
     /**
      * @inheritdoc
      */
@@ -18,15 +21,15 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' 	=> ['index', 'contact', 'about', 'captcha'],
+                'only' 	=> ['index', 'contact', 'about', 'viewEmployeeProfile'],
                 'rules' => [
                     [
-                        'actions' 	=> ['index', 'contact', 'about'],
+                        'actions' 	=> ['index', 'contact', 'about', 'viewEmployeeProfile'],
                         'allow' 	=> true,
                         'roles' 	=> ['@'],
                     ],
                 	[
-                		'actions' 	=> ['index', 'contact', 'about'],
+                		'actions' 	=> ['index', 'contact', 'about', 'viewEmployeeProfile'],
                 		'allow' 	=> true,
                 		'roles' 	=> ['?'],
                 	],
@@ -35,14 +38,17 @@ class SiteController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                	'index' 	=> ['get'],
-                	'about'  	=> ['get'],
-                	'contact' 	=> ['get', 'post'],
+                	'index' 				=> ['get'],
+                	'about'  				=> ['get'],
+                	'contact' 				=> ['get', 'post'],
+                	'viewEmployeeProfile'	=> ['get'],
                 ],
             ],
         ];
     }
 
+    
+    
     /**
      * @inheritdoc
      */
@@ -59,6 +65,8 @@ class SiteController extends Controller
         ];
     }
 
+    
+    
     /**
      * Displays homepage.
      *
@@ -69,6 +77,8 @@ class SiteController extends Controller
         return $this->render('index', []);
     }
 
+    
+    
     /**
      * Displays contact page.
      *
@@ -88,6 +98,8 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+    
+    
 
     /**
      * Displays about page.
@@ -96,11 +108,19 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
-        return $this->render('about', []);
+    	$employees = Employees::find()->all();
+    	
+        return $this->render('about', [
+        		'employees' => $employees,
+        ]);
     }
     
-    public function actionTeam()
+    public function actionViewEmployeeProfile($id)
     {
-    	return $this->render('teamMember', []);
+    	$employee = Employees::findOne($id);
+    	
+    	return $this->render('employeesProfile', [
+    			'employee' => $employee,
+    	]);
     }
 }

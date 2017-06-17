@@ -46,18 +46,21 @@ AppAsset::register($this);
         ],
     	'encodeLabels' 	=> false,
         'items' 		=> [
-        	/*[
-        		'label'		=> '<form class="navbar-form">
-							      <div class="input-group">
-							        <input type="text" class="form-control" placeholder="Search">
-							        <div class="input-group-btn">
-							          <button class="btn btn-default" type="submit">
-							            <i class="glyphicon glyphicon-search"></i>
-							          </button>
-							        </div>
-							      </div>
-							    </form>'
-        	],*/
+        	[
+        		'label'		=> '<li>'
+        							. Html::beginForm(['/site/search'], 'post', ['class' => 'navbar-form'])
+        								. '<div class="input-group">'
+	        								. Html::textInput('SearchText', '', ['class' => 'form-control', 'placeholder' => 'Search'])
+				        					. '<div class="input-group-btn">'
+		        								. Html::submitButton(
+					        						'<i class="glyphicon glyphicon-search"></i>',
+					        						['class' => 'btn btn-default']
+					        					)
+	        								. '</div>'
+        								. '</div>'
+			        				. Html::endForm()
+        						. '</li>'
+        	],
             [
             	'label' 	=> '<span class="glyphicon glyphicon-home"></span> Home',
             	'url'	 	=> ['/']            		
@@ -131,7 +134,7 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 
-    <div class="container">
+    <div class="container bimg">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>

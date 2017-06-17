@@ -45,7 +45,7 @@ create table if not exists `photos`(
 
 create table if not exists `security_questions`(
   `question_id` tinyint(2) unsigned not null auto_increment,
-  `question_text` varchar(200) not null,
+  `question_text` varchar(200) not null unique,
   primary key(`question_id`)
 );
 
@@ -90,7 +90,7 @@ create table if not exists `albums_photos`(
 create table if not exists `groups`(
   `group_id` tinyint(5) unsigned not null auto_increment,
   `user_id` tinyint(5) unsigned not null,
-  `group_name` varchar(20) not null,
+  `group_name` varchar(20) not null unique,
   `group_visibility` varchar(10) not null,
   `group_create_date` varchar(10) not null,
   `is_empty` boolean not null default 1,
@@ -116,9 +116,20 @@ create table if not exists `groups_photos`(
   constraint `GPPhotoId` foreign key (`photo_id`) references `photos` (`photo_id`)
 );
 
+create table if not exists `employees` (
+  `employee_id` tinyint(5) unsigned not null auto_increment,
+  `user_name` varchar(50) not null unique,
+  `first_name` varchar(50) not null,
+  `last_name` varchar(50) not null,
+  `e_mail` varchar(50) not null unique,
+  `password` varchar(50),
+  `profile_picture_path` varchar(200) default null,
+  primary key(`employee_id`)
+);
+
+
 
 -- upload security_questons table
-
 
 insert into security_questions (question_text) values ('What was the name of your elementaryprimary school?');
 insert into security_questions (question_text) values ('What is your favorite book?');
@@ -126,3 +137,7 @@ insert into security_questions (question_text) values ('What is your favorite mo
 insert into security_questions (question_text) values ('What is your favorite food?');
 insert into security_questions (question_text) values ('What is your pet\'s name?');
 insert into security_questions (question_text) values ('What was your childhood nickname?');
+
+-- upload security_questons table
+
+insert into employees (user_name, first_name, last_name, e_mail, profile_picture_path) values ('Boti', 'Bodor', 'Botond-Pál', 'bodor_boti2000@yahoo.com', 'employees/1/boti_profile_picture.jpg');

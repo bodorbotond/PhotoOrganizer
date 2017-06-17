@@ -129,7 +129,17 @@ a.desc:after {
 	clear: both;
 }
 
+
+/* whole website */
+
+
 h1, h2, h3, h4
 {
 	color: #B8860B;
+}
+
+.btn-larger
+{
+	font-size: larger;
+	padding: 12px 24px;
 }

@@ -16,17 +16,19 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div class="col-md-10 centered">
 		
 		<h4>
-			Photo Organizer - an online photo management and sharing application - is a new, up-to-date
+			Photo Organizer is an online photo management and sharing application. It is also a new, up-to-date
 			application with a responsive view, has two main goals:
 		</h4>
 		
+		<br>
+		
 		<div class="well">
 		
-		<b>1. We want to help people make their photos available to the people who matter to them.</b>
+		<b>1. We want to help people make their photos, life moments available to the people who matter to them.</b>
 		<br><br>
-		Maybe they want to keep a blog of moments captured on their cameraphone, or maybe they want to show off their best pictures or video to the whole world in a bid for web celebrity. Or maybe they want to securely and privately share photos of their kids with their family across the country. Flickr makes all these things possible and more!
+		Maybe you want to keep a blog of moments captured on your cameraphone, or maybe you want to show off your best pictures to the whole world. Or maybe you want to securely and privately share photos of your kids with your family across the country or with your friends. Photo organizer makes all these things possible and more!
 		<br><br>
-		To do this, we want to get photos and video into and out of the system in as many ways as we can: from the web, from mobile devices, from the users' home computers and from whatever software they are using to manage their content. And we want to be able to push them out in as many ways as possible: on the Flickr website, in RSS feeds, by email, by posting to outside blogs or ways we haven't thought of yet. What else are we going to use those smart refrigerators for?
+		To do this, we want to get photos as many ways as we can: from the web, from mobile devices thanks for the responsive view and from the users' home computers.
 		
 		</div>
 		
@@ -34,10 +36,11 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 		<b>2. We want to enable new ways of organizing photos and video.</b>
 		<br><br>
-		Once you make the switch to digital, it is all too easy to get overwhelmed with the sheer number of photos you take or videos you shoot with that itchy trigger finger. Albums, the principal way people go about organizing things today, are great -- until you get to 20 or 30 or 50 of them. They worked in the days of getting rolls of film developed, but the "album" metaphor is in desperate need of a Florida condo and full retirement.
+		Once you make the switch to digital, it is all too easy to get overwhelmed with the sheer number of photos you take.
 		<br><br>
-		Part of the solution is to make the process of organizing photos or videos collaborative. In Flickr, you can give your friends, family, and other contacts permission to organize your stuff - not just to add comments, but also notes and tags. People like to ooh and ahh, laugh and cry, make wisecracks when sharing photos and videos. Why not give them the ability to do this when they look at them over the internet? And as all this info accretes as metadata, you can find things so much easier later on, since all this info is also searchable.
-		
+		Part of the solution is to make the process of organizing photos collaborative if you are member of a group. In Photo organizer, you can give your friends, family, and other contacts permission to organize your stuff - not just to add comments, but also notes and tags.
+		<br><br>
+		And you can organize your photos  more different way for example by the upload date, photo's extension, photo's visibility (private or public) and photos's size.
 		</div>
 		
 		<div class="well">
@@ -47,10 +50,14 @@ $this->params['breadcrumbs'][] = $this->title;
   			
   			<div id="teamMemberContainer">
   			
-	  			<div class="teamMember">
-	  				<?= Html::a(Html::img('@web/images/boti_profile_picture.jpg', ['id' => 'TeamProfilePicture']), ['']); ?>
-	  				<p class="text-center "><b>Boti</b></p>
-	  			</div>
+  				<?php foreach ($employees as $employee):?>
+  			
+		  			<div class="teamMember">
+		  				<?= Html::a(Html::img('@web/' . $employee->profile_picture_path, ['id' => 'TeamProfilePicture']), ['site/about/employees/profile/' . $employee->employee_id]); ?>
+		  				<p class="text-center "><b><?= $employee->user_name ?></b></p>
+		  			</div>
+		  		
+		  		<?php endforeach; ?>
 
 	  			<br id="ClearBoth">
   			
