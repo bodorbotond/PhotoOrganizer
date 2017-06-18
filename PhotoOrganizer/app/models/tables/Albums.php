@@ -70,8 +70,8 @@ class Albums extends \yii\db\ActiveRecord
     public static function findByUserId($id)		// for validate album name (CreateAlbumForm.php) at create album
     {
     	return self::find()
-    	->where(['user_id' => $id])
-    	->all();
+    					->where(['user_id' => $id])
+    					->all();
     }
     
     public static function findByUserIdAndAlbumName($id, $albumName)		// for validate album name (CreateAlbumForm.php) at create album

@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use yii\helpers\Url;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -10,6 +11,9 @@ use yii\web\UploadedFile;
 use app\models\tables\Photos;
 use app\models\photos\PhotoUploadForm;
 use app\models\photos\EditPhotoForm;
+use app\models\tables\Albums;
+use app\models\tables\AlbumsPhotos;
+use app\models\tables\Groups;
 
 class PhotosController extends Controller
 {
@@ -84,6 +88,17 @@ class PhotosController extends Controller
 		}
 		
 		$userPhotos = Photos::findByUserId(Yii::$app->user->identity->user_id);		// if user has no photos => photo upload form, otherwise user's photos appear
+		
+		$userAlbums = Array();
+		foreach(Albums::findByUserId(Yii::$app->user->identity->user_id) as $album)		// build album list for add to album menu item from Add To dropdown menu item
+		{
+			array_push($userAlbums, [
+					'label' 	=> '<div class="dropDownButton">' . $album->album_name . '</div>',											// label(menu item's name) = album name
+					'encode' 	=> false,																									// encode html elements = false
+					'options' 	=> ['onclick' => 'submitAddToForm(\'' . Url::home('http') . '\', \'ata\', \'' . $album->album_id . '\')']	// onclick event = javascript submitAddToForm(url, action, id) function
+			]);																																//	(this function will redirect to selectAddTo($a, $id) function)
+		}
+		
 		$model = new PhotoUploadForm();
 		
 		if ($model->load(Yii::$app->request->post()))					// if post request is arrived
@@ -96,8 +111,9 @@ class PhotosController extends Controller
 		}
 		
 		return $this->render('index', [
-				'model'				=> $model,
-				'userPhotos'		=> $userPhotos,
+				'model'		 => $model,
+				'userPhotos' => $userPhotos,
+				'userAlbums' => $userAlbums,
 		]);
 	}
 	
@@ -245,6 +261,60 @@ class PhotosController extends Controller
 	}
 	
 	
+	public function actionSelectAddTo($a, $id)
+	{
+	
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+		
+		if (Albums::findOne($id) === null || Groups::findOne($id) === null)		// if id parameter is wrong redirect to index page
+		{
+			return $this->redirect(['/photos/index']);
+		}
+	
+		if (count(Yii::$app->request->post()) !== 0)		// if there are selected photo with post request
+		{
+			foreach (Photos::findByUserId(Yii::$app->user->identity->user_id) as $photo)		// get all logged in user's photos
+			{
+				// in check box name is not allowed . character =>
+				// that is why . character must replace with _ character
+				if (Yii::$app->request->post(str_replace('.', '_', $photo->photo_path)))
+				{
+	
+					if ($a === 'ata')			// if action == add to album
+					{
+						if (count(AlbumsPhotos::findByAlbumIdAndPhotoId($id, $photo->photo_id)) === 0)	// if this photos isn't exists yet in the album
+						{
+							$albumsPhotos = new AlbumsPhotos();
+							$albumsPhotos->album_id = $id;
+							$albumsPhotos->photo_id = $photo->photo_id;
+							$albumsPhotos->save();
+						}
+					}
+					
+					if ($a === 'atg')
+					{
+						
+					}
+					
+				}
+			}
+		}
+	
+		if ($a === 'ata')		// if action == add to album
+		{
+			return $this->redirect(['albums/viewAlbum/' . $id]);		// redirect to viewAlbum page by id
+		}
+		
+		if ($a === 'atg')		// if action == add to group
+		{
+			return $this->redirect(['albums/viewGroup/' . $id]);		// redirect to viewGroup page by id
+		}
+	}
+	
+	
 	public function actionEditOnePhoto($id)
 	{
 		if (Yii::$app->user->isGuest)
@@ -255,9 +325,9 @@ class PhotosController extends Controller
 		$photo = Photos::findOne($id);
 		$model = new EditPhotoForm();
 		
-		if ($photo === null || ($model->load(Yii::$app->request->post()) && $model->editOnePhoto($photo)))
+		if ($photo === null || ($model->load(Yii::$app->request->post()) && $model->editOnePhoto($photo)))		// if id is wrong or edit photo was successful
 		{
-			return $this->redirect(['/photos/index']);
+			return $this->redirect(['/photos/index']);																// redirect to index page
 		}
 		
 		return $this->render('editPhoto', [
@@ -267,6 +337,7 @@ class PhotosController extends Controller
 	}
 	
 	
+	// Important!!!!!     <------under development
 	public function actionEditMorePhoto()
 	{
 		if (Yii::$app->user->isGuest)

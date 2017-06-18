@@ -94,6 +94,14 @@ function submitForm(url, action)												// submit select form and redirect b
 
 
 
+function submitAddToForm(url, action, id)										// submit select form and redirect by passed action parameter, with album or group id
+{
+	document.getElementById("SelectForm").action= url + 'photos/selectAddTo/' + action + ',' + id;
+	document.getElementById("SelectForm").submit();
+}
+
+
+
 function deletePhotos(url)
 {
 	if (confirm('You are sure about delete selected photos?'))

@@ -150,12 +150,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			                [
 			                	'label' => 'Albums',
 			                	'ecncode' => false,
-			                	'items' => [
-			                					[
-			                						'label' => '<div class="dropDownButton">Sub Album</div>',
-			                						'encode' => false,
-			                					],
-			        						]
+			                	'items' => $userAlbums,
 			        		],
 			                [
 			                	'label' => 'Groups',

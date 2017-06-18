@@ -64,4 +64,11 @@ class AlbumsPhotos extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Photos::className(), ['photo_id' => 'photo_id']);
     }
+    
+    public static function findByAlbumIdAndPhotoId($albumId, $photoId)		// check whether already exists a photo in an album by ids
+    {
+    	return self::find()
+    					->where(['album_id' => $albumId, 'photo_id' => $photoId])
+    					->all();
+    }
 }
