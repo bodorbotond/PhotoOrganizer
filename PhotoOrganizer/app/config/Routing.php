@@ -56,8 +56,10 @@ return Array(
     	'albums/viewAlbum/<id:\d+>'		=> 'albums/view-album',
     	'albums/removePhotos/<id:\d+>'	=> 'albums/remove-photos',
     		
-    	'groups/index'	=> 'groups/index',
-    	'groups/create'	=> 'groups/create',
+    	'groups/index'				=> 'groups/index',
+    	'groups/create'				=> 'groups/create-group',
+    	'groups/edit/<id:\d+>'		=> 'groups/edit-group',
+    	'groups/delete/<id:\d+>'	=> 'groups/delete-group',
     	'groups/viewGroup/<id:\d+>'	=> 'groups/view-group',
     		
     ),

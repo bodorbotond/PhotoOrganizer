@@ -27,6 +27,22 @@ $this->params['breadcrumbs'][] = $this->title;
     
 	    <div id="UserPhotos">						<!-- user's goups -->
 				
+			<div class="text-center">
+
+				<?= Collapse::widget([						//Bootstrap Accordion Collapse
+					'encodeLabels' => false,
+				    'items' => [
+				        [
+				            'label' 	=> '<h4 class="black">Create More Groups</h4>',
+				            'content' 	=> '<h3>You have not any groups yet? Create a new one for share photos your friends.</h3>    		
+    										<br>'
+				        					. Html::a('Create New Group', ['/groups/create'], ['class' => 'btn btn-default btn-larger']),
+				        ],	
+					]
+    			]); ?>
+    	
+    		</div>
+			
 			<div class="well">
 	    
 			    <?php foreach($userGroups as $groups): ?>
@@ -64,24 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
 	    	</div>
 	    	
 	    </div>
-	    
-	    <div class="text-center">
-	    
-	    	<br><br>
-	    	
-	    	<?= Collapse::widget([						//Bootstrap Accordion Collapse
-					'encodeLabels' => false,
-				    'items' => [
-				        [
-				            'label' 	=> '<h4 class="black">Create More Groups</h4>',
-				            'content' 	=> '<h3>You have not any groups yet? Create a new one for share photos your friends.</h3>    		
-    										<br>'
-				        					. Html::a('Create New Group', ['/groups/create'], ['class' => 'btn btn-default btn-larger']),
-				        ],	
-					]
-    			]); ?>
-    	
-    	</div>
 	    
 	   <?php endif; ?>
     

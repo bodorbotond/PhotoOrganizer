@@ -6,10 +6,17 @@ use Yii;
 use yii\base\Model;
 use app\models\tables\Groups;
 
-class CreateGroupForm extends Model
+class EditGroupForm extends Model
 {
+	public $group;
+	
 	public $groupName;	
 	public $groupVisibility;
+	
+	public function __construct($group)
+	{
+		$this->group = $group;
+	}
 
     public function rules()
     {
@@ -37,24 +44,21 @@ class CreateGroupForm extends Model
     		$this->addError($attribute, 'The length of Group Name must be between 0 and 20 character!');
     	}
     	
-    	if (count(Groups::findByGroupName($this->groupName)) !== 0)
+    	// if exists a group with this group name except the recently edited group
+    	if (count(Groups::findByGroupName($this->groupName)) !== 0 && $this->group->group_name !== $this->groupName)
     	{
     		$this->addError($attribute, 'Already exists a group with this group name!');
     	}
     }
     
-    public function create()
+    public function edit()
     {
     	if ($this->validate())
     	{
-    		$group = new Groups();
+    		$this->group->group_name 			= $this->groupName;
+    		$this->group->group_visibility 	= $this->groupVisibility;
     		
-    		$group->user_id 			= Yii::$app->user->identity->user_id;
-    		$group->group_name 			= $this->groupName;
-    		$group->group_visibility 	= $this->groupVisibility;
-    		$group->group_create_date 	= date(Yii::$app->params['dateFormat']);
-    		
-    		if ($group->save())
+    		if ($this->group->update())
     		{
     			return true;
     		}

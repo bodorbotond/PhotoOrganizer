@@ -64,4 +64,11 @@ class GroupsPhotos extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Photos::className(), ['photo_id' => 'photo_id']);
     }
+    
+    public static function findByGroupId($id)
+    {
+    	return self::find()
+    					->where(['group_id' => $id])
+    					->all();
+    }
 }

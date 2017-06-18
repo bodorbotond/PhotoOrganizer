@@ -8,7 +8,10 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\db\Query;
 use app\models\groups\CreateGroupForm;
+use app\models\groups\EditGroupForm;
 use app\models\tables\Groups;
+use app\models\tables\GroupsUsers;
+use app\models\tables\GroupsPhotos;
 
 class GroupsController extends Controller
 {
@@ -21,14 +24,14 @@ class GroupsController extends Controller
 						'class' => AccessControl::className(),			// action filter
 						'only' => [										// all aplied actions
 								'index',
-								'create',
+								'createGroup', 'editGroup', 'deleteGroup', 'viewGroup', 
 						],
 						'rules' => [									// access rules
 								[
 									'allow' 	=> true,				// allow
 									'actions'	=> [					// these actions
 														'index',
-														'create',
+														'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
 													],
 									'roles' 	=> ['@'],						// authenticated users
 								],
@@ -38,8 +41,11 @@ class GroupsController extends Controller
 						'class' => VerbFilter::className(),				// HTTP request methods filter for each action
 						// throw an HTTP 405 error when the method is not allowed
 						'actions' => [
-								'index'  => ['get'],
-								'create' => ['get', 'put', 'post'],
+								'index'  		=> ['get'],
+								'createGroup' 	=> ['get', 'put', 'post'],
+								'editGroup' 	=> ['get', 'put', 'post'],
+								'deleteGroup' 	=> ['get', 'delete'],
+								'viewGroup'		=> ['get', 'post'],
 						],
 				],
 		];
@@ -75,7 +81,7 @@ class GroupsController extends Controller
 	}
 	
 	
-	public function actionCreate()
+	public function actionCreateGroup()
 	{
 		if (Yii::$app->user->isGuest)
 		{
@@ -89,9 +95,59 @@ class GroupsController extends Controller
 			return $this->redirect(['/groups/index']);
 		}
 	
-		return $this->render('create', [
+		return $this->render('createGroup', [
 				'model' => $model,
 		]);
+	}
+	
+	public function actionEditGroup($id)
+	{
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+
+		$group = Groups::findOne($id);
+		$model = new EditGroupForm($group);
+	
+		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id	// if id is wrong or album not belong to logged in user
+			|| $model->load(Yii::$app->request->post()) && $model->edit())				// or edit album was sucessful
+		{
+			return $this->redirect(['/groups/index']);										// redirect to albums index page
+		}
+	
+		return $this->render('editGroup', [
+				'model' => $model,
+				'group'	=> $group,
+		]);
+	}
+	
+	
+	public function actionDeleteGroup($id)
+	{
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+	
+		$group = Groups::findOne($id);
+	
+		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id)
+		{
+			return $this->redirect(['/groups/index']);
+		}
+		
+		foreach (GroupsUsers::findByGroupId($id) as $groupUser)		// get all users whose are belong to this group
+		{
+			$groupUser->delete();										// delete users
+		}
+		foreach (GroupsPhotos::findByGroupId($id) as $groupPhoto)	// get all photos whiches are belong to this group
+		{
+			$groupPhoto->delete();										// delete photos
+		}
+		$group->delete();											// delete group
+	
+		return $this->redirect(['/groups/index']);
 	}
 	
 	
@@ -102,7 +158,7 @@ class GroupsController extends Controller
 			return $this->redirect(['/user/login']);
 		}
 	
-		$group = Groups::findByGroupId($id);
+		$group = Groups::findOne($id);
 	
 		$query = new Query ();
 		$query->select ('u.user_name, u.profile_picture_path')					// get user's album's names and photos path which are belong to these albums
