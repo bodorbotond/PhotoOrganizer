@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			
 			<?= Html::a('Edit Album', ['/albums/edit/' . $album->album_id], ['class' => 'btn btn-default']) ?>
 			
-			<?= Html::a('Delete Album', ['/albums/delete/' . $album->album_id], ['class' => 'btn btn-default', 'onclick' => 'return confirm(\'Are you sure about delete selected photos?\')']) ?>
+			<?= Html::a('Delete Album', ['/albums/delete/' . $album->album_id], ['class' => 'btn btn-default', 'onclick' => 'return confirm(\'Are you sure about delete this album?\')']) ?>
 			
 		</div>
     	
