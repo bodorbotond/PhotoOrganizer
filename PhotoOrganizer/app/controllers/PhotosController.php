@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\UploadedFile;
 use app\models\tables\Photos;
 use app\models\photos\PhotoUploadForm;
+use app\models\photos\EditPhotoForm;
 
 class PhotosController extends Controller
 {
@@ -24,6 +25,8 @@ class PhotosController extends Controller
 								'index', 
 								'showByExtension', 'showBySize', 'showByVisibility', 'showByUploadDate',
 								'select',
+								'editOnePhoto',
+								'editMorePhoto',
 						],
 						'rules' => [									// access rules
 								[
@@ -32,6 +35,8 @@ class PhotosController extends Controller
 														'index',
 														'showByExtension', 'showBySize', 'showByVisibility', 'showByUploadDate',
 														'select',
+														'editOnePhoto',
+														'editMorePhoto',
 													],
 									'roles' 	=> ['@'],						// authenticated users
 								],
@@ -47,6 +52,8 @@ class PhotosController extends Controller
 								'showByVisibility' 	=> ['get'],
 								'showByUploadDate' 	=> ['get'],
 								'select'			=> ['get', 'put', 'post'],
+								'editOnePhoto'		=> ['get', 'put', 'post'],
+								'editMorePhoto'		=> ['get', 'put', 'post'],
 						],
 				],
 		];
@@ -81,7 +88,7 @@ class PhotosController extends Controller
 		
 		if ($model->load(Yii::$app->request->post()))					// if post request is arrived
 		{
-			$model->photos = UploadedFile::getInstances($model, 'photos');	// get instance of uploaded photos
+			$model->photos = UploadedFile::getInstances($model, 'photos');		// get instance of uploaded photos
 			if ($model->upload())												// insert photos to database
 			{
 				return $this->redirect(['/photos/index']);
@@ -214,15 +221,20 @@ class PhotosController extends Controller
 						}
 					}
 					
-					if ($a === 'd')				// if action == delete
+					if ($a === 'd')				// if action == delete photos
 					{
 						$photo->delete();				// delete from database
 						unlink($photo->photo_path);		// delete from server
 					}
 					
-					if ($a === 'e')				// if action == edit
+					if ($a === 'e')				// if action == edit photos
 					{
-						return $this->redirect(['/account/index']);
+						return $this->redirect(['/photos/editOne/' . $photo->photo_id]);
+					}
+					
+					if ($a === 'em')			// if action == edit more photos
+					{
+						return $this->redirect(['/photos/editMore']);
 					}
 					
 				}
@@ -230,6 +242,50 @@ class PhotosController extends Controller
 		}
 		
 		$this->redirect(['/photos/index']);
+	}
+	
+	
+	public function actionEditOnePhoto($id)
+	{
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+		
+		$photo = Photos::findOne($id);
+		$model = new EditPhotoForm();
+		
+		if ($photo === null || ($model->load(Yii::$app->request->post()) && $model->editOnePhoto($photo)))
+		{
+			return $this->redirect(['/photos/index']);
+		}
+		
+		return $this->render('editPhoto', [
+				'model' => $model,
+				'photo' => $photo,
+		]);
+	}
+	
+	
+	public function actionEditMorePhoto()
+	{
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+		
+		$photo = new Photos();
+		$model = new EditPhotoForm();
+		
+		if ($model->load(Yii::$app->request->post()) && $model->editMorePhoto())
+		{
+			return $this->redirect(['/photos/index']);
+		}
+		
+		return $this->render('editPhoto', [
+				'model' => $model,
+				'photo' => $photo,
+		]);
 	}
 	
 }

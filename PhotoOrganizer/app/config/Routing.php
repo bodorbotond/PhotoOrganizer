@@ -45,6 +45,8 @@ return Array(
     	'photos/show/visibility'	=> 'photos/show-by-visibility',
     	'photos/show/uploadDate'	=> 'photos/show-by-upload-date',
     	'photos/select/<a:\w+>'		=> 'photos/select',
+    	'photos/editOne/<id:\d+>'	=> 'photos/edit-one-photo',
+    	'photos/editMore'			=> 'photos/edit-more-photo',
 		
 		'albums/index'				=> 'albums/index',
     	'albums/create' 			=> 'albums/create',

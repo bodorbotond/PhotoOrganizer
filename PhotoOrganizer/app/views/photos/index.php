@@ -50,11 +50,61 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 	<?php else : ?>															<!-- else (user has uploaded photos)
 																				 show photos and user's options -->
+																				 
+																				 
+		<div class="text-center">			<!-- uploads more photo form-->
+			
+			<?php
+			$form = ActiveForm::begin([
+				        'id' => 'photo-upload-form',
+				        'options' => ['enctype' => 'multipart/form-data'],
+				   ]);
+
+			 echo Collapse::widget([						//Bootstrap Accordion Collapse
+					'encodeLabels' => false,
+				    'items' => [
+				        [
+				            'label' 	=> '<h4 class="black">Upload More Photos</h4>',
+				            'content' 	=> '<h3>Got a lot of photos? We have got a lot of space for you.</h3><br>' 
+				        					. '<label for="UploadPhotoButton" id="LabelForUploadPhotoButton" class="btn btn-default">
+    												<span class="glyphicon glyphicon-cloud"></span>&nbsp;&nbsp;Choose Files
+											  </label>'
+				        					. $form->field($model, 'photos[]')->fileInput([
+				            														'id' => 'UploadPhotoButton',
+				        															'multiple' 	=> true,
+				            														'accept' 	=> 'image/*',
+				            														'onchange'	=> 'this.form.submit();',				            		
+			 																     ])->label(false),
+			 			],	
+					]
+    			]);
+			 
+
+			ActiveForm::end();
+			?>
+
+		</div>
+		
+				
 												<!-- menu -->
 		<div id="PhotosMenu">
 		
 			<div class="dropdown inline">
 			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Show By <b class="caret"></b></a>
+			    <?php
+			        echo Dropdown::widget([
+			            'items' => [
+			                ['label' => 'Extension', 'url' => ['/photos/show/extension']],
+			                ['label' => 'Size', 'url' => ['/photos/show/size']],
+			            	['label' => 'Visibility', 'url' => ['/photos/show/visibility']],
+			            	['label' => 'Upload Date', 'url' => ['/photos/show/uploadDate']],
+			            ],
+			        ]);
+			    ?>
+			</div>
+			
+			<div class="dropdown inline">
+			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Select By <b class="caret"></b></a>
 			    <?php
 			        echo Dropdown::widget([
 			            'items' => [
@@ -144,6 +194,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			
 			<div id="EditButton" class="btn btn-default" onclick="submitForm(' <?= Url::home('http'); ?>', 'e')">Edit</div>
 			
+			<div id="EditMoreButton" class="btn btn-default" onclick="submitForm(' <?= Url::home('http'); ?>', 'em')">Edit More</div>
+			
 			<div id="DeleteButton" class="btn btn-default" onclick="deletePhotos(' <?= Url::home('http'); ?>')">Delete</div>
 			
 		</div>
@@ -184,41 +236,6 @@ $this->params['breadcrumbs'][] = $this->title;
 			
 		</div>
 		
-		<div class="text-center">
-		
-			<br><br>							<!-- uploads more photo form-->
-			
-			<?php
-			$form = ActiveForm::begin([
-				        'id' => 'photo-upload-form',
-				        'options' => ['enctype' => 'multipart/form-data'],
-				   ]);
-
-			 echo Collapse::widget([						//Bootstrap Accordion Collapse
-					'encodeLabels' => false,
-				    'items' => [
-				        [
-				            'label' 	=> '<h4 class="black">Upload More Photos</h4>',
-				            'content' 	=> '<h3>Got a lot of photos? We have got a lot of space for you.</h3><br>' 
-				        					. '<label for="UploadPhotoButton" id="LabelForUploadPhotoButton" class="btn btn-default">
-    												<span class="glyphicon glyphicon-cloud"></span>&nbsp;&nbsp;Choose Files
-											  </label>'
-				        					. $form->field($model, 'photos[]')->fileInput([
-				            														'id' => 'UploadPhotoButton',
-				        															'multiple' 	=> true,
-				            														'accept' 	=> 'image/*',
-				            														'onchange'	=> 'this.form.submit();',				            		
-			 																     ])->label(false),
-			 			],	
-					]
-    			]);
-			 
-
-			ActiveForm::end();
-			?>
-
-		</div>
-
 	<?php endif; ?>
 	
 </div>
