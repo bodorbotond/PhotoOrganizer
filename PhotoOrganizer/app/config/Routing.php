@@ -49,9 +49,12 @@ return Array(
     	'photos/editOne/<id:\d+>'				=> 'photos/edit-one-photo',
     	'photos/editMore'						=> 'photos/edit-more-photo',
 		
-		'albums/index'				=> 'albums/index',
-    	'albums/create' 			=> 'albums/create',
-    	'albums/viewAlbum/<id:\d+>'	=> 'albums/view-album',
+		'albums/index'					=> 'albums/index',
+    	'albums/create'					=> 'albums/create-album',
+    	'albums/edit/<id:\d+>'			=> 'albums/edit-album',
+    	'albums/delete/<id:\d+>'		=> 'albums/delete-album',
+    	'albums/viewAlbum/<id:\d+>'		=> 'albums/view-album',
+    	'albums/removePhotos/<id:\d+>'	=> 'albums/remove-photos',
     		
     	'groups/index'	=> 'groups/index',
     	'groups/create'	=> 'groups/create',

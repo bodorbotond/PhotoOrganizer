@@ -87,7 +87,7 @@ class Photos extends \yii\db\ActiveRecord
     public static function findByExtension($extension)
     {
     	return self::find()
-    					->where(['photo_extension' => $extension])
+    					->where(['photo_extension' => $extension, 'user_id' => Yii::$app->user->identity->user_id])
     					->all();
     }
     
@@ -102,7 +102,7 @@ class Photos extends \yii\db\ActiveRecord
     public static function findByVisibility($visibility)
     {
     	return self::find()
-				    	->where(['photo_visibility' => $visibility])
+				    	->where(['photo_visibility' => $visibility, 'user_id' => Yii::$app->user->identity->user_id])
 				    	->all();
     }
     

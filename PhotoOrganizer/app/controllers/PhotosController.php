@@ -269,9 +269,9 @@ class PhotosController extends Controller
 			return $this->redirect(['/user/login']);
 		}
 		
-		if (Albums::findOne($id) === null || Groups::findOne($id) === null)		// if id parameter is wrong redirect to index page
+		if (Albums::findOne($id) === null && Groups::findOne($id) === null)		// if id parameter is wrong redirect to index page
 		{
-			return $this->redirect(['/photos/index']);
+			return $this->redirect(['/account/index']);
 		}
 	
 		if (count(Yii::$app->request->post()) !== 0)		// if there are selected photo with post request
@@ -325,7 +325,8 @@ class PhotosController extends Controller
 		$photo = Photos::findOne($id);
 		$model = new EditPhotoForm();
 		
-		if ($photo === null || ($model->load(Yii::$app->request->post()) && $model->editOnePhoto($photo)))		// if id is wrong or edit photo was successful
+		if ($photo === null || $photo->user_id !== Yii::$app->user->identity->user_id 		// if id is wrong or photos not belong to logged in user
+			|| ($model->load(Yii::$app->request->post()) && $model->editOnePhoto($photo)))	// or edit photo was successful
 		{
 			return $this->redirect(['/photos/index']);																// redirect to index page
 		}

@@ -6,6 +6,7 @@ function setHiddenPhotosMenuItems()
 	document.getElementById("EditButton").style.display = "none";
 	document.getElementById("EditMoreButton").style.display = "none";
 	document.getElementById("DeleteButton").style.display = "none";
+	document.getElementById("RemoveButton").style.display = "none";
 }
 
 
@@ -104,7 +105,7 @@ function submitAddToForm(url, action, id)										// submit select form and red
 
 function deletePhotos(url)
 {
-	if (confirm('You are sure about delete selected photos?'))
+	if (confirm('Are you sure about delete selected photos?'))
 	{
 		document.getElementById("SelectForm").action= url + 'photos/select/d';
 		document.getElementById("SelectForm").submit();

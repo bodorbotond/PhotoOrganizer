@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = 'Create Album';
-$this->params['breadcrumbs'][] = ['label' => 'My Albums', 'url' => ['/albums/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Albums', 'url' => ['/albums/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
     	<?= $form->field($model, 'albumVisibility')->dropDownList([
     																'private'	=> 'private',
     																'public'	=> 'public',
-    	]); ?>  
+    															   ]); ?>  
 
         <div class="form-group">
             <div class="col-lg-offset-1 col-lg-11">

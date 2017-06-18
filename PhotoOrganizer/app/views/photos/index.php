@@ -5,7 +5,6 @@ use yii\helpers\Url;
 use yii\bootstrap\Collapse;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
-use yii\widgets\ListView;
 use yii\bootstrap\Dropdown;
 
 $this->title = 'Photos';
