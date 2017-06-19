@@ -12,40 +12,29 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="site-view-group">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    	<h1><?= Html::encode($this->title) ?></h1>
     
-    <br><br>
+    	<br>
     
-     <?php if(count($groupUsers) === 0):?>		<!-- if group not contain any users -->
-    
-    	<div class="text-center">
-    	
-    		<h3>Nobody belongs to this group except you. Add some users to share photo between each other.</h3>    		
-    		<br>    
-    		<?= Html::a('Add Users', ['/groups/index'], ['class' => 'btn btn-default btn-larger']) ?>
-    	
-    	</div>
-    
-    <?php else:?>								<!-- else (if album contain photos) -->
-    
-	    <div class="text-center">					<!-- add more users -->
-	    
-			<?= Collapse::widget([						//Bootstrap Accordion Collapse
-					'encodeLabels' => false,
-				    'items' => [
-				        [
-				            'label' 	=> '<h4 class="black">Add More Users</h4>',
-				            'content' 	=> '<h3>You want more users in this group? Add some.</h3>    		
-    										<br>'
-				        					. Html::a('Add Users', ['/groups/index'], ['class' => 'btn btn-default btn-larger']),
-				        ],	
-					]
-    		]); ?>
-    	
+    	<div>										<!-- album's propertys -->
+    		<b>Number of photos: <?= count($groupPhotos); ?></b>
+    		<br>
+    		<b>Number of users: <?= count($groupUsers); ?></b>
+    		<br>
+    		<b>Administrator: <?= $administrator->user_name; ?></b>
+    		<br>
+			<b><?= ucfirst($group->group_visibility); ?></b>
     	</div>
     	
+    	<br><br>   	
     	
-    	<div id="PhotosMenu">						<!-- menu -->
+		<div id="GroupMenu">						<!-- menu -->
+    	
+    		<?= Html::a('Add Users', ['/groups/index/'], ['class' => 'btn btn-default']) ?>
+    		
+    		<?= Html::a('Add Photos', ['/photos/index/'], ['class' => 'btn btn-default']) ?>
+    		
+    		<br><br>
 		
 			<div class="dropdown inline">
 			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Select <b class="caret"></b></a>
@@ -79,9 +68,54 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?= Html::a('Delete Group', ['/groups/delete/' . $group->group_id], ['class' => 'btn btn-default', 'onclick' => 'return confirm(\'Are you sure about delete this group?\')']) ?>
 			
 		</div>
+		
+		<!-- photos in group -->
+		
+		<br><br>
     	
+    	<h3>Photos</h3>
     	
-	    <div id="UserPhotos">						<!-- user's album's photos -->
+	    <div id="UserPhotos">
+				
+			<div class="well">
+			
+				<?php 
+				echo Html::beginForm([''], 'post', ['id' => 'SelectForm']);
+	    
+			    foreach($groupPhotos as $photo):
+			    ?>
+			    	
+				    <div class="userPhoto">
+							
+						<?= Html::a(Html::img('@web/' . $photo['photo_path'], [''])); ?>
+						
+						<?= Html::checkbox($photo['photo_path'], false, ['class' => 'imageSelectCheckBox']); ?>											<!-- user's photo -->
+								
+						<div>
+							<?= explode('/', $photo['photo_path'])[sizeof(explode('/', $photo['photo_path'])) - 1]; ?>
+						</div>
+								
+		    		</div>
+		    		
+		    	<?php
+		    	echo Html::endForm();
+
+		    	endforeach;
+		    	?>
+		    	
+		    	<br class="clearBoth" />
+	    
+	    	</div>
+	    	
+	    </div>
+	    
+	    <!-- users in group -->
+    	
+    	<br><br>
+    	
+    	<h3>Users</h3>
+    	
+	    <div id="UserPhotos">
 				
 			<div class="well">
 	    
@@ -103,8 +137,6 @@ $this->params['breadcrumbs'][] = $this->title;
 	    
 	    	</div>
 	    	
-	    </div>
-	    
-	<?php endif; ?>
+    	</div>
     
 </div>

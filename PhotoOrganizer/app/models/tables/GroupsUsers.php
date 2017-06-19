@@ -72,4 +72,11 @@ class GroupsUsers extends \yii\db\ActiveRecord
     					->where(['group_id' => $id])
     					->all();
     }
+    
+    public static function findByUserId($id)
+    {
+    	return self::find()
+    				->where(['user_id' => $id])
+    				->all();
+    }
 }

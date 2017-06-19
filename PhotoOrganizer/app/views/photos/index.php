@@ -154,12 +154,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			                [
 			                	'label' => 'Groups',
 			                	'ecncode' => false,
-			                	'items' => [
-			                					[
-			                						'label' => '<div class="dropDownButton">Sub Group</div>',
-			                						'encode' => false,
-			                					],
-			        						]
+			                	'items' => $userGroups,
 			            	],
 			            ],
 			        ]);

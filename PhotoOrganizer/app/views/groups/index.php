@@ -24,10 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
     	</div>
     
     <?php else:?>								<!-- else (if user has groups) -->
-    
-	    <div id="UserPhotos">						<!-- user's goups -->
+    						<!-- user's goups -->
 				
-			<div class="text-center">
+		<div class="text-center">
 
 				<?= Collapse::widget([						//Bootstrap Accordion Collapse
 					'encodeLabels' => false,
@@ -41,39 +40,99 @@ $this->params['breadcrumbs'][] = $this->title;
 					]
     			]); ?>
     	
-    		</div>
+    	</div>
+    	
+    	<!-- logged in user's group -->
+    		
+    	<br><br>
+    	
+    	<h3>My groups</h3>
+    		
+    	<div id="UserPhotos">
 			
 			<div class="well">
 	    
-			    <?php foreach($userGroups as $groups): ?>
+			    <?php
+			    $cnt = 0;		// counter for different group's profile picture 
+			    foreach($userGroups as $groups):
+			   
+				    if ($cnt % 2 === 0)
+				    {
+				    	$groupProfilePicturePath = '@web/images/group_profile_picture1.png';
+				    }
+				    elseif ($cnt % 3 === 0)
+				    {
+				    	$groupProfilePicturePath = '@web/images/group_profile_picture2.png';
+				    }
+				    else
+				    {
+				    	$groupProfilePicturePath = '@web/images/group_profile_picture3.png';
+				    }
+			    ?>
 			    
-			    	<?php if ($groups->is_empty): ?>		<!-- if groups not contain any user
-			    													=> group's cover photo is from server -->
-				    	<div class="userPhoto">
+			    	<div class="userPhoto">
 							
-							<?= Html::a(Html::img('@web/images/empty_group.jpg'), ['/groups/viewGroup/' . $groups->group_id]); ?>											<!-- user's photo -->
+						<?= Html::a(Html::img($groupProfilePicturePath), ['/groups/view/' . $groups->group_id]); ?>											<!-- user's photo -->
 								
-							<div>
-								<?= $groups->group_name; ?>
-							</div>
+						<div>
+							<?= $groups->group_name; ?>
+						</div>
 								
-		    			</div>
+		    		</div>
 		    			
-		    		<?php else: ?>							<!-- else (if groups contain users)
-			    													=> group's cover photo is user's profile picture -->		    		
-		    			<div class="userPhoto">
-							
-							<?= Html::img('@web/'); ?>
-								
-							<div>
-								<?= $groups->group_name; ?>
-							</div>
-								
-		    			</div>
-		    		
-		    		<?php endif; ?>
+		    	<?php
+		    	$cnt++;
+		    	endforeach;
+		    	?>
 			    
-			    <?php endforeach;?>
+			    <br class="clearBoth" />
+	    
+	    	</div>
+	    
+	    </div>
+	    	
+	    <!-- groups where logged in user is a member -->
+	    	
+	    <br><br>
+    	
+    	<h3>Groups in where I'm a member</h3>
+    	
+    	<div id="UserPhotos">
+			
+			<div class="well">
+	    
+			    <?php
+			    $cnt = 0;		// counter for different group's profile picture 
+			    foreach($otherGroups as $groups):
+			   
+				    if ($cnt % 2 === 0)
+				    {
+				    	$groupProfilePicturePath = '@web/images/group_profile_picture1.png';
+				    }
+				    elseif ($cnt % 3 === 0)
+				    {
+				    	$groupProfilePicturePath = '@web/images/group_profile_picture2.png';
+				    }
+				    else
+				    {
+				    	$groupProfilePicturePath = '@web/images/group_profile_picture3.png';
+				    }
+			    ?>
+			    
+			    	<div class="userPhoto">
+							
+						<?= Html::a(Html::img($groupProfilePicturePath), ['/groups/view/' . $groups->group_id]); ?>											<!-- user's photo -->
+								
+						<div>
+							<?= $groups->group_name; ?>
+						</div>
+								
+		    		</div>
+		    			
+		    	<?php
+		    	$cnt++;
+		    	endforeach;
+		    	?>
 			    
 			    <br class="clearBoth" />
 	    

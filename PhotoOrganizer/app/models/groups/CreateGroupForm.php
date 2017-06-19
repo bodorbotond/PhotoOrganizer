@@ -5,6 +5,8 @@ namespace app\models\groups;
 use Yii;
 use yii\base\Model;
 use app\models\tables\Groups;
+use app\models\tables\GroupsUsers;
+use app\models\tables\app\models\tables;
 
 class CreateGroupForm extends Model
 {
@@ -47,16 +49,24 @@ class CreateGroupForm extends Model
     {
     	if ($this->validate())
     	{
-    		$group = new Groups();
+    		$group = new Groups();			// create new Group
     		
     		$group->user_id 			= Yii::$app->user->identity->user_id;
     		$group->group_name 			= $this->groupName;
     		$group->group_visibility 	= $this->groupVisibility;
     		$group->group_create_date 	= date(Yii::$app->params['dateFormat']);
     		
-    		if ($group->save())
+    		if ($group->save())				// if group insert to database successfuly
     		{
-    			return true;
+    			$groupUser = new GroupsUsers();		// create new group user
+    			
+    			$groupUser->group_id = $group->group_id;
+    			$groupUser->user_id = $group->user_id;
+    			
+    			if($groupUser->save())			// if group user insert to database successfuly
+    			{
+    				return true;
+    			}
     		}
     	}
     	

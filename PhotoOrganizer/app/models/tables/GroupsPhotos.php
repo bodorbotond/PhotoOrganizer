@@ -71,4 +71,11 @@ class GroupsPhotos extends \yii\db\ActiveRecord
     					->where(['group_id' => $id])
     					->all();
     }
+    
+    public static function findByGroupIdAndPhotoId($groupId, $photoId)			// check whether exists a photo in a group
+    {
+    	return self::find()
+    					->where(['group_id' => $groupId, 'photo_id' => $photoId])
+    					->all();
+    }
 }

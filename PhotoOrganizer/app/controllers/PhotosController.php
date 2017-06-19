@@ -14,6 +14,9 @@ use app\models\photos\EditPhotoForm;
 use app\models\tables\Albums;
 use app\models\tables\AlbumsPhotos;
 use app\models\tables\Groups;
+use app\models\tables\GroupsUsers;
+use app\models\tables\GroupsPhotos;
+use app\models\tables\app\models\tables;
 
 class PhotosController extends Controller
 {
@@ -99,6 +102,17 @@ class PhotosController extends Controller
 			]);																																//	(this function will redirect to selectAddTo($a, $id) function)
 		}
 		
+		$userGroups = Array();															// build group list for add to group menu item from Add To dropdown menu item (groups in where logged in user is a member)
+		foreach (GroupsUsers::findByUserId(Yii::$app->user->identity->user_id) as $groupUser)
+		{															// GroupsUser table contain only group_id and user_id
+			$group = Groups::FindOne($groupUser->group_id);			// that is why have to find group by group_id
+			array_push($userGroups, [
+					'label' 	=> '<div class="dropDownButton">' . $group->group_name . '</div>',											// label(menu item's name) = group name
+					'encode' 	=> false,																									// encode html elements = false
+					'options' 	=> ['onclick' => 'submitAddToForm(\'' . Url::home('http') . '\', \'atg\', \'' . $group->group_id . '\')']	// onclick event = javascript submitAddToForm(url, action, id) function																															//	(this function will redirect to selectAddTo($a, $id) function)
+			]);
+		}
+		
 		$model = new PhotoUploadForm();
 		
 		if ($model->load(Yii::$app->request->post()))					// if post request is arrived
@@ -114,6 +128,7 @@ class PhotosController extends Controller
 				'model'		 => $model,
 				'userPhotos' => $userPhotos,
 				'userAlbums' => $userAlbums,
+				'userGroups' => $userGroups,
 		]);
 	}
 	
@@ -287,16 +302,22 @@ class PhotosController extends Controller
 					{
 						if (count(AlbumsPhotos::findByAlbumIdAndPhotoId($id, $photo->photo_id)) === 0)	// if this photos isn't exists yet in the album
 						{
-							$albumsPhotos = new AlbumsPhotos();
-							$albumsPhotos->album_id = $id;
-							$albumsPhotos->photo_id = $photo->photo_id;
-							$albumsPhotos->save();
+							$albumsPhoto = new AlbumsPhotos();
+							$albumsPhoto->album_id = $id;
+							$albumsPhoto->photo_id = $photo->photo_id;
+							$albumsPhoto->save();
 						}
 					}
 					
 					if ($a === 'atg')
 					{
-						
+						if (count(GroupsPhotos::findByGroupIdAndPhotoId($id, $photo->photo_id)) === 0)	// if this photos isn't exists yet in the group
+						{
+							$groupPhoto = new GroupsPhotos();
+							$groupPhoto->group_id = $id;
+							$groupPhoto->photo_id = $photo->photo_id;
+							$groupPhoto->save();
+						}
 					}
 					
 				}
@@ -310,7 +331,7 @@ class PhotosController extends Controller
 		
 		if ($a === 'atg')		// if action == add to group
 		{
-			return $this->redirect(['albums/view/' . $id]);		// redirect to viewGroup page by id
+			return $this->redirect(['groups/view/' . $id]);		// redirect to viewGroup page by id
 		}
 		
 		$this->redirect(['/photos/index']);

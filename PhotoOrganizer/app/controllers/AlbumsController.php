@@ -166,7 +166,7 @@ class AlbumsController extends Controller
 		}
 		
 		$query = new Query ();
-		$query->select ('p.photo_path')					// get user's album's names and photos path which are belong to these albums
+		$query->select ('p.photo_path')					// get user's photos path whiches are belong to this album
 		 	  ->from ('photos p, albums_photos ap')
 		 	  ->where ('p.photo_id = ap.photo_id and ap.album_id = ' . $id);
 		 $albumPhotos = $query->all();
