@@ -117,7 +117,7 @@ class AlbumsController extends Controller
 		if ($album === null || $album->user_id !== Yii::$app->user->identity->user_id	// if id is wrong or album not belong to logged in user
 			|| $model->load(Yii::$app->request->post()) && $model->edit())				// or edit album was sucessful
 		{
-			return $this->redirect(['/albums/index']);										// redirect to albums index page
+			return $this->redirect(['/albums/view/' . $id]);										// redirect to albums index page
 		}
 	
 		return $this->render('editAlbum', [

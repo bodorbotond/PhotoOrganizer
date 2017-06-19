@@ -12,22 +12,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="site-view-album">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    	<h1><?= Html::encode($this->title) ?></h1>
     
-    <br><br>
-    
-     <?php if(count($albumPhotos) === 0):?>		<!-- if album not contain any photos -->
-    
-    	<div class="text-center">
-    	
-    		<h3>There is no picture in this album. Add some photos.</h3>    		
-    		<br>    
-    		<?= Html::a('Add Photos', ['/photos/index'], ['class' => 'btn btn-default btn-larger']) ?>
-    	
-    	</div>
-    
-    <?php else:?>								<!-- else (if album contain photos) -->
-    
+    	<br>   
     	
     	<div>										<!-- album's propertys -->
     		<b>Number of photos: <?= count($albumPhotos); ?></b>
@@ -35,26 +22,13 @@ $this->params['breadcrumbs'][] = $this->title;
 			<b><?= ucfirst($album->album_visibility); ?></b>
     	</div>
     	
-    	<br>    	
-    	
-    	<div class="text-center">					<!-- add more photos to album -->
-	    	
-	    	<?= Collapse::widget([						//Bootstrap Accordion Collapse
-					'encodeLabels' => false,
-				    'items' => [
-				        [
-				            'label' 	=> '<h4 class="black">Add More Photos</h4>',
-				            'content' 	=> '<h3>You want more photos in this album? Add some.</h3>    		
-    										<br>'
-				        					. Html::a('Add Photos', ['/photos/index'], ['class' => 'btn btn-default btn-larger']),
-				        ],	
-					]
-    			]); ?>
-    	
-    	</div>
-    	
+    	<br><br>  
     	
     	<div id="PhotosMenu">						<!-- menu -->
+    	
+    		<?= Html::a('Add Photos', ['/photos/index/'], ['class' => 'btn btn-default']) ?>
+    		
+    		<br><br>
 		
 			<div class="dropdown inline">
 			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Select <b class="caret"></b></a>
@@ -126,7 +100,5 @@ $this->params['breadcrumbs'][] = $this->title;
 			</div>
 			
 		</div>
-	    
-	<?php endif; ?>
     
 </div>
