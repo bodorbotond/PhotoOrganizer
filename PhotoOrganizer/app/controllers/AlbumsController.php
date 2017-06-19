@@ -160,6 +160,11 @@ class AlbumsController extends Controller
 		
 		$album = Albums::findByAlbumId($id);
 		
+		if ($album === null || $album->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or this album not belong to logged in user
+		{
+			return $this->redirect(['/albums/index']);
+		}
+		
 		$query = new Query ();
 		$query->select ('p.photo_path')					// get user's album's names and photos path which are belong to these albums
 		 	  ->from ('photos p, albums_photos ap')

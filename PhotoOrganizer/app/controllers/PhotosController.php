@@ -199,7 +199,7 @@ class PhotosController extends Controller
 	}
 	
 	
-	// working with selected pictures
+	// working with selected photos
 	
 	
 	public function actionSelect($a)
@@ -271,7 +271,7 @@ class PhotosController extends Controller
 		
 		if (Albums::findOne($id) === null && Groups::findOne($id) === null)		// if id parameter is wrong redirect to index page
 		{
-			return $this->redirect(['/account/index']);
+			return $this->redirect(['/photos/index']);
 		}
 	
 		if (count(Yii::$app->request->post()) !== 0)		// if there are selected photo with post request
@@ -305,13 +305,15 @@ class PhotosController extends Controller
 	
 		if ($a === 'ata')		// if action == add to album
 		{
-			return $this->redirect(['albums/viewAlbum/' . $id]);		// redirect to viewAlbum page by id
+			return $this->redirect(['albums/view/' . $id]);		// redirect to viewAlbum page by id
 		}
 		
 		if ($a === 'atg')		// if action == add to group
 		{
-			return $this->redirect(['albums/viewGroup/' . $id]);		// redirect to viewGroup page by id
+			return $this->redirect(['albums/view/' . $id]);		// redirect to viewGroup page by id
 		}
+		
+		$this->redirect(['/photos/index']);
 	}
 	
 	

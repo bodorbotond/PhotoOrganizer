@@ -119,6 +119,11 @@ class SiteController extends Controller
     {
     	$employee = Employees::findOne($id);
     	
+    	if ($employee === null)
+    	{
+    		return $this->redirect(['/site/about']);
+    	}
+    	
     	return $this->render('employeesProfile', [
     			'employee' => $employee,
     	]);

@@ -53,14 +53,14 @@ return Array(
     	'albums/create'					=> 'albums/create-album',
     	'albums/edit/<id:\d+>'			=> 'albums/edit-album',
     	'albums/delete/<id:\d+>'		=> 'albums/delete-album',
-    	'albums/viewAlbum/<id:\d+>'		=> 'albums/view-album',
+    	'albums/view/<id:\d+>'			=> 'albums/view-album',
     	'albums/removePhotos/<id:\d+>'	=> 'albums/remove-photos',
     		
     	'groups/index'				=> 'groups/index',
     	'groups/create'				=> 'groups/create-group',
     	'groups/edit/<id:\d+>'		=> 'groups/edit-group',
     	'groups/delete/<id:\d+>'	=> 'groups/delete-group',
-    	'groups/viewGroup/<id:\d+>'	=> 'groups/view-group',
+    	'groups/view/<id:\d+>'		=> 'groups/view-group',
     		
     ),
 );
