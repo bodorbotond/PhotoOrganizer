@@ -25,9 +25,9 @@ $this->params['breadcrumbs'][] = $this->title;
 	    	<br><br>
 	    	
 	    	<div class="col-md-4">										<!-- album's propertys -->
-	    		<b>Number of photos: <?= count($albumPhotos); ?></b>
+	    		<b class="propertys"><span class="yellow">Number of photos: </span><?= count($albumPhotos); ?></b>
 	    		<br>
-				<b><?= ucfirst($album->album_visibility); ?></b>
+				<b class="propertys"><?= ucfirst($album->album_visibility); ?></b>
     		</div>
     		
     	</div>

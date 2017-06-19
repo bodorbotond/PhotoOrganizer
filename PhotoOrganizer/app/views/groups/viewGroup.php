@@ -25,13 +25,13 @@ $this->params['breadcrumbs'][] = $this->title;
 	    	<br><br>
 	    	
 	    	<div class="col-md-4">										<!-- group's propertys -->
-	    		<b>Number of photos: <?= count($groupPhotos); ?></b>
+	    		<b class="propertys"><span class="yellow">Number of photos: </span><?= count($groupPhotos); ?></b>
 	    		<br>
-	    		<b>Number of users: <?= count($groupUsers); ?></b>
+	    		<b class="propertys"><span class="yellow">Number of users: </span><?= count($groupUsers); ?></b>
 	    		<br>
-	    		<b>Administrator: <?= $administrator->user_name; ?></b>
+	    		<b class="propertys"><span class="yellow">Administrator: </span><?= $administrator->user_name; ?></b>
 	    		<br>
-				<b><?= ucfirst($group->group_visibility); ?></b>
+				<b class="propertys"><?= ucfirst($group->group_visibility); ?></b>
 	    	</div>
 	    	
     	</div>
