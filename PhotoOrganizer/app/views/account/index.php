@@ -66,6 +66,21 @@ $accountSecurity = 	'<br>'
 													. Html::a('Change Password', ['/account/security/changePassword'], ['class' => 'btn btn-default']),
 								],
 								[
+									'label' 	=> '<h4>E-mail Visibility</h4>',
+									'content' 	=> 'Your e-mail adress default is not visibly for other users or guest users.<br>
+													You can change this setting but we recommend you rather stay hide e-mail option for your account security.
+													<br><br>'
+													. Html::beginForm(['/account/security/eMailVisibility'], 'post')									// on/off two step verification form with one checkbox
+													. '<b>Private E-mail Adress</b>&nbsp&nbsp'
+													. Html::checkbox('eMailVisibility',
+																	 Yii::$app->user->identity->e_mail_visibility === 'private' ? true : false,		// if user's two email is private checkbox is checked
+																	 ['onchange' => 'this.form.submit()'])		// submit without submit button
+													. Html::endForm()
+													. (Yii::$app->user->identity->e_mail_visibility === 'private' ?
+													  '<br>Your e-mail adress is set to private visibility.' :								// and print this information
+													  ''),
+								],
+								[
 									'label'		=> '<h4>Recovery E-mail Address</h4>',
 									'content' 	=> 'If you forget your password or cannot access your account, 
 													we will use this information to help you get back in.<br><br>'

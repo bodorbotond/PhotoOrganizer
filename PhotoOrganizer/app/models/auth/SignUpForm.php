@@ -126,12 +126,13 @@ class SignUpForm extends Model
 		
 		if ($this->validate())												// if entered datas are validate then insert datas to database and send email to entered email adress
 		{			
-			$user->user_name 		= $this->userName;
-			$user->first_name		= $this->firstName;
-			$user->last_name		= $this->lastName;
-			$user->e_mail 			= $this->eMail;
-			$user->password 		= crypt($this->password, '_J9..rasm');;
-			$user->gender			= $this->gender;
+			$user->user_name 			= $this->userName;
+			$user->first_name			= $this->firstName;
+			$user->last_name			= $this->lastName;
+			$user->e_mail 				= $this->eMail;
+			$user->e_mail_visibility 	= 'private';
+			$user->password 			= crypt($this->password, '_J9..rasm');;
+			$user->gender				= $this->gender;
 			
 			// create user's folder on server where user can save profile picture
 			$path = 'uploads/' . (Users::find()->select('max(user_id)')->scalar() + 1);		// directory path (name = user id)
@@ -148,6 +149,11 @@ class SignUpForm extends Model
 				$this->profilePicture->saveAs($path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension);
 				$user->profile_picture_path = $path . '/' . $this->profilePicture->baseName . '.' . $this->profilePicture->extension;
 			}
+			else
+			{
+				$user->profile_picture_path = 'images/profile_picture.png';
+			}
+			
 			$user->auth_key 		= Yii::$app->security->generateRandomString(30);
 			$user->account_status	= 'inactive';								// default set the user status inactive (set active by activation key in the email)
 			$user->verification_key	= strval(rand(10000, 99999));				// convert a five digit number to string

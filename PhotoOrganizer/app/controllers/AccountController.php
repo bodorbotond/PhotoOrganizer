@@ -30,10 +30,11 @@ class AccountController extends Controller
                 			'index',
                 			'modifyPersonalInfo',
                 			'deleteProfilePicture', 
-                			//'deleteAccount', 
-                			'addOrModifyRecoveryEmail', 
-                			'deleteRecoveryEmail', 
+                			//'deleteAccount',
                 			'changePassword',
+                			'eMailVisibility',
+                			'addOrModifyRecoveryEmail', 
+                			'deleteRecoveryEmail',
                 			'twoStepVerification',
                 			'addSecurityQuestions',
                 			'modifySecurityQuestions',
@@ -46,8 +47,9 @@ class AccountController extends Controller
                     					'index',
                     					'modifyPersonalInfo', 'deleteProfilePicture',
                     					//'deleteAccount',
-                    					'addOrModifyRecoveryEmail', 'deleteRecoveryEmail',
                     					'changePassword',
+                    					'eMailVisibility',
+                    					'addOrModifyRecoveryEmail', 'deleteRecoveryEmail',
                     					'twoStepVerification',
                     					'addSecurityQuestions', 'modifySecurityQuestions', 'deleteSecurityQuestions',
                     					],
@@ -63,9 +65,10 @@ class AccountController extends Controller
                 	'modifyPersonalInfo' 		=> ['get', 'put', 'post'],
                 	'deleteProfilePicture'		=> ['get', 'put'],
                 	//'deleteAccount'				=> ['get', 'delete', 'post'],
+                	'changePassword'			=> ['get', 'put', 'post'],
+                	'eMailVisibility'			=> ['get', 'put', 'post'],
                 	'addOrModifyRecoveryEmail'	=> ['get', 'put', 'post'],
                 	'deleteRecoveryEmail'		=> ['get', 'put'],
-                	'changePassword'			=> ['get', 'put', 'post'],
                 	'twoStepVerification'		=> ['get', 'put', 'post'],
                 	'addSecurityQuestions'		=> ['get', 'put', 'post'],
                 	'modifySecurityQuestions'	=> ['get', 'put', 'post'],
@@ -158,6 +161,45 @@ class AccountController extends Controller
     }
     
     
+    public function actionChangePassword()
+    {
+    	if (Yii::$app->user->isGuest)
+    	{
+    		return $this->redirect(['/user/login']);
+    	}
+    	 
+    	$model = new ChangePasswordForm();
+    	 
+    	if ($model->load(Yii::$app->request->post()) && $model->changePassword())
+    	{
+    		return $this->redirect(['/account/index']);
+    	}
+    	 
+    	return $this->render('changePassword', [
+    			'model' => $model,
+    	]);
+    }
+    
+    
+    public function actionEMailVisibility()
+    {
+    	if (Yii::$app->user->isGuest)
+    	{
+    		return $this->redirect(['/user/login']);
+    	}
+    	 
+    	if (Yii::$app->request->post())
+    	{
+    		$user = Users::findOne(Yii::$app->user->identity->id);
+    		$user->e_mail_visibility = (Yii::$app->request->post('eMailVisibility') ? 'private' : 'public');
+    		if ($user->update())
+    		{
+    			$this->redirect(['/account/index']);
+    		}
+    	}
+    }
+    
+    
     public function actionAddOrModifyRecoveryEmail()
     {
     	if (Yii::$app->user->isGuest)
@@ -191,26 +233,6 @@ class AccountController extends Controller
     	{
     		return $this->redirect(['/account/index']);
     	}
-    }
-    
-    
-    public function actionChangePassword()
-    {
-    	if (Yii::$app->user->isGuest)
-    	{
-    		return $this->redirect(['/user/login']);
-    	}
-    	
-    	$model = new ChangePasswordForm();
-    	
-    	if ($model->load(Yii::$app->request->post()) && $model->changePassword())
-    	{
-    		return $this->redirect(['/account/index']);
-    	}
-    	
-    	return $this->render('changePassword', [
-    			'model' => $model,
-    	]);
     }
     
     
