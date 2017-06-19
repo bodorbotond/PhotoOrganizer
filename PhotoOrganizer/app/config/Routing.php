@@ -31,6 +31,7 @@ return Array(
     	'account/perosnalInfo/modify' 					=> 'account/modify-personal-info',
     	'account/perosnalInfo/deleteProfilePicture'		=> 'account/delete-profile-picture',
     	'account/security/changePassword'				=> 'account/change-password',
+    	'account/security/eMailVisibility'				=> 'account/e-mail-visibility',	
     	'account/security/recoveryEmail/addOrModify'	=> 'account/add-or-modify-recovery-email',
     	'account/security/recoveryEmail/delete'			=> 'account/delete-recovery-email',
     	'account/security/twoStepVerification'			=> 'account/two-step-verification',
@@ -60,6 +61,10 @@ return Array(
     	'groups/edit/<id:\d+>'		=> 'groups/edit-group',
     	'groups/delete/<id:\d+>'	=> 'groups/delete-group',
     	'groups/view/<id:\d+>'		=> 'groups/view-group',
+    		
+    	'search/index'			=> 'search/index',
+    	'search/search'			=> 'search/search',
+    	'search/searchUser'		=> 'search/search-user',
     		
     ),
 );

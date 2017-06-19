@@ -15,10 +15,11 @@ create table if not exists `users`(
   `first_name` varchar(50) not null,
   `last_name` varchar(50) not null,
   `e_mail` varchar(50) not null unique,
+  `e_mail_visibility` varchar(10) not null,
   `recovery_e_mail` varchar(50) default null unique,
   `password` varchar(50) not null,
   `gender` varchar(10) not null,
-  `profile_picture_path` varchar(200) default null,
+  `profile_picture_path` varchar(200) not null,
   `auth_key` varchar(30) not null,
   `account_status` varchar(10) not null,
   `verification_key` varchar(6) not null,
@@ -73,7 +74,7 @@ create table if not exists `albums`(
   `album_name` varchar(20) not null,
   `album_visibility` varchar(10) not null,
   `album_create_date` varchar(10) not null,
-  `is_empty` boolean not null default 1,
+  `album_profile_picture_path` varchar(200) not null,
   primary key(`album_id`),
   constraint `AlbumUserId` foreign key (`user_id`) references `users` (`user_id`)
 );
@@ -93,7 +94,7 @@ create table if not exists `groups`(
   `group_name` varchar(20) not null unique,
   `group_visibility` varchar(10) not null,
   `group_create_date` varchar(10) not null,
-  `is_empty` boolean not null default 1,
+  `group_profile_picture_path` varchar(200) not null,
   primary key(`group_id`),
   constraint `GroupUserId` foreign key (`user_id`) references `users` (`user_id`)
 );

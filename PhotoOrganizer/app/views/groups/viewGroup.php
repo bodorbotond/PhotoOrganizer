@@ -16,23 +16,33 @@ $this->params['breadcrumbs'][] = $this->title;
     
     	<br>
     
-    	<div>										<!-- album's propertys -->
-    		<b>Number of photos: <?= count($groupPhotos); ?></b>
-    		<br>
-    		<b>Number of users: <?= count($groupUsers); ?></b>
-    		<br>
-    		<b>Administrator: <?= $administrator->user_name; ?></b>
-    		<br>
-			<b><?= ucfirst($group->group_visibility); ?></b>
+    	<div class="row">											<!-- group's profile picture -->
+	    	
+	    	<div class="col-md-4">
+	    		<?= Html::img('@web/' . $group->group_profile_picture_path, ['id' => 'ProfilePicture', 'class' => 'img-circle']); ?>
+	    	</div>
+	    	
+	    	<br><br>
+	    	
+	    	<div class="col-md-4">										<!-- group's propertys -->
+	    		<b>Number of photos: <?= count($groupPhotos); ?></b>
+	    		<br>
+	    		<b>Number of users: <?= count($groupUsers); ?></b>
+	    		<br>
+	    		<b>Administrator: <?= $administrator->user_name; ?></b>
+	    		<br>
+				<b><?= ucfirst($group->group_visibility); ?></b>
+	    	</div>
+	    	
     	</div>
     	
-    	<br><br>   	
+    	<br>
     	
 		<div id="GroupMenu">						<!-- menu -->
     	
-    		<?= Html::a('Add Users', ['/groups/index/'], ['class' => 'btn btn-default']) ?>
+    		<?= Html::a('Add Users', ['/search/searchUser'], ['class' => 'btn btn-default']) ?>
     		
-    		<?= Html::a('Add Photos', ['/photos/index/'], ['class' => 'btn btn-default']) ?>
+    		<?= Html::a('Add Photos', ['/photos/index'], ['class' => 'btn btn-default']) ?>
     		
     		<br><br>
 		

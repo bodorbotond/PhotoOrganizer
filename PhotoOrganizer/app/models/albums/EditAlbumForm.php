@@ -12,6 +12,7 @@ class EditAlbumForm extends Model
 	
 	public $albumName;
     public $albumVisibility;
+    public $albumProfilePicturePath;
     
     public function __construct($album)
     {
@@ -21,8 +22,8 @@ class EditAlbumForm extends Model
     public function rules()
     {
         return [
-            // albumName, albumVisibility are required
-            [['albumName', 'albumVisibility'], 'required'],
+            // albumName, albumVisibility, albumProfilePicturePath are required
+            [['albumName', 'albumVisibility', 'albumProfilePicturePath'], 'required'],
         	// albumName is validated by validateAlbumName()
         	[['albumName'], 'validateAlbumName'],
         		
@@ -34,6 +35,7 @@ class EditAlbumForm extends Model
     	return [
     			'albumName' 		=> 'Album Name',
     			'albumVisibility'	=> 'Album Visibility',
+    			'albumProfilePicturePath' 	=> 'Album Profile Picture',
     	];
     }
     
@@ -55,8 +57,9 @@ class EditAlbumForm extends Model
     {
     	if ($this->validate())
     	{
-    		$this->album->album_name 			= $this->albumName;
-    		$this->album->album_visibility 		= $this->albumVisibility;
+    		$this->album->album_name 					= $this->albumName;
+    		$this->album->album_visibility 				= $this->albumVisibility;
+    		$this->album->album_profile_picture_path 	= $this->albumProfilePicturePath;
     
     		if ($this->album->update())
     		{

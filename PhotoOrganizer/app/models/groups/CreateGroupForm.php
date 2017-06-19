@@ -12,12 +12,13 @@ class CreateGroupForm extends Model
 {
 	public $groupName;	
 	public $groupVisibility;
+	public $groupProfilePicturePath;
 
     public function rules()
     {
         return [
-            // groupName, groupVisibility are required
-            [['groupName', 'groupVisibility'], 'required'],
+            // groupName, groupVisibility, groupProfilePicturePath are required
+            [['groupName', 'groupVisibility', 'groupProfilePicturePath'], 'required'],
         	// groupName is validated by validateAlbumName()
         	[['groupName'], 'validateGroupName'],
         		
@@ -27,8 +28,9 @@ class CreateGroupForm extends Model
     public function attributeLabels()						// name of attributes in the browser
     {
     	return [
-    			'groupName' 		=> 'Group Name',
-    			'groupVisibility'	=> 'Group Visibility',
+    			'groupName' 				=> 'Group Name',
+    			'groupVisibility'			=> 'Group Visibility',
+    			'groupProfilePicturePath' 	=> 'Group Profile Picture'
     	];
     }
     
@@ -51,10 +53,11 @@ class CreateGroupForm extends Model
     	{
     		$group = new Groups();			// create new Group
     		
-    		$group->user_id 			= Yii::$app->user->identity->user_id;
-    		$group->group_name 			= $this->groupName;
-    		$group->group_visibility 	= $this->groupVisibility;
-    		$group->group_create_date 	= date(Yii::$app->params['dateFormat']);
+    		$group->user_id 					= Yii::$app->user->identity->user_id;
+    		$group->group_name 					= $this->groupName;
+    		$group->group_visibility 			= $this->groupVisibility;
+    		$group->group_create_date 			= date(Yii::$app->params['dateFormat']);
+    		$group->group_profile_picture_path 	= $this->groupProfilePicturePath;
     		
     		if ($group->save())				// if group insert to database successfuly
     		{

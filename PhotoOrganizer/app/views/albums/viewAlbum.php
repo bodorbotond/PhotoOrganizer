@@ -16,13 +16,23 @@ $this->params['breadcrumbs'][] = $this->title;
     
     	<br>   
     	
-    	<div>										<!-- album's propertys -->
-    		<b>Number of photos: <?= count($albumPhotos); ?></b>
-    		<br>
-			<b><?= ucfirst($album->album_visibility); ?></b>
+    	<div class="row">											<!-- album's profile picture -->
+	    	
+	    	<div class="col-md-4">
+	    		<?= Html::img('@web/' . $album->album_profile_picture_path, ['id' => 'ProfilePicture', 'class' => 'img-circle']); ?>
+	    	</div>
+	    	
+	    	<br><br>
+	    	
+	    	<div class="col-md-4">										<!-- album's propertys -->
+	    		<b>Number of photos: <?= count($albumPhotos); ?></b>
+	    		<br>
+				<b><?= ucfirst($album->album_visibility); ?></b>
+    		</div>
+    		
     	</div>
     	
-    	<br><br>  
+    	<br> 
     	
     	<div id="PhotosMenu">						<!-- menu -->
     	

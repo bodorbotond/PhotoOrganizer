@@ -29,7 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
     	<?= $form->field($model, 'groupVisibility')->dropDownList([
     																'private'	=> 'private',
     																'public'	=> 'public',
-    	]); ?>  
+    	]); ?>
+    	
+    	<?= $form->field($model, 'groupProfilePicturePath')->dropDownList([
+    																'images/group_profile_picture1.png'	=> 'Picture1',
+    																'images/group_profile_picture2.png'	=> 'Picture2',
+    																'images/group_profile_picture3.png'	=> 'Picture3',
+    	]); ?>   
 
         <div class="form-group">
             <div class="col-lg-offset-1 col-lg-11">
@@ -38,5 +44,36 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
     <?php ActiveForm::end(); ?>
+    
+    <br><br>
+    
+    <div id="UserPhotos">				
+			<div class="well">
+			    	
+				    <div class="userPhoto">							
+						<?= Html::img('@web/images/group_profile_picture1.png'); ?>						
+						<div>
+							Picture1
+						</div>								
+		    		</div>
+		    		
+		    		<div class="userPhoto">							
+						<?= Html::img('@web/images/group_profile_picture2.png'); ?>						
+						<div>
+							Picture2
+						</div>								
+		    		</div>
+		    		
+		    		<div class="userPhoto">							
+						<?= Html::img('@web/images/group_profile_picture3.png'); ?>						
+						<div>
+							Picture3
+						</div>								
+		    		</div>
+		    	
+		    	<br class="clearBoth" />
+	    
+	    	</div>	    	
+	    </div>
 
 </div>

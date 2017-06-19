@@ -12,6 +12,7 @@ class EditGroupForm extends Model
 	
 	public $groupName;	
 	public $groupVisibility;
+	public $groupProfilePicturePath;
 	
 	public function __construct($group)
 	{
@@ -21,8 +22,8 @@ class EditGroupForm extends Model
     public function rules()
     {
         return [
-            // groupName, groupVisibility are required
-            [['groupName', 'groupVisibility'], 'required'],
+            // groupName, groupVisibility, groupProfilePicturePath are required
+            [['groupName', 'groupVisibility', 'groupProfilePicturePath'], 'required'],
         	// groupName is validated by validateAlbumName()
         	[['groupName'], 'validateGroupName'],
         		
@@ -32,8 +33,9 @@ class EditGroupForm extends Model
     public function attributeLabels()						// name of attributes in the browser
     {
     	return [
-    			'groupName' 		=> 'Group Name',
-    			'groupVisibility'	=> 'Group Visibility',
+    			'groupName' 				=> 'Group Name',
+    			'groupVisibility'			=> 'Group Visibility',
+    			'groupProfilePicturePath' 	=> 'Group Profile Picture'
     	];
     }
     
@@ -55,8 +57,9 @@ class EditGroupForm extends Model
     {
     	if ($this->validate())
     	{
-    		$this->group->group_name 			= $this->groupName;
-    		$this->group->group_visibility 	= $this->groupVisibility;
+    		$this->group->group_name 					= $this->groupName;
+    		$this->group->group_visibility 				= $this->groupVisibility;
+    		$this->group->group_profile_picture_path 	= $this->groupProfilePicturePath;
     		
     		if ($this->group->update())
     		{

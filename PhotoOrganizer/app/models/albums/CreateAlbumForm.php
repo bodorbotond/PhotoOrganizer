@@ -11,12 +11,13 @@ class CreateAlbumForm extends Model
 	
 	public $albumName;
     public $albumVisibility;
+    public $albumProfilePicturePath;
 
     public function rules()
     {
         return [
-            // albumName, albumVisibility are required
-            [['albumName', 'albumVisibility'], 'required'],
+            // albumName, albumVisibility, albumProfilePicturePath are required
+            [['albumName', 'albumVisibility', 'albumProfilePicturePath'], 'required'],
         	// albumName is validated by validateAlbumName()
         	[['albumName'], 'validateAlbumName'],
         		
@@ -26,8 +27,9 @@ class CreateAlbumForm extends Model
     public function attributeLabels()						// name of attributes in the browser
     {
     	return [
-    			'albumName' 		=> 'Album Name',
-    			'albumVisibility'	=> 'Album Visibility',
+    			'albumName' 				=> 'Album Name',
+    			'albumVisibility'			=> 'Album Visibility',
+    			'albumProfilePicturePath' 	=> 'Album Profile Picture',
     	];
     }
     
@@ -50,10 +52,11 @@ class CreateAlbumForm extends Model
     	{
     		$album = new Albums();
     		
-    		$album->user_id 			= Yii::$app->user->identity->user_id;
-    		$album->album_name 			= $this->albumName;
-    		$album->album_visibility 	= $this->albumVisibility;
-    		$album->album_create_date 	= date(Yii::$app->params['dateFormat']);
+    		$album->user_id 					= Yii::$app->user->identity->user_id;
+    		$album->album_name 					= $this->albumName;
+    		$album->album_visibility 			= $this->albumVisibility;
+    		$album->album_create_date 			= date(Yii::$app->params['dateFormat']);
+    		$album->album_profile_picture_path 	= $this->albumProfilePicturePath;
     		
     		if ($album->save())
     		{

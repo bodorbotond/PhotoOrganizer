@@ -52,38 +52,19 @@ $this->params['breadcrumbs'][] = $this->title;
 			
 			<div class="well">
 	    
-			    <?php
-			    $cnt = 0;		// counter for different group's profile picture 
-			    foreach($userGroups as $groups):
-			   
-				    if ($cnt % 2 === 0)
-				    {
-				    	$groupProfilePicturePath = '@web/images/group_profile_picture1.png';
-				    }
-				    elseif ($cnt % 3 === 0)
-				    {
-				    	$groupProfilePicturePath = '@web/images/group_profile_picture2.png';
-				    }
-				    else
-				    {
-				    	$groupProfilePicturePath = '@web/images/group_profile_picture3.png';
-				    }
-			    ?>
+			    <?php foreach($userGroups as $group): ?>
 			    
 			    	<div class="userPhoto">
 							
-						<?= Html::a(Html::img($groupProfilePicturePath), ['/groups/view/' . $groups->group_id]); ?>											<!-- user's photo -->
+						<?= Html::a(Html::img('@web/' . $group->group_profile_picture_path), ['/groups/view/' . $group->group_id]); ?>											<!-- user's photo -->
 								
 						<div>
-							<?= $groups->group_name; ?>
+							<?= $group->group_name; ?>
 						</div>
 								
 		    		</div>
 		    			
-		    	<?php
-		    	$cnt++;
-		    	endforeach;
-		    	?>
+		    	<?php endforeach; ?>
 			    
 			    <br class="clearBoth" />
 	    

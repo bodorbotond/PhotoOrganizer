@@ -13,6 +13,7 @@ use app\models\Users;
  * @property string $group_name
  * @property string $group_visibility
  * @property string $group_create_date
+ * @property string $group_profile_picture_path
  *
  * @property Users $user
  * @property GroupsPhotos[] $groupsPhotos
@@ -34,10 +35,12 @@ class Groups extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'group_name', 'group_visibility', 'group_create_date'], 'required'],
+            [['user_id', 'group_name', 'group_visibility', 'group_create_date', 'group_profile_picture_path'], 'required'],
             [['user_id'], 'integer'],
             [['group_name'], 'string', 'max' => 20],
             [['group_visibility', 'group_create_date'], 'string', 'max' => 10],
+            [['group_profile_picture_path'], 'string', 'max' => 200],
+            [['group_name'], 'unique'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
@@ -53,6 +56,7 @@ class Groups extends \yii\db\ActiveRecord
             'group_name' => 'Group Name',
             'group_visibility' => 'Group Visibility',
             'group_create_date' => 'Group Create Date',
+            'group_profile_picture_path' => 'Group Profile Picture Path',
         ];
     }
 

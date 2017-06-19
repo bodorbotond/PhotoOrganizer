@@ -45,29 +45,11 @@ $this->params['breadcrumbs'][] = $this->title;
 				
 			<div class="well">
 	    
-			    <?php
-			    $cnt = 0;  			// counter for different album's profile picture 
-			    foreach($userAlbums as $album):
-			    ?>
+			    <?php foreach($userAlbums as $album): ?>
 			    
 			    	<div class="userPhoto">
 						
-						<?php
-						if ($cnt % 2 === 0)
-						{
-							$albumProfilePicturePath = '@web/images/album_profile_picture1.jpg';
-						}
-						elseif ($cnt % 3 === 0)
-						{
-							$albumProfilePicturePath = '@web/images/album_profile_picture2.jpg';
-						}
-						else
-						{
-							$albumProfilePicturePath = '@web/images/album_profile_picture3.png';
-						}
-						?>
-						
-						<?= Html::a(Html::img($albumProfilePicturePath), ['/albums/view/' . $album->album_id]); ?>											<!-- user's photo -->
+						<?= Html::a(Html::img('@web/' . $album->album_profile_picture_path), ['/albums/view/' . $album->album_id]); ?>											<!-- user's photo -->
 								
 						<div>
 							<?= $album->album_name; ?>
@@ -75,10 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
 								
 		    		</div>
 		    			
-		    	<?php
-		    	$cnt++;
-		    	endforeach;
-		    	?>
+		    	<?php endforeach; ?>
 			    
 			    <br class="clearBoth" />
 	    
