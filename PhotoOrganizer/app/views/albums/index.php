@@ -45,35 +45,40 @@ $this->params['breadcrumbs'][] = $this->title;
 				
 			<div class="well">
 	    
-			    <?php foreach($userAlbums as $album): ?>
+			    <?php
+			    $cnt = 0;  			// counter for different album's profile picture 
+			    foreach($userAlbums as $album):
+			    ?>
 			    
-			    	<?php if ($album->is_empty): ?>				<!-- if album not contain any photos
-			    															=> album's cover photo from server -->
-				    	<div class="userPhoto">
-							
-							<?= Html::a(Html::img('@web/images/empty_album.png'), ['/albums/viewAlbum/' . $album->album_id]); ?>											<!-- user's photo -->
+			    	<div class="userPhoto">
+						
+						<?php
+						if ($cnt % 2 === 0)
+						{
+							$albumProfilePicturePath = '@web/images/album_profile_picture1.jpg';
+						}
+						elseif ($cnt % 3 === 0)
+						{
+							$albumProfilePicturePath = '@web/images/album_profile_picture2.jpg';
+						}
+						else
+						{
+							$albumProfilePicturePath = '@web/images/album_profile_picture3.png';
+						}
+						?>
+						
+						<?= Html::a(Html::img($albumProfilePicturePath), ['/albums/view/' . $album->album_id]); ?>											<!-- user's photo -->
 								
-							<div>
-								<?= $album->album_name; ?>
-							</div>
+						<div>
+							<?= $album->album_name; ?>
+						</div>
 								
-		    			</div>
+		    		</div>
 		    			
-		    		<?php else: ?>								<!-- else (if album contain photos)
-			    															=> album's cover photo is photos from album -->		    		
-		    			<div class="userPhoto">
-							
-							<?= Html::img('@web/'); ?>
-								
-							<div>
-								<?= $album->album_name; ?>
-							</div>
-								
-		    			</div>
-		    		
-		    		<?php endif; ?>
-			    
-			    <?php endforeach;?>
+		    	<?php
+		    	$cnt++;
+		    	endforeach;
+		    	?>
 			    
 			    <br class="clearBoth" />
 	    

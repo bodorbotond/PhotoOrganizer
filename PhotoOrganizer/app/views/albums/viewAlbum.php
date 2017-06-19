@@ -29,6 +29,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php else:?>								<!-- else (if album contain photos) -->
     
     	
+    	<div>										<!-- album's propertys -->
+    		<b>Number of photos: <?= count($albumPhotos); ?></b>
+    		<br>
+			<b><?= ucfirst($album->album_visibility); ?></b>
+    	</div>
+    	
+    	<br>    	
+    	
     	<div class="text-center">					<!-- add more photos to album -->
 	    	
 	    	<?= Collapse::widget([						//Bootstrap Accordion Collapse

@@ -200,7 +200,7 @@ class AlbumsController extends Controller
 			}
 		}
 	
-		$this->redirect(['/albums/index']);
+		$this->redirect(['/albums/view/' . $id]);
 	}
 	
 }
