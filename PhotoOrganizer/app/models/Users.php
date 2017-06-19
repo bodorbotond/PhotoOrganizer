@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "users".
@@ -12,6 +13,7 @@ use Yii;
  * @property string $first_name
  * @property string $last_name
  * @property string $e_mail
+ * @property string $e_mail_visibility
  * @property string $recovery_e_mail
  * @property string $password
  * @property string $gender
@@ -21,9 +23,14 @@ use Yii;
  * @property string $verification_key
  * @property integer $two_step_verification
  *
+ * @property Albums[] $albums
+ * @property Groups[] $groups
+ * @property GroupsUsers[] $groupsUsers
+ * @property OldPasswords[] $oldPasswords
  * @property Photos[] $photos
+ * @property UsersSequrityQuestions[] $usersSequrityQuestions
  */
-class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+class Users extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
      * @inheritdoc
@@ -39,10 +46,10 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['user_name', 'first_name', 'last_name', 'e_mail', 'password', 'gender', 'auth_key', 'account_status', 'verification_key'], 'required'],
+            [['user_name', 'first_name', 'last_name', 'e_mail', 'e_mail_visibility', 'password', 'gender', 'profile_picture_path', 'auth_key', 'account_status', 'verification_key'], 'required'],
             [['two_step_verification'], 'integer'],
             [['user_name', 'first_name', 'last_name', 'e_mail', 'recovery_e_mail', 'password'], 'string', 'max' => 50],
-            [['gender', 'account_status'], 'string', 'max' => 10],
+            [['e_mail_visibility', 'gender', 'account_status'], 'string', 'max' => 10],
             [['profile_picture_path'], 'string', 'max' => 200],
             [['auth_key'], 'string', 'max' => 30],
             [['verification_key'], 'string', 'max' => 6],
@@ -63,15 +70,48 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'e_mail' => 'E Mail',
+            'e_mail_visibility' => 'E Mail Visibility',
             'recovery_e_mail' => 'Recovery E Mail',
             'password' => 'Password',
             'gender' => 'Gender',
-            'profile_picture_path' => 'Profile Picture Path',		// save just the photo's access path in the database
-            'auth_key' => 'Auth Key',								// enable auto login when the session is destroyed
-            'account_status' => 'Account Status',					// wheter the user activated the account(default inactive)
-            'verification_key' => 'Verification Key',				// activation key what the server will send to the users in email
+            'profile_picture_path' => 'Profile Picture Path',
+            'auth_key' => 'Auth Key',
+            'account_status' => 'Account Status',
+            'verification_key' => 'Verification Key',
             'two_step_verification' => 'Two Step Verification',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAlbums()
+    {
+        return $this->hasMany(Albums::className(), ['user_id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGroups()
+    {
+        return $this->hasMany(Groups::className(), ['user_id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGroupsUsers()
+    {
+        return $this->hasMany(GroupsUsers::className(), ['user_id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOldPasswords()
+    {
+        return $this->hasMany(OldPasswords::className(), ['user_id' => 'user_id']);
     }
 
     /**
@@ -80,6 +120,14 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function getPhotos()
     {
         return $this->hasMany(Photos::className(), ['user_id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsersSequrityQuestions()
+    {
+        return $this->hasMany(UsersSequrityQuestions::className(), ['user_id' => 'user_id']);
     }
     
     public function getAuthKey()
@@ -131,5 +179,4 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
     	return self::findOne(['verification_key' => $verificationKey]);
     }
-    
 }
