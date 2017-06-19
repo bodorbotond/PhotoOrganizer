@@ -9,20 +9,13 @@ use yii\bootstrap\ActiveForm;
 $this->title = 'Account Info';
 $this->params['breadcrumbs'][] = $this->title;
 
-// profle picture path(two way: - logged in user has choosen optionally own profile picture
-// 							    - logged in user has default profile picture from server
-
-$profilePicturePath = Yii::$app->user->identity->profile_picture_path !== NULL ?
-					  '@web/' . Yii::$app->user->identity->profile_picture_path :
-					  '@web/images/profile_picture.png';
-
 // loged in user's personal info (first element from tabs menu)
 
 $personalInfo = '<br>'
 				. 'Manage this basic information - your name, email, profile picture - to help others find you on Groups'
 				. '<br><br>'
 				// profile picture in larger size (in Bootstrap Modal)
-				. Html::a(Html::img($profilePicturePath, ['class' => 'img-circle', 'id' => 'ProfilePicture']), ['#ProfilePictureModal'], ['data-toggle' => 'modal']) 
+				. Html::a(Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['class' => 'img-circle', 'id' => 'ProfilePicture']), ['#ProfilePictureModal'], ['data-toggle' => 'modal']) 
 				. '<br><br>'
 				. Collapse::widget([						//Bootstrap Accordion Collapse
 					'encodeLabels' => false,
@@ -182,9 +175,9 @@ $accountSecurity = 	'<br>'
 	      
 	      <div class="modal-body">
 	        <?php
-	        echo Html::img($profilePicturePath, ['id' => 'ProfilePictureInModal'])
+	        echo Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['id' => 'ProfilePictureInModal'])
 	        . '<br>'
-	        . (Yii::$app->user->identity->profile_picture_path !== NULL ?											// if user has profile picture
+	        . (Yii::$app->user->identity->profile_picture_path !== 'images/profile_picture.png' ?											// if user has profile picture
 	          Html::a('Delete', ['/account/perosnalInfo/deleteProfilePicture'], ['class' => 'btn btn-danger']) :	// then use can delete it
 	          '');																									// else Delete button is not required
 	        ?>

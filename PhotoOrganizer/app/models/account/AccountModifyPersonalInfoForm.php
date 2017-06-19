@@ -116,9 +116,9 @@ class AccountModifyPersonalInfoForm extends Model
 			if (!empty($this->profilePicture->baseName))	// if user want to modify optional profile picture then save on the server
 			{
 	
-				if ($user->profile_picture_path !== null)		// if user has already profile picture
+				if ($user->profile_picture_path !== 'images/profile_picture.png')	// if user has already profile picture
 				{
-					unlink($user->profile_picture_path);			// delete old profile picture
+					unlink($user->profile_picture_path);								// delete old profile picture
 				}
 				
 				$path = 'uploads/' . $user->user_id;			// directory path in the server where the user save the photos
@@ -140,9 +140,9 @@ class AccountModifyPersonalInfoForm extends Model
 	
 	public function deleteProfilePicture()
 	{
-		$user = Users::findOne(Yii::$app->user->identity->id);		// get logged in user
-		unlink($user->profile_picture_path);						// delete profile picture from server
-		$user->profile_picture_path = null;							// profile picture path in database set null
+		$user = Users::findOne(Yii::$app->user->identity->id);			// get logged in user
+		unlink($user->profile_picture_path);							// delete profile picture from server
+		$user->profile_picture_path = 'images/profile_picture.png';		// profile picture path in database set default profile picture
 		return $user->update();		
 	}
 }
