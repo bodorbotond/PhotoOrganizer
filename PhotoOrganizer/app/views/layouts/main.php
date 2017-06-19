@@ -29,10 +29,6 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     
-    $profilePicturePath = Yii::$app->user->isGuest ? '' : Yii::$app->user->identity->profile_picture_path !== NULL ?
-     													  '@web/' . Yii::$app->user->identity->profile_picture_path : 
-    													  '@web/images/profile_picture.png';
-    
     NavBar::begin([
         'brandLabel' 	=> 'Photo Organizer',
     	'brandUrl' 		=> null,
@@ -48,7 +44,7 @@ AppAsset::register($this);
         'items' 		=> [
         	[
         		'label'		=> '<li>'
-        							. Html::beginForm(['/site/search'], 'post', ['class' => 'navbar-form'])
+        							. Html::beginForm(['/search/search'], 'post', ['class' => 'navbar-form'])
         								. '<div class="input-group">'
 	        								. Html::textInput('SearchText', '', ['class' => 'form-control', 'placeholder' => 'Search'])
 				        					. '<div class="input-group-btn">'
@@ -97,11 +93,11 @@ AppAsset::register($this);
         	]
             ) : (
             [
-        		'label' 	=> Html::img($profilePicturePath, ['class' => 'img-circle', 'id' => 'ProfilePictureInMenu']),
+        		'label' 	=> Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['class' => 'img-circle', 'id' => 'ProfilePictureInMenu']),
         		'items' 	=> [
 			        			[
 			        				'label' 	=> '<div id="DropdownAccountInfo">'
-			        									. Html::img($profilePicturePath, ['class' => 'img-circle ProfilePictureInDropdownAccountInfo', 'id' => 'ProfilePictureInDropdownAccountInfo'])
+			        									. Html::img('@web/' . Yii::$app->user->identity->profile_picture_path, ['class' => 'img-circle ProfilePictureInDropdownAccountInfo', 'id' => 'ProfilePictureInDropdownAccountInfo'])
 			        							   		. '<span>'
 			        										. '<br>&nbsp&nbsp'
 			        										. Yii::$app->user->identity->user_name
