@@ -136,11 +136,21 @@ class SearchController extends Controller
     		return $this->goHome();			// redirect to home page
     	}
     	
+    	$groups = Array();			
+    	if (!Yii::$app->user->isGuest)		// when user is logged id
+    	{
+    		foreach(Groups::findByUserId(Yii::$app->user->identity->user_id) as $group)		// build group list with group's name and id for 'add user to group' functionality
+	    	{
+	    		$groups[$group->group_id] = $group->group_name;
+	    	}
+    	}
+    	
     	$userPhotos = Photos::findByUserId($id);
     	
     	return $this->render('viewUser',[
     			'user' 			=> $user,
     			'userPhotos'	=> $userPhotos,
+    			'groups'		=> $groups,
     	]);
     }
     
@@ -209,7 +219,9 @@ class SearchController extends Controller
     	if ($model->load(Yii::$app->request->post()) && $model->validate())
     	{
     		return $this->render('index', [
-    			'users' => $model->searchUser(),
+    			'users' 	=> $model->searchUser(),
+    			'albums'	=> [],
+    			'groups'	=> [],
     		]);
     	}
     	

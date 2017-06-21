@@ -25,7 +25,8 @@ class GroupsController extends Controller
 						'class' => AccessControl::className(),			// action filter
 						'only' => [										// all aplied actions
 								'index',
-								'createGroup', 'editGroup', 'deleteGroup', 'viewGroup', 
+								'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
+								'addUser',
 						],
 						'rules' => [									// access rules
 								[
@@ -33,6 +34,7 @@ class GroupsController extends Controller
 									'actions'	=> [					// these actions
 														'index',
 														'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
+														'addUser',
 													],
 									'roles' 	=> ['@'],						// authenticated users
 								],
@@ -47,6 +49,7 @@ class GroupsController extends Controller
 								'editGroup' 	=> ['get', 'put', 'post'],
 								'deleteGroup' 	=> ['get', 'delete'],
 								'viewGroup'		=> ['get', 'post'],
+								'addUser'		=> ['get', 'put', 'post'],
 						],
 				],
 		];
@@ -126,7 +129,7 @@ class GroupsController extends Controller
 		$model = new EditGroupForm($group);
 	
 		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id	// if id is wrong or album not belong to logged in user
-			|| $model->load(Yii::$app->request->post()) && $model->edit())				// or edit album was sucessful
+			|| ($model->load(Yii::$app->request->post()) && $model->edit()))			// or edit album was sucessful
 		{
 			return $this->redirect(['/groups/view/' . $id]);										// redirect to albums index page
 		}
@@ -160,6 +163,7 @@ class GroupsController extends Controller
 		{
 			$groupPhoto->delete();										// delete photos
 		}
+		
 		$group->delete();											// delete group
 	
 		return $this->redirect(['/groups/index']);
@@ -175,7 +179,7 @@ class GroupsController extends Controller
 	
 		$group = Groups::findOne($id);
 		
-		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or this group not belong to logged in user
+		if ($group === null || count(GroupsUsers::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) === 0)	// if id is wrong or logged in user is not a member in this group
 		{
 			return $this->redirect(['/groups/index']);
 		}
@@ -200,6 +204,44 @@ class GroupsController extends Controller
 				'groupUsers' 	=> $groupUsers,
 				'administrator'	=> $administrator,
 		]);
+	}
+	
+	
+	public function actionAddUser($id)
+	{
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+		
+		if (Users::findOne($id) === null) 
+		{
+			return $this->redirect(['/groups/index']);
+		}
+		
+		if (Yii::$app->request->isPost)		// if post request arrive
+		{
+			$group = Groups::findOne(Yii::$app->request->post('GroupId'));
+			
+			if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id)	// if group id what arrived in post is wrong or group is not belong to logged in user
+			{
+				return $this->redirect(['/groups/index']);
+			}
+			
+			if (count(GroupsUsers::findByGroupIdAndUserId($group->group_id, $id)) === 0)	// if user is not a member in this group yet
+			{
+				$groupUser = new GroupsUsers();
+				$groupUser->group_id = $group->group_id;
+				$groupUser->user_id = $id;
+				
+				if ($groupUser->save())
+				{
+					return $this->redirect(['/groups/view/' . $group->group_id]);
+				}
+			}
+		}
+		
+		return $this->redirect(['/search/users/view/' . $id]);
 	}
 	
 }

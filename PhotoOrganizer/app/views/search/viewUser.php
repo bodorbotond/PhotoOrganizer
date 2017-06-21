@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\bootstrap\Collapse;
 
 $this->title = $user->user_name;
 $this->params['breadcrumbs'][] = $this->title;
@@ -32,6 +33,28 @@ $this->params['breadcrumbs'][] = $this->title;
 				<b class="propertys"><span class="yellow">Gender: </span><?= $user->gender; ?></b>
 				<br>
 				<b class="propertys"><span class="yellow">Photos: </span><?= count($userPhotos); ?></b>
+				
+				<?php if (!Yii::$app->user->isGuest && count($groups) !== 0):?>				<!-- if user is logged in and has at least one group-->
+					<br><br>
+					
+					<div class="text-center">							<!-- show add group option -->
+						<?= Collapse::widget([						//Bootstrap Accordion Collapse
+							'encodeLabels' => false,
+						    'items' => [
+						        [
+						            'label' 	=> '<h4>Add User To My Group</h4>',
+						            'content' 	=> Html::beginForm(['/groups/addUser/' . $user->user_id], 'post')	// show add form
+						        						. 'My Groups: '
+						        						. Html::dropDownList('GroupId', reset($groups), $groups)
+						        						. '<br><br>'
+						        						. Html::submitButton('Add', ['class' => 'btn btn-primary'])
+												   . Html::endForm(),
+						        ],	
+							]
+		    			]); ?>
+					</div>
+				<?php endif; ?>
+    			
     		</div>
     		
     </div>

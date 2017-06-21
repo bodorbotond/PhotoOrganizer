@@ -28,6 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
 	    		<b class="propertys"><span class="yellow">Administrator: </span><?= $user->user_name; ?></b>
 	    		<br>
 				<b class="propertys"><?= ucfirst($group->group_visibility); ?></b>
+				
+				<br><br>
+				<?= Html::a('<span class="glyphicon glyphicon-plus"></span> Join', [''], ['class' => 'btn btn-primary']); ?>
+    		
 	    	</div>
 	    	
     	</div>

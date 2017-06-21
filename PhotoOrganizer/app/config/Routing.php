@@ -61,6 +61,7 @@ return Array(
     	'groups/edit/<id:\d+>'		=> 'groups/edit-group',
     	'groups/delete/<id:\d+>'	=> 'groups/delete-group',
     	'groups/view/<id:\d+>'		=> 'groups/view-group',
+    	'groups/addUser/<id:\d+>'	=> 'groups/add-user',
     		
     	'search/index'					=> 'search/index',
     	'search/search'					=> 'search/search',
