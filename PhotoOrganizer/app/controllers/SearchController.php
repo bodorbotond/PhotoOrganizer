@@ -11,6 +11,7 @@ use app\models\search\SearchUserForm;
 use app\models\Users;
 use app\models\tables\Albums;
 use app\models\tables\Groups;
+use app\models\tables\GroupsUsers;
 use app\models\tables\Photos;
 use app\models\search\app\models\search;
 
@@ -202,12 +203,18 @@ class SearchController extends Controller
     		  ->from ('users u, groups_users gu')
     		  ->where ('u.user_id = gu.user_id and gu.group_id = ' . $id);
     	$groupUsers = $query->all();
+    	
+    	if (!Yii::$app->user->isGuest)		// when user is logged id
+    	{
+    		$isMember = count(GroupsUsers::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) !== 0;
+    	}
     	 
     	return $this->render('viewGroup',[
     			'group' 		=> $group,
     			'user'			=> $user,
 				'groupPhotos'	=> $groupPhotos,
 				'groupUsers' 	=> $groupUsers,
+    			'isMember'		=> $isMember,
     	]);
     }
     

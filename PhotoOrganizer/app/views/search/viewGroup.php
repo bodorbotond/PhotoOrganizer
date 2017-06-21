@@ -29,8 +29,8 @@ $this->params['breadcrumbs'][] = $this->title;
 	    		<br>
 				<b class="propertys"><?= ucfirst($group->group_visibility); ?></b>
 				
-				<!-- if user is logged in and this groups is not belong to her/his -->
-				<?php if (!Yii::$app->user->isGuest && $group->group_id !== Yii::$app->user->identity->user_id):?>
+				<!-- if user is logged in and this groups is not belong to her/his and user is not a member in this group-->
+				<?php if (!Yii::$app->user->isGuest && $group->user_id !== Yii::$app->user->identity->user_id && !$isMember):?>
 									<!-- then user can join this group -->
 					<br><br>
 					<?= Html::a('<span class="glyphicon glyphicon-plus"></span> Join', ['/groups/join/' . $group->group_id], ['class' => 'btn btn-primary']); ?>
