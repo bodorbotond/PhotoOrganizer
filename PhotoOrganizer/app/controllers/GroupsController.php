@@ -13,6 +13,7 @@ use app\models\groups\EditGroupForm;
 use app\models\tables\Groups;
 use app\models\tables\GroupsUsers;
 use app\models\tables\GroupsPhotos;
+use app\models\tables\app\models\tables;
 
 class GroupsController extends Controller
 {
@@ -26,7 +27,7 @@ class GroupsController extends Controller
 						'only' => [										// all aplied actions
 								'index',
 								'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
-								'addUser',
+								'addUser', 'joinGroup',
 						],
 						'rules' => [									// access rules
 								[
@@ -34,7 +35,7 @@ class GroupsController extends Controller
 									'actions'	=> [					// these actions
 														'index',
 														'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
-														'addUser',
+														'addUser', 'joinGroup',
 													],
 									'roles' 	=> ['@'],						// authenticated users
 								],
@@ -50,6 +51,7 @@ class GroupsController extends Controller
 								'deleteGroup' 	=> ['get', 'delete'],
 								'viewGroup'		=> ['get', 'post'],
 								'addUser'		=> ['get', 'put', 'post'],
+								'joinGroup'		=> ['get', 'put', 'post'],
 						],
 				],
 		];
@@ -97,6 +99,9 @@ class GroupsController extends Controller
 				'otherGroups'	=> $otherGroups,
 		]);
 	}
+	
+	
+	// basic functionality with groups (create, edit, delete, view)
 	
 	
 	public function actionCreateGroup()
@@ -207,6 +212,9 @@ class GroupsController extends Controller
 	}
 	
 	
+	// add user to a group or join to a group
+	
+	
 	public function actionAddUser($id)
 	{
 		if (Yii::$app->user->isGuest)
@@ -242,6 +250,39 @@ class GroupsController extends Controller
 		}
 		
 		return $this->redirect(['/search/users/view/' . $id]);
+	}
+	
+	
+	public function actionJoinGroup($id)
+	{
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+		
+		$group = Groups::findOne($id);
+		
+		if ($group === null)		// if group id is wrong
+		{
+			return $this->redirect(['/groups/index']);
+		}
+		
+		if (count(GroupsUsers::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) !== 0	// if user is already a member in this group
+			|| $group->user_id === Yii::$app->user->identity->user_id)									// or this group is belong to logged in user
+		{
+			return $this->redirect(['/groups/view/' . $group->group_id]);
+		}
+		
+		$groupUser = new GroupsUsers();
+		$groupUser->group_id = $id;
+		$groupUser->user_id = Yii::$app->user->identity->user_id;
+		
+		if ($groupUser->save())
+		{
+			return $this->redirect(['/groups/view/' . $group->group_id]);
+		}
+		
+		return $this->redirect(['/groups/view/' . $group->group_id]);
 	}
 	
 }

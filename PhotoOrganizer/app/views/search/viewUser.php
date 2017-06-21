@@ -34,10 +34,11 @@ $this->params['breadcrumbs'][] = $this->title;
 				<br>
 				<b class="propertys"><span class="yellow">Photos: </span><?= count($userPhotos); ?></b>
 				
-				<?php if (!Yii::$app->user->isGuest && count($groups) !== 0):?>				<!-- if user is logged in and has at least one group-->
+				<!-- if user is logged in and has at least one group and user is not logged in user -->
+				<?php if (!Yii::$app->user->isGuest && count($groups) !== 0 && $user->user_id !== Yii::$app->user->identity->user_id):?>
 					<br><br>
 					
-					<div class="text-center">							<!-- show add group option -->
+					<div class="text-center">						<!-- the user can add to her/his groups another users -->
 						<?= Collapse::widget([						//Bootstrap Accordion Collapse
 							'encodeLabels' => false,
 						    'items' => [
