@@ -5,7 +5,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->title = 'Create Group';
 $this->params['breadcrumbs'][] = ['label' => 'Groups', 'url' => ['/groups/index']];
-$this->params['breadcrumbs'][] = ['label' => $group->group_name, 'url' => ['/groups/viewGroup/' . $group->group_id]];
+$this->params['breadcrumbs'][] = ['label' => $group->group_name, 'url' => ['/groups/view/' . $group->group_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

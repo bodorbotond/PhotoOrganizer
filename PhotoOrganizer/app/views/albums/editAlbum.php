@@ -5,7 +5,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->title = 'Edit Album';
 $this->params['breadcrumbs'][] = ['label' => 'Albums', 'url' => ['/albums/index']];
-$this->params['breadcrumbs'][] = ['label' => $album->album_name, 'url' => ['/albums/viewAlbum/' . $album->album_id]];
+$this->params['breadcrumbs'][] = ['label' => $album->album_name, 'url' => ['/albums/view/' . $album->album_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			    	
 				    <div class="userPhoto">
 							
-						<?= Html::a(Html::img('@web/' . $album['album_profile_picture_path']), ['/search/albums/view/' . $album['album_id']]); ?>
+						<?= Html::a(Html::img('@web/' . $album['album_profile_picture_path']), ['/albums/view/' . $album['album_id']]); ?>
 						
 						<div>
 							<?= $album['album_name']; ?>

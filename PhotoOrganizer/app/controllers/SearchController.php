@@ -31,6 +31,7 @@ class SearchController extends Controller
                 			'index',
                 			'search',
                 			'viewUser', 'viewAlbum', 'viewPhoto',
+                			'searchUser',
                 		   ],
                 'rules' => [
                     [
@@ -38,6 +39,7 @@ class SearchController extends Controller
                         				'index',
 			                			'search',
 			                			'viewUser', 'viewAlbum', 'viewPhoto',
+                        				'searchUser',
                         			   ],
                         'allow' 	=> true,
                         'roles' 	=> ['@'],
@@ -47,6 +49,7 @@ class SearchController extends Controller
                 						'index',
 			                			'search',
 			                			'viewUser', 'viewAlbum', 'viewPhoto',
+                						'searchUser',
                 					   ],
                 		'allow' 	=> true,
                 		'roles' 	=> ['?'],
@@ -56,11 +59,12 @@ class SearchController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                				'index' 	=> ['get'],
-                				'search' 	=> ['get', 'post'],
-                				'viewUser'	=> ['get'],
-                		 		'viewAlbum'	=> ['get'],
-                		 		'viewPhoto'	=> ['get'],
+                				'index' 		=> ['get'],
+                				'search' 		=> ['get', 'post'],
+                				'viewUser'		=> ['get'],
+                		 		'viewAlbum'		=> ['get'],
+                		 		'viewPhoto'		=> ['get'],
+                				'searchUser' 	=> ['get', 'post'],
                 ],
             ],
         ];

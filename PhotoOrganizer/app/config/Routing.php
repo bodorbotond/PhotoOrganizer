@@ -67,7 +67,6 @@ return Array(
     	'search/index'					=> 'search/index',
     	'search/search'					=> 'search/search',
     	'search/users/view/<id:\d+>' 	=> 'search/view-user',
-    	'search/albums/view/<id:\d+>' 	=> 'search/view-album',
     	'search/groups/view/<id:\d+>' 	=> 'search/view-group',
     	'search/searchUser'				=> 'search/search-user',
     		

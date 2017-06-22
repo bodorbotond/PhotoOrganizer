@@ -45,6 +45,7 @@
     width: 32%;
     float: left;
 	margin: 2px;
+	cursor: pointer;
 }
     
 .userPhoto img

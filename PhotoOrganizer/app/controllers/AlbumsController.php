@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\db\Query;
+use app\models\Users;
 use app\models\albums\CreateAlbumForm;
 use app\models\albums\EditAlbumForm;
 use app\models\tables\Photos;
@@ -84,6 +85,9 @@ class AlbumsController extends Controller
 	}
 	
 	
+	// basic function with albums (create, edit, delete, view)
+	
+	
 	public function actionCreateAlbum()
 	{
 		if (Yii::$app->user->isGuest)
@@ -114,10 +118,14 @@ class AlbumsController extends Controller
 		$album = Albums::findOne($id);
 		$model = new EditAlbumForm($album);
 	
-		if ($album === null || $album->user_id !== Yii::$app->user->identity->user_id	// if id is wrong or album not belong to logged in user
-			|| $model->load(Yii::$app->request->post()) && $model->edit())				// or edit album was sucessful
+		if ($album === null || $album->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or album not belong to logged in user
 		{
-			return $this->redirect(['/albums/view/' . $id]);										// redirect to albums index page
+			return $this->redirect(['/albums/index']);										// redirect to albums index page
+		}
+		
+		if ($model->load(Yii::$app->request->post()) && $model->edit())					// if edit album was sucessful
+		{
+			return $this->redirect(['/albums/view/' . $id]);								// redirect to view album page
 		}
 	
 		return $this->render('editAlbum', [
@@ -136,15 +144,16 @@ class AlbumsController extends Controller
 	
 		$album = Albums::findOne($id);
 		
-		if ($album === null || $album->user_id !== Yii::$app->user->identity->user_id)
+		if ($album === null || $album->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or album not belong to logged in user
 		{
-			return $this->redirect(['/albums/index']);
+			return $this->redirect(['/albums/index']);										// redirect to albums index page
 		}
 		
 		foreach(AlbumsPhotos::findByAlbumId($id) as $albumPhoto)	// get all photos whiches belong to this album
 		{
 			$albumPhoto->delete();										// delete these photos
 		}
+		
 		$album->delete();											// delete album
 	
 		return $this->redirect(['/albums/index']);
@@ -153,28 +162,76 @@ class AlbumsController extends Controller
 	
 	public function actionViewAlbum($id)
 	{
-		if (Yii::$app->user->isGuest)
+		$album = Albums::findOne($id);							// get album from database by album id
+		
+		if ($album === null)	// if id is wrong or album not belong to logged in user
 		{
-			return $this->redirect(['/user/login']);
+			return $this->redirect(['/albums/index']);	// redirect to albums index page
 		}
 		
-		$album = Albums::findByAlbumId($id);
+		$administrator = Users::findOne($album->user_id);		// get album owner
 		
-		if ($album === null || $album->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or this album not belong to logged in user
+		if (!Yii::$app->user->isGuest)							// if user is not guest have to decide logged in user is album's administrator or not
 		{
-			return $this->redirect(['/albums/index']);
+			$isAdministrator = $administrator->user_id === Yii::$app->user->identity->user_id;
 		}
 		
 		$query = new Query ();
-		$query->select ('p.photo_path')					// get user's photos path whiches are belong to this album
+		$query->select ('p.photo_path, p.photo_visibility, p.photo_tag, p.photo_title, p.photo_description')		// get user's photos path whiches are belong to this album
 		 	  ->from ('photos p, albums_photos ap')
 		 	  ->where ('p.photo_id = ap.photo_id and ap.album_id = ' . $id);
-		 $albumPhotos = $query->all();
+		$albumPhotos = $query->all();
 		
-		return $this->render('viewAlbum', [
-				'album' 		=> $album,
-				'albumPhotos' 	=> $albumPhotos,
-		]);
+		$photosNumber = count($albumPhotos);
+		 
+		$albumPrivatePhotos = Array ();
+		$albumPublicPhotos	= Array ();
+		
+		foreach ($albumPhotos as $photo)	// separate public and private photos 
+		{ 
+			if ($photo['photo_visibility'] === 'private')
+			{
+				array_push($albumPrivatePhotos, $photo);
+			}
+			else 
+			{
+				array_push($albumPublicPhotos, $photo);
+			}
+		}
+		
+		if (!Yii::$app->user->isGuest)							// if user is not guest have to decide logged in user is album's administrator or not
+		{
+			if ($isAdministrator)		// render view page by guest or owner user
+			{
+				return $this->render('viewAlbumForAdministrator', [
+						'album' 				=> $album,
+						'administrator'			=> $administrator,
+						'photosNumber'			=> $photosNumber,
+						'albumPrivatePhotos' 	=> $albumPrivatePhotos,
+						'albumPublicPhotos' 	=> $albumPublicPhotos,
+				]);
+			}
+		}
+		
+		if ($album->album_visibility === 'private')		// if album is private
+		{
+				return $this->render('viewAlbumForOthers', [		// noone can view public or private photos
+						'album' 				=> $album,
+						'administrator'			=> $administrator,
+						'photosNumber'			=> $photosNumber,
+						'albumPublicPhotos' 	=> Array(),
+				]);
+		}
+		else 										// else (if album is public)
+		{
+				return $this->render('viewAlbumForOthers', [		// pass public photos to view page
+						'album' 				=> $album,
+						'administrator'			=> $administrator,
+						'photosNumber'			=> $photosNumber,
+						'albumPublicPhotos' 	=> $albumPublicPhotos,
+				]);
+		}
+		
 	}
 	
 	
@@ -189,17 +246,29 @@ class AlbumsController extends Controller
 			return $this->redirect(['/user/login']);
 		}
 		
-		$album = Albums::findOne($id);
-	
-		if (count(Yii::$app->request->post()) !== 0)		// if there are selected photo with post request
+		$album = Albums::findByAlbumId($id);
+		
+		if ($album === null || $album->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or this album not belong to logged in user
 		{
-			foreach (Photos::findByUserId(Yii::$app->user->identity->user_id) as $photo)		// get all logged in user's photos
+			return $this->redirect(['/albums/index']);
+		}
+	
+		if (Yii::$app->request->isPost)		// if post request arrive
+		{
+			
+			$query = new Query ();
+			$query->select('p.photo_path, p.photo_id')		// get user's photos path whiches are belong to this album
+				  ->from ('photos p, albums_photos ap')
+				  ->where ('p.photo_id = ap.photo_id and ap.album_id = ' . $id);
+			$userPhotosInAlbum = $query->all();
+			
+			foreach ($userPhotosInAlbum as $photo)
 			{
 				// in check box name is not allowed . character =>
 				// that is why . character must replace with _ character
-				if (Yii::$app->request->post(str_replace('.', '_', $photo->photo_path)))
+				if (Yii::$app->request->post(str_replace('.', '_', $photo['photo_path'])))
 				{	
-					$albumsPhoto = AlbumsPhotos::findOneByAlbumIdAndPhotoId($album->album_id, $photo->photo_id);
+					$albumsPhoto = AlbumsPhotos::findOneByPhotoId($photo['photo_id']);
 					$albumsPhoto->delete();					
 				}
 			}
