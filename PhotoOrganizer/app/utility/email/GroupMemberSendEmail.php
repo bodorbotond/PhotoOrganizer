@@ -12,6 +12,7 @@
 											  $messageParams['administratorName'] 	=> group administrator username,
 											  $messageParams['groupName'] 			=> group name,
 							  				  $messageParams['groupVisibility'] 	=> group visibility (private or public)
+							  				  $messageParams['groupId'] 			=> group id
  */
 
 namespace app\utility\email;
@@ -72,11 +73,11 @@ class GroupMemberSendEmail
 		return '<h1>Hi ' . $messageParams['administratorName'] .',</h1>
 				<div>
 					<p>'
-						. $messageParams['userName'] . ' want to join your'
+						. $messageParams['userName'] . ' want to join your '
 						. $messageParams['groupName'] . ' '
 						. $messageParams['groupVisibility'] . ' group. <br>'
-						. Html::a('Here', Url::home('http') . 'groups/index')
-						. ' you can accept or deny' . $messageParams['userName'] . 'request.'
+						. Html::a('Here', Url::home('http') . 'groups/view/' . $messageParams['groupId'])
+						. ' you can accept or deny ' . $messageParams['userName'] . ' request.'
 						. '</p><p><b>Photo Organizer Team</b></p>
 				</div>';
 	}

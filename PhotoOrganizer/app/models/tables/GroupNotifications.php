@@ -75,11 +75,4 @@ class GroupNotifications extends \yii\db\ActiveRecord
     					->where(['group_id' => $groupId, 'user_id' => $userId])
     					->all();
     }
-    
-    public static function findByGroupId($id)
-    {
-    	return self::find()
-    					->where(['group_id' => $id])
-    					->all();
-    }
 }

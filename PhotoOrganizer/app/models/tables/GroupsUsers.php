@@ -83,7 +83,7 @@ class GroupsUsers extends \yii\db\ActiveRecord
     public static function findByGroupIdAndUserId($groupId, $userId)			// check whether a user is a member in a group
     {																			// (use at viewGroup for decide logged in user is a member or not)
     	return self::find()														// (use at join and add user to group functionalities)
-    	->where(['group_id' => $groupId, 'user_id' => $userId])
-    	->all();
+    					->where(['group_id' => $groupId, 'user_id' => $userId])
+    					->all();
     }
 }

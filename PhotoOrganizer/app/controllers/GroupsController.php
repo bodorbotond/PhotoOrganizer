@@ -353,31 +353,33 @@ class GroupsController extends Controller
 		$administrator = Users::findOne($group->user_id);
 		
 		if (count(GroupsUsers::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) !== 0	// if user is already a member in this group
-			|| $group->user_id === $administrator->user_id)												// or this group is belong to logged in user
+			|| $administrator->user_id === Yii::$app->user->identity->user_id)							// or this group is belong to logged in user
 		{
 			return $this->redirect(['/groups/view/' . $group->group_id]);
 		}
 		else 
 		{
-			$groupNotification = new GroupNotifications();
-			$groupNotification->group_id = $id;
-			$groupNotification->user_id = Yii::$app->user->identity->user_id;
-			$groupNotification->notification_text = 'Join to group';
-			
-			if ($groupNotification->save())
+			if (count(GroupNotifications::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) === 0)	// if user who want to join has no already a join intension (notification)
 			{
-				if (GroupMemberSendEmail::sendEMail($administrator->e_mail,
-					'New member in your group!', 'joinUser', [			// if added receive notification email
+				$groupNotification = new GroupNotifications();
+				$groupNotification->group_id = $id;
+				$groupNotification->user_id = Yii::$app->user->identity->user_id;
+				$groupNotification->notification_text = 'Join to group';
+				
+				if ($groupNotification->save())				// save notification
+				{
+					GroupMemberSendEmail::sendEMail($administrator->e_mail,		// send notification email
+					'New member in your group!', 'joinUser', [
 																'userName' 			=> Yii::$app->user->identity->user_name,
 																'administratorName'	=> $administrator->user_name,
 																'groupName'			=> $group->group_name,
 																'groupVisibility'	=> $group->group_visibility,
-															  ])
-				)
-				{
-					return $this->redirect(['/groups/view/' . $group->group_id]);
+																'groupId'			=> $group->group_id,
+															  ]);
 				}
 			}
+
+			return $this->redirect(['/groups/view/' . $group->group_id]);
 		}
 	}
 	
