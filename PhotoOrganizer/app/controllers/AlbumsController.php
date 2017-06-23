@@ -199,9 +199,9 @@ class AlbumsController extends Controller
 			}
 		}
 		
-		if (!Yii::$app->user->isGuest)							// if user is not guest have to decide logged in user is album's administrator or not
+		if (!Yii::$app->user->isGuest)	// if user is not guest have to decide logged in user is album's administrator or not
 		{
-			if ($isAdministrator)		// render view page by guest or owner user
+			if ($isAdministrator)			// render view page by guest or owner user
 			{
 				return $this->render('viewAlbumForAdministrator', [
 						'album' 				=> $album,

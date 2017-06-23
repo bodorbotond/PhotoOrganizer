@@ -81,6 +81,7 @@ class GroupsController extends Controller
 		
 		$userGroups = Array();		// logged in user's groups
 		$otherGroups = Array();		// groups in where logged in user is a member
+		
 		foreach(GroupsUsers::findByUserId(Yii::$app->user->identity->user_id) as $groupUser)	// get all groups in where logged user is a member
 		{															// GroupsUser table contain only group_id and user_id
 			$group = Groups::findOne($groupUser->group_id);			// that is why have to find group by group_id
@@ -133,10 +134,14 @@ class GroupsController extends Controller
 		$group = Groups::findOne($id);
 		$model = new EditGroupForm($group);
 	
-		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id	// if id is wrong or album not belong to logged in user
-			|| ($model->load(Yii::$app->request->post()) && $model->edit()))			// or edit album was sucessful
+		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or group not belong to logged in use
 		{
-			return $this->redirect(['/groups/view/' . $id]);										// redirect to albums index page
+			return $this->redirect(['/groups/index']);										// redirect to groups index page
+		}
+		
+		if ($model->load(Yii::$app->request->post()) && $model->edit())					// if edit group was sucessful
+		{
+			return $this->redirect(['/groups/view/' . $id]);								// redirect to group view page
 		}
 	
 		return $this->render('editGroup', [
@@ -160,13 +165,14 @@ class GroupsController extends Controller
 			return $this->redirect(['/groups/index']);
 		}
 		
-		foreach (GroupsUsers::findByGroupId($id) as $groupUser)		// get all users whose are belong to this group
+		foreach (GroupsUsers::findByGroupId($id) as $groupUser)		// delete all users whose are belong to this group
 		{
-			$groupUser->delete();										// delete users
+			$groupUser->delete();
 		}
-		foreach (GroupsPhotos::findByGroupId($id) as $groupPhoto)	// get all photos whiches are belong to this group
+		
+		foreach (GroupsPhotos::findByGroupId($id) as $groupPhoto)	// delete all photos whiches are belong to this group
 		{
-			$groupPhoto->delete();										// delete photos
+			$groupPhoto->delete();
 		}
 		
 		$group->delete();											// delete group
@@ -177,38 +183,74 @@ class GroupsController extends Controller
 	
 	public function actionViewGroup($id)
 	{
-		if (Yii::$app->user->isGuest)
-		{
-			return $this->redirect(['/user/login']);
-		}
-	
 		$group = Groups::findOne($id);
 		
-		if ($group === null || count(GroupsUsers::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) === 0)	// if id is wrong or logged in user is not a member in this group
+		if ($group === null)	// if group id is wrong
 		{
 			return $this->redirect(['/groups/index']);
 		}
 		
+		$administrator = Users::findOne($group->user_id);
+
+		if (!Yii::$app->user->isGuest)							// if user is not guest have to decide logged in user is group's administrator or not
+		{
+			$isAdministrator = $administrator->user_id === Yii::$app->user->identity->user_id;
+		}
+		
 		$query = new Query ();
-		$query->select ('p.photo_path')								// get photos path whiches are belong to this group
-			  ->from ('photos p, groups_photos gp')
-			  ->where ('p.photo_id = gp.photo_id and gp.group_id = ' . $id);
-		$groupPhotos = $query->all();
+		$query->select ('u.user_name, p.photo_path, p.photo_visibility, p.photo_tag, p.photo_title, p.photo_description')	// get user's photos path whiches are belong to this group
+			  ->from ('users u, photos p, groups_photos gp')																// in group can be only public photos
+			  ->where ('u.user_id = p.user_id and p.photo_id = gp.photo_id and gp.group_id = ' . $id);
+		$groupPublicPhotos = $query->all();
 
 		$query = new Query ();
-		$query->select ('u.user_name, u.profile_picture_path')		// get user's and profile_picture path whiches are belong to these group
+		$query->select ('u.user_id, u.user_name, u.profile_picture_path')		// get user's and profile_picture path whiches are belong to these group
 			  ->from ('users u, groups_users gu')
 			  ->where ('u.user_id = gu.user_id and gu.group_id = ' . $id);
 		$groupUsers = $query->all();
 		
-		$administrator = Users::findOne($group->user_id);
+		$photosNumber = count($groupPublicPhotos);
+		$usersNumber = count($groupUsers);		
+		
+		//render view files by logged in user status(administrator, member, other logged in user or guest)
+		
+		if (!Yii::$app->user->isGuest)		// if user is not guest have to decide logged in user is group's administrator or not
+		{
+			if ($isAdministrator)				// render view page by guest or owner user
+			{
+				return $this->render('viewGroupForAdministrator', [
+						'group' 				=> $group,
+						'administrator'			=> $administrator,
+						'photosNumber'			=> $photosNumber,
+						'usersNumber'			=> $usersNumber,
+						'groupPublicPhotos' 	=> $groupPublicPhotos,
+						'groupUsers'			=> $groupUsers,
+				]);
+			}
+		}
 	
-		return $this->render('viewGroup', [
-				'group' 		=> $group,
-				'groupPhotos'	=> $groupPhotos,
-				'groupUsers' 	=> $groupUsers,
-				'administrator'	=> $administrator,
-		]);
+		if ($group->group_visibility === 'private')		// if group is private
+		{
+				return $this->render('viewGroupForOthers', [		// noone can view public or private photos
+						'group' 				=> $group,
+						'administrator'			=> $administrator,
+						'photosNumber'			=> $photosNumber,
+						'usersNumber'			=> $usersNumber,
+						'groupPublicPhotos' 	=> Array(),
+						'groupUsers'			=> Array(),
+				]);
+		}
+		else 										// else (if group is public)
+		{
+				return $this->render('viewGroupForOthers', [		// pass public photos to view page
+						'group' 				=> $group,
+						'administrator'			=> $administrator,
+						'photosNumber'			=> $photosNumber,
+						'usersNumber'			=> $usersNumber,
+						'groupPublicPhotos' 	=> $groupPublicPhotos,
+						'groupUsers'			=> $groupUsers,
+				]);
+		}
 	}
 	
 	

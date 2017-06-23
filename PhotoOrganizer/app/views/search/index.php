@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			    	
 				    <div class="userPhoto">
 							
-						<?= Html::a(Html::img('@web/' . $group['group_profile_picture_path']), ['/search/groups/view/' . $group['group_id']]); ?>
+						<?= Html::a(Html::img('@web/' . $group['group_profile_picture_path']), ['/groups/view/' . $group['group_id']]); ?>
 						
 						<div>
 							<?= $group['group_name']; ?>

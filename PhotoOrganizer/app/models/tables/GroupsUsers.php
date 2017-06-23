@@ -80,7 +80,7 @@ class GroupsUsers extends \yii\db\ActiveRecord
     				->all();
     }
     
-    public static function findByGroupIdAndUserId($groupId, $userId)			// check whether exists a photo in a group
+    public static function findByGroupIdAndUserId($groupId, $userId)			// check whether a user is a member in a group
     {
     	return self::find()
     	->where(['group_id' => $groupId, 'user_id' => $userId])

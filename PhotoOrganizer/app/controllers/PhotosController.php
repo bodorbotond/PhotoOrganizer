@@ -311,7 +311,8 @@ class PhotosController extends Controller
 					
 					if ($a === 'atg')
 					{
-						if (count(GroupsPhotos::findByGroupIdAndPhotoId($id, $photo->photo_id)) === 0)	// if this photos isn't exists yet in the group
+						if (count(GroupsPhotos::findByGroupIdAndPhotoId($id, $photo->photo_id)) === 0	// if this photos isn't exists yet in the group
+							&& $photo->photo_visibility !== 'private')									// and photos's visibility is not private
 						{
 							$groupPhoto = new GroupsPhotos();
 							$groupPhoto->group_id = $id;

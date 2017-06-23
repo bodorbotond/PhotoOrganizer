@@ -13,13 +13,19 @@ $this->params['breadcrumbs'][] = $this->title;
     
     <br><br>
     
-    <?php if(count($userGroups) === 0):?>		<!-- if user has not groups -->
+    <?php if(count($userGroups) === 0 && count($otherGroups) === 0):?>		<!-- if user has no groups and not a member in any group -->
     
     	<div class="text-center">
     	
     		<h3>You have not any groups yet? Create a new one for share photos your friends.</h3>    		
     		<br>    
     		<?= Html::a('Create New Group', ['/groups/create'], ['class' => 'btn btn-default btn-larger']) ?>
+    		
+    		<br><br>
+    		
+    		<h3>Or you just want to become a member of a group? Search and join one.</h3>    		
+    		<br>    
+    		<?= Html::a('Join Group', ['/search/searchGroups'], ['class' => 'btn btn-default btn-larger']) ?>
     	
     	</div>
     
@@ -82,38 +88,19 @@ $this->params['breadcrumbs'][] = $this->title;
 			
 			<div class="well">
 	    
-			    <?php
-			    $cnt = 0;		// counter for different group's profile picture 
-			    foreach($otherGroups as $groups):
-			   
-				    if ($cnt % 2 === 0)
-				    {
-				    	$groupProfilePicturePath = '@web/images/group_profile_picture1.png';
-				    }
-				    elseif ($cnt % 3 === 0)
-				    {
-				    	$groupProfilePicturePath = '@web/images/group_profile_picture2.png';
-				    }
-				    else
-				    {
-				    	$groupProfilePicturePath = '@web/images/group_profile_picture3.png';
-				    }
-			    ?>
+			    <?php foreach($otherGroups as $group): ?>
 			    
 			    	<div class="userPhoto">
 							
-						<?= Html::a(Html::img($groupProfilePicturePath), ['/groups/view/' . $groups->group_id]); ?>											<!-- user's photo -->
+						<?= Html::a(Html::img('@web/' . $group->group_profile_picture_path), ['/groups/view/' . $group->group_id]); ?>											<!-- user's photo -->
 								
 						<div>
-							<?= $groups->group_name; ?>
+							<?= $group->group_name; ?>
 						</div>
 								
 		    		</div>
 		    			
-		    	<?php
-		    	$cnt++;
-		    	endforeach;
-		    	?>
+		    	<?php endforeach; ?>
 			    
 			    <br class="clearBoth" />
 	    

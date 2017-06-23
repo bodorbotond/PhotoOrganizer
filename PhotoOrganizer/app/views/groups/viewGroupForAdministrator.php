@@ -2,23 +2,24 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\bootstrap\Collapse;
 use yii\bootstrap\Dropdown;
 
-$this->title = $album->album_name;
-$this->params['breadcrumbs'][] = ['label' => 'Albums', 'url' => ['/albums/index']];
+$this->title = $group->group_name;
+$this->params['breadcrumbs'][] = ['label' => 'Groups', 'url' => ['/groups/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="site-view-album-for-administrator">
+<div class="site-view-group-for-administrator">
 
     	<h1><?= Html::encode($this->title) ?></h1>
     
-    	<br>   
-    	
-    	<div class="row">											<!-- album's profile picture -->
+    	<br>
+    
+    	<div class="row">											<!-- group's profile picture -->
 	    	
 	    	<div class="col-md-4">
-	    		<?= Html::a(Html::img('@web/' . $album->album_profile_picture_path,
+	    		<?= Html::a(Html::img('@web/' . $group->group_profile_picture_path,
 	    					 ['id' => 'ProfilePicture', 'class' => 'img-circle']),
 	    			['#ProfilePictureModal'], 
 	    			['data-toggle' => 'modal']); ?>
@@ -26,21 +27,25 @@ $this->params['breadcrumbs'][] = $this->title;
 	    	
 	    	<br><br>
 	    	
-	    	<div class="col-md-4">										<!-- album's propertys -->
-	    		<b class="propertys"><span class="yellow">Administrator: </span><?= $administrator->user_name ?></b>
-				<br>
+	    	<div class="col-md-4">										<!-- group's propertys -->
+	    		<b class="propertys"><span class="yellow">Administrator: </span><?= $administrator->user_name; ?></b>
+	    		<br>
 	    		<b class="propertys"><span class="yellow">Number of photos: </span><?= $photosNumber; ?></b>
 	    		<br>
-				<b class="propertys"><?= ucfirst($album->album_visibility); ?> Album</b>
-    		</div>
-    		
+	    		<b class="propertys"><span class="yellow">Number of users: </span><?= $usersNumber; ?></b>
+	    		<br>
+				<b class="propertys"><?= ucfirst($group->group_visibility); ?> Group</b>
+	    	</div>
+	    	
     	</div>
     	
-    	<br> 
+    	<br>
     	
-    	<div id="PhotosMenu">						<!-- menu -->
+		<div id="GroupMenu">						<!-- menu -->
     	
-    		<?= Html::a('Add Photos', ['/photos/index/'], ['class' => 'btn btn-default']) ?>
+    		<?= Html::a('Add Users', ['/search/searchUser'], ['class' => 'btn btn-default']) ?>
+    		
+    		<?= Html::a('Add Photos', ['/photos/index'], ['class' => 'btn btn-default']) ?>
     		
     		<br><br>
 		
@@ -69,32 +74,36 @@ $this->params['breadcrumbs'][] = $this->title;
 			    ?>			    
 			</div>
 			
-			<div id="RemoveButton" class="btn btn-default" onclick="removePhotosFromAlbum('<?= Url::home('http'); ?>', '<?= $album->album_id; ?>')">Remove From Album</div>
+			<div id="RemoveButton" class="btn btn-default" onclick="removePhotosFromGroup('<?= Url::home('http'); ?>', '<?= $group->group_id; ?>')">Remove From Group</div>
 			
-			<?= Html::a('Edit Album', ['/albums/edit/' . $album->album_id], ['class' => 'btn btn-default']) ?>
+			<?= Html::a('Edit Group', ['/groups/edit/' . $group->group_id], ['class' => 'btn btn-default']) ?>
 			
-			<?= Html::a('Delete Album', ['/albums/delete/' . $album->album_id], ['class' => 'btn btn-default', 'onclick' => 'return confirm(\'Are you sure about delete this album?\')']) ?>
+			<?= Html::a('Delete Group', ['/groups/delete/' . $group->group_id], ['class' => 'btn btn-default', 'onclick' => 'return confirm(\'Are you sure about delete this group?\')']) ?>
 			
 		</div>
-    
-	    <br><br>
-			
-		<div id="UserPhotos" onclick="checkSelection()">				<!-- user's photos in this album -->
-			
+		
+		
+		<!-- photos -->
+		
+		
+		<br><br>
+    	
+	    <div id="UserPhotos">
+				
 			<div class="well">
+			
+				<?= Html::beginForm([''], 'post', ['id' => 'SelectForm']); ?>			<!-- select form -->
 				
-				<?= Html::beginForm([''], 'post', ['id' => 'SelectForm']); ?>		<!-- select form -->
-				
-					<h3>Private Photos</h3>
+					<h3>Photos</h3>
 					
-					<?php foreach ($albumPrivatePhotos as $photo): ?>					<!-- private photos -->
+					<?php foreach ($groupPublicPhotos as $photo): ?>					<!-- private photos -->
 					
 						<div id="<?= $photo['photo_path'] ?>" class="userPhoto" onclick="changeSize('<?= $photo['photo_path']; ?>')">
 						
 							<?= Html::a(Html::img('@web/' . $photo['photo_path']),		// one photo
-								['#PhotosModal'], 
-	    						['data-toggle' => 'modal',
-	    						 'onclick' => "setModalBody('" . Url::home('http') . "', '" . $photo['photo_path'] . "', '" . $photo['photo_tag'] . "', '" . $photo['photo_title'] . "', '" . $photo['photo_description'] . "')"]); ?>
+										['#PhotosModal'], 
+	    								['data-toggle' => 'modal',
+	    								 'onclick' => "setModalBody('" . Url::home('http') . "', '" . $photo['photo_path'] . "', '" . $photo['photo_tag'] . "', '" . $photo['photo_title'] . "', '" . $photo['photo_description'] . "')"]); ?>
 							
 							<?= Html::checkbox($photo['photo_path'], false, ['class' => 'imageSelectCheckBox']); ?>	<!-- select checkbox (checkbox's name = photo access path on the server,
 																													but checkbox's name is not allowed . character, it is replaced with _ character) -->
@@ -102,6 +111,8 @@ $this->params['breadcrumbs'][] = $this->title;
 								<?= explode('/', $photo['photo_path'])[sizeof(explode('/', $photo['photo_path'])) - 1]; // photo name ?>
 								<br>
 								<?= $photo['photo_visibility']; ?>
+								<br>
+								<?= $photo['user_name']; ?>
 							</div>
 							
 	    				</div>
@@ -110,35 +121,45 @@ $this->params['breadcrumbs'][] = $this->title;
 	    			
 	    			<br class="clearBoth">
     			
-    			
-	    			<h3>Public Photos</h3>
-					
-					<?php foreach ($albumPublicPhotos as $photo): ?>					<!-- public photos -->
-					
-						<div class="userPhoto">
-						
-							<?= Html::a(Html::img('@web/' . $photo['photo_path']),		// one photo
-								['#PhotosModal'], 
-	    						['data-toggle' => 'modal',
-	    						 'onclick' => "setModalBody('" . Url::home('http') . "', '" . $photo['photo_path'] . "', '" . $photo['photo_tag'] . "', '" . $photo['photo_title'] . "', '" . $photo['photo_description'] . "')"]); ?>
-							
-							<?= Html::checkbox($photo['photo_path'], false, ['class' => 'imageSelectCheckBox']); ?>	<!-- select checkbox (checkbox's name = photo access path on the server,
-																													but checkbox's name is not allowed . character, it is replaced with _ character) -->
-							<div>
-								<?= explode('/', $photo['photo_path'])[sizeof(explode('/', $photo['photo_path'])) - 1]; // photo name ?>
-								<br>
-								<?= $photo['photo_visibility']; ?>
-							</div>
-							
-	    				</div>
-	    				
-	    			<?php endforeach; ?>
-	    			
-	    			<br class="clearBoth">
-    			
-    			<?= Html::endForm(); ?>
+	    		<?= Html::endForm(); ?>
 				
 			</div>		<!-- well class -->
+			
+		</div>		<!-- UserPhotos class -->
+		
+		
+		<!-- users -->
+
+    	
+    	<br><br>
+    	
+	    <div id="UserPhotos">
+				
+			<div class="well">
+			
+				<?= Html::beginForm([''], 'post', ['id' => 'SelectForm']); ?>			<!-- select form -->
+				
+					   	<h3>Users</h3>
+	    
+				    <?php foreach($groupUsers as $user): ?>
+				    	
+					    <div class="userPhoto">
+								
+							<?= Html::a(Html::img('@web/' . $user['profile_picture_path']), ['/search/users/view/' . $user['user_id']]); ?>											<!-- user's photo -->
+									
+							<div>
+								<?= $user['user_name']; ?>
+							</div>
+									
+			    		</div>
+			    		
+			    	<?php endforeach; ?>
+		    	
+		    	<br class="clearBoth">
+		    	
+		    	<?= Html::endForm(); ?>
+	    
+	    	</div>		<!-- well class -->
 			
 		</div>		<!-- UserPhotos class -->
 		
@@ -153,11 +174,11 @@ $this->params['breadcrumbs'][] = $this->title;
 			    
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal">&times;</button>
-			        <h4 class="modal-title">Album Profile Picture</h4>
+			        <h4 class="modal-title">Group Profile Picture</h4>
 			      </div>
 			      
 			      <div class="modal-body">
-			        <?= Html::img('@web/' . $album->album_profile_picture_path, ['id' => 'ProfilePictureInModal']);	?>
+			        <?= Html::img('@web/' . $group->group_profile_picture_path, ['id' => 'ProfilePictureInModal']);	?>
 			      </div>
 			      
 			    </div>
