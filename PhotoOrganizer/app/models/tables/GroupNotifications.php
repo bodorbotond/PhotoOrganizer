@@ -6,23 +6,24 @@ use Yii;
 use app\models\Users;
 
 /**
- * This is the model class for table "groups_users".
+ * This is the model class for table "group_notifications".
  *
- * @property integer $groups_users_id
+ * @property integer $groups_notification_id
  * @property integer $group_id
  * @property integer $user_id
+ * @property string $notification_text
  *
  * @property Groups $group
  * @property Users $user
  */
-class GroupsUsers extends \yii\db\ActiveRecord
+class GroupNotifications extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'groups_users';
+        return 'group_notifications';
     }
 
     /**
@@ -31,8 +32,9 @@ class GroupsUsers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['group_id', 'user_id'], 'required'],
+            [['group_id', 'user_id', 'notification_text'], 'required'],
             [['group_id', 'user_id'], 'integer'],
+            [['notification_text'], 'string', 'max' => 200],
             [['group_id'], 'exist', 'skipOnError' => true, 'targetClass' => Groups::className(), 'targetAttribute' => ['group_id' => 'group_id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
@@ -44,9 +46,10 @@ class GroupsUsers extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'groups_users_id' => 'Groups Users ID',
+            'groups_notification_id' => 'Groups Notification ID',
             'group_id' => 'Group ID',
             'user_id' => 'User ID',
+            'notification_text' => 'Notification Text',
         ];
     }
 
@@ -66,24 +69,17 @@ class GroupsUsers extends \yii\db\ActiveRecord
         return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
     }
     
+    public static function findByGroupIdAndUserId($groupId, $userId)		// check has notification by group and user id
+    {																		// (use at viewGroup and join to group)
+    	return self::find()
+    					->where(['group_id' => $groupId, 'user_id' => $userId])
+    					->all();
+    }
+    
     public static function findByGroupId($id)
     {
     	return self::find()
     					->where(['group_id' => $id])
     					->all();
-    }
-    
-    public static function findByUserId($id)
-    {
-    	return self::find()
-    				->where(['user_id' => $id])
-    				->all();
-    }
-    
-    public static function findByGroupIdAndUserId($groupId, $userId)			// check whether a user is a member in a group
-    {																			// (use at viewGroup for decide logged in user is a member or not)
-    	return self::find()														// (use at join and add user to group functionalities)
-    	->where(['group_id' => $groupId, 'user_id' => $userId])
-    	->all();
     }
 }

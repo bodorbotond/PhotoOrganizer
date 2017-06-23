@@ -6,7 +6,7 @@ $this->title = $group->group_name;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="site-view-group-for-others">
+<div class="site-view-group-for-users">
 
     	<h1><?= Html::encode($this->title) ?></h1>
     
@@ -31,6 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
 	    		<b class="propertys"><span class="yellow">Number of users: </span><?= $usersNumber; ?></b>
 	    		<br>
 				<b class="propertys"><?= ucfirst($group->group_visibility); ?> Group</b>
+				<br><br>
+				<?= Html::a('<span class="glyphicon glyphicon-plus"></span> Join', ['/groups/join/' . $group->group_id], ['class' => 'btn btn-primary']); ?>
+				<?= $isNotification ? '<br><br><p class="alert-danger text-center">You have to wait the administrator\'s confirmation!</p>' : ''; ?>
 	    	</div>
 	    	
     	</div>
@@ -47,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					
 					<?php foreach ($groupPublicPhotos as $photo): ?>					<!-- private photos -->
 					
-						<div id="<?= $photo['photo_path'] ?>" class="userPhoto" onclick="changeSize('<?= $photo['photo_path']; ?>')">
+						<div class="userPhoto">
 						
 							<?= Html::a(Html::img('@web/' . $photo['photo_path']),		// one photo
 										['#PhotosModal'], 
@@ -88,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			
 				<?= Html::beginForm([''], 'post', ['id' => 'SelectForm']); ?>			<!-- select form -->
 				
-					   	<h3>Users</h3>
+					<h3>Users</h3>
 	    
 				    <?php foreach($groupUsers as $user): ?>
 				    	

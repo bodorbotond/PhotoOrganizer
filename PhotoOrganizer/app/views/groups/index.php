@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
     		
     		<h3>Or you just want to become a member of a group? Search and join one.</h3>    		
     		<br>    
-    		<?= Html::a('Join Group', ['/search/searchGroups'], ['class' => 'btn btn-default btn-larger']) ?>
+    		<?= Html::a('Join Group', ['/search/searchGroup'], ['class' => 'btn btn-default btn-larger']) ?>
     	
     	</div>
     

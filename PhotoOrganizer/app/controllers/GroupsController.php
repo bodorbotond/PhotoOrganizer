@@ -13,7 +13,8 @@ use app\models\groups\EditGroupForm;
 use app\models\tables\Groups;
 use app\models\tables\GroupsUsers;
 use app\models\tables\GroupsPhotos;
-use app\models\tables\app\models\tables;
+use app\models\tables\GroupNotifications;
+use app\utility\email\GroupMemberSendEmail;
 
 class GroupsController extends Controller
 {
@@ -191,11 +192,13 @@ class GroupsController extends Controller
 		}
 		
 		$administrator = Users::findOne($group->user_id);
-
+		$isNotification = false;								// has a notification for signed up user who wanted to join a group
+		
 		if (!Yii::$app->user->isGuest)							// if user is not guest have to decide logged in user is group's administrator or not
 		{
 			$isAdministrator = $administrator->user_id === Yii::$app->user->identity->user_id;
 			$isMember = count(GroupsUsers::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) === 1 ? true : false;
+			$isNotification = count(GroupNotifications::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) === 1 ? true : false;
 		}
 		
 		$query = new Query ();
@@ -210,51 +213,67 @@ class GroupsController extends Controller
 			  ->where ('u.user_id = gu.user_id and gu.group_id = ' . $id);
 		$groupUsers = $query->all();
 		
+		$query = new Query ();
+		$query->select ('u.user_id, u.user_name, u.profile_picture_path')		// get user's whiches wanted to join this group
+			  ->from ('users u, group_notifications gn')
+			  ->where ('u.user_id = gn.user_id and gn.group_id = ' . $id);
+		$usersWithJoinIntension = $query->all();
+		
 		$photosNumber = count($groupPublicPhotos);
 		$usersNumber = count($groupUsers);		
 		
 		//render view files by logged in user status(administrator, member, other logged in user or guest)
 		
-		if (!Yii::$app->user->isGuest)		// if user is not guest have to decide logged in user is group's administrator or group member
+		if (!Yii::$app->user->isGuest)		// if user is not guest
 		{
-			if ($isAdministrator || $isMember)
+			if ($isAdministrator)				// if user is administrator
 			{
 				return $this->render('viewGroupForAdministrator', [
+						'group' 					=> $group,
+						'administrator'				=> $administrator,
+						'photosNumber'				=> $photosNumber,
+						'usersNumber'				=> $usersNumber,
+						'groupPublicPhotos' 		=> $groupPublicPhotos,
+						'groupUsers'				=> $groupUsers,
+						'usersWithJoinIntension'	=> $usersWithJoinIntension,
+				]);
+			}
+			else if($isMember)					// if user is member
+			{
+				return $this->render('viewGroupForMembers', [
 						'group' 				=> $group,
 						'administrator'			=> $administrator,
-						'isAdministrator'		=> $isAdministrator,
 						'photosNumber'			=> $photosNumber,
 						'usersNumber'			=> $usersNumber,
 						'groupPublicPhotos' 	=> $groupPublicPhotos,
 						'groupUsers'			=> $groupUsers,
 				]);
 			}
+			else								// if user is just signed up user
+			{
+				return $this->render('viewGroupForUsers', [		// noone can view public or private photos
+					'group' 			=> $group,
+					'administrator'		=> $administrator,
+					'photosNumber'		=> $photosNumber,
+					'usersNumber'		=> $usersNumber,
+					'isNotification'	=> $isNotification,
+					'groupPublicPhotos' => ($group->group_visibility === 'private' ?  Array() : $groupPublicPhotos),
+					'groupUsers'		=> ($group->group_visibility === 'private' ? Array() : $groupUsers),
+				]);
+			}
+		}
+		else								// if user is guest
+		{
+			return $this->render('viewGroupForGuests', [		// noone can view public or private photos
+					'group' 			=> $group,
+					'administrator'		=> $administrator,
+					'photosNumber'		=> $photosNumber,
+					'usersNumber'		=> $usersNumber,
+					'groupPublicPhotos' => ($group->group_visibility == 'private' ?  Array() : $groupPublicPhotos),
+					'groupUsers'		=> ($group->group_visibility === 'private' ? Array() : $groupUsers),
+			]);
 		}
 	
-		//if user is not administrator or member
-		
-		if ($group->group_visibility === 'private')		// if group is private
-		{
-				return $this->render('viewGroupForOthers', [		// noone can view public or private photos
-						'group' 				=> $group,
-						'administrator'			=> $administrator,
-						'photosNumber'			=> $photosNumber,
-						'usersNumber'			=> $usersNumber,
-						'groupPublicPhotos' 	=> Array(),
-						'groupUsers'			=> Array(),
-				]);
-		}
-		else 										// else (if group is public)
-		{
-				return $this->render('viewGroupForOthers', [		// pass public photos to view page
-						'group' 				=> $group,
-						'administrator'			=> $administrator,
-						'photosNumber'			=> $photosNumber,
-						'usersNumber'			=> $usersNumber,
-						'groupPublicPhotos' 	=> $groupPublicPhotos,
-						'groupUsers'			=> $groupUsers,
-				]);
-		}
 	}
 	
 	
@@ -268,7 +287,9 @@ class GroupsController extends Controller
 			return $this->redirect(['/user/login']);
 		}
 		
-		if (Users::findOne($id) === null) 
+		$addedUser = Users::findOne($id);
+		
+		if ($addedUser === null) 
 		{
 			return $this->redirect(['/groups/index']);
 		}
@@ -288,9 +309,25 @@ class GroupsController extends Controller
 				$groupUser->group_id = $group->group_id;
 				$groupUser->user_id = $id;
 				
-				if ($groupUser->save())
+				if ($groupUser->save())															// if user added to group successfuly
 				{
-					return $this->redirect(['/groups/view/' . $group->group_id]);
+					if (GroupMemberSendEmail::sendEMail($addedUser->e_mail,
+					'You become a group member!', 'addUser', [			// if added receive notification email
+																'userName' 			=> $addedUser->user_name,
+																'administratorName'	=> Users::findOne($group->user_id)->user_name,
+																'groupName'			=> $group->group_name,
+																'groupVisibility'	=> $group->group_visibility,
+												   			  ])
+					)	
+					{
+						if (GroupNotifications::findByGroupIdAndUserId($group->group_id, $id) !== 0)	// if added user has already a join intension (notification)
+						{
+							$groupNotification = GroupNotifications::findByGroupIdAndUserId($group->group_id, $id)[0];
+							$groupNotification->delete();													// delete this intension (notification)	
+						}
+						
+						return $this->redirect(['/groups/view/' . $group->group_id]);
+					}
 				}
 			}
 		}
@@ -313,22 +350,35 @@ class GroupsController extends Controller
 			return $this->redirect(['/groups/index']);
 		}
 		
+		$administrator = Users::findOne($group->user_id);
+		
 		if (count(GroupsUsers::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) !== 0	// if user is already a member in this group
-			|| $group->user_id === Yii::$app->user->identity->user_id)									// or this group is belong to logged in user
+			|| $group->user_id === $administrator->user_id)												// or this group is belong to logged in user
 		{
 			return $this->redirect(['/groups/view/' . $group->group_id]);
 		}
-		
-		$groupUser = new GroupsUsers();
-		$groupUser->group_id = $id;
-		$groupUser->user_id = Yii::$app->user->identity->user_id;
-		
-		if ($groupUser->save())
+		else 
 		{
-			return $this->redirect(['/groups/view/' . $group->group_id]);
+			$groupNotification = new GroupNotifications();
+			$groupNotification->group_id = $id;
+			$groupNotification->user_id = Yii::$app->user->identity->user_id;
+			$groupNotification->notification_text = 'Join to group';
+			
+			if ($groupNotification->save())
+			{
+				if (GroupMemberSendEmail::sendEMail($administrator->e_mail,
+					'New member in your group!', 'joinUser', [			// if added receive notification email
+																'userName' 			=> Yii::$app->user->identity->user_name,
+																'administratorName'	=> $administrator->user_name,
+																'groupName'			=> $group->group_name,
+																'groupVisibility'	=> $group->group_visibility,
+															  ])
+				)
+				{
+					return $this->redirect(['/groups/view/' . $group->group_id]);
+				}
+			}
 		}
-		
-		return $this->redirect(['/groups/view/' . $group->group_id]);
 	}
 	
 }

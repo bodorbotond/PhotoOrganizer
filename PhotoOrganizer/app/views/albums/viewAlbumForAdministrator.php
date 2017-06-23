@@ -89,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					
 					<?php foreach ($albumPrivatePhotos as $photo): ?>					<!-- private photos -->
 					
-						<div id="<?= $photo['photo_path'] ?>" class="userPhoto" onclick="changeSize('<?= $photo['photo_path']; ?>')">
+						<div class="userPhoto">
 						
 							<?= Html::a(Html::img('@web/' . $photo['photo_path']),		// one photo
 								['#PhotosModal'], 

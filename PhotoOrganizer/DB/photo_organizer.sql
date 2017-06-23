@@ -113,8 +113,18 @@ create table if not exists `groups_photos`(
   `group_id` tinyint(5) unsigned not null,
   `photo_id` tinyint(5) unsigned not null,
   primary key(`groups_photos_id`),
-  constraint `GPAlbumId` foreign key (`group_id`) references `groups` (`group_id`),
+  constraint `GPGroupId` foreign key (`group_id`) references `groups` (`group_id`),
   constraint `GPPhotoId` foreign key (`photo_id`) references `photos` (`photo_id`)
+);
+
+create table if not exists `group_notifications`(
+  `groups_notification_id` tinyint(5) unsigned not null auto_increment,
+  `group_id` tinyint(5) unsigned not null,
+  `user_id` tinyint(5) unsigned not null,
+  `notification_text` varchar(200) not null,
+  primary key(`groups_notification_id`),
+  constraint `GNGroupId` foreign key (`group_id`) references `groups` (`group_id`),
+  constraint `GPuserId` foreign key (`user_id`) references `users` (`user_id`)
 );
 
 create table if not exists `employees` (

@@ -66,9 +66,9 @@ return Array(
     		
     	'search/index'					=> 'search/index',
     	'search/search'					=> 'search/search',
-    	'search/users/view/<id:\d+>' 	=> 'search/view-user',
-    	'search/groups/view/<id:\d+>' 	=> 'search/view-group',
     	'search/searchUser'				=> 'search/search-user',
+    	'search/searchGroup'			=> 'search/search-group',
+    	'search/users/view/<id:\d+>' 	=> 'search/view-user',
     		
     ),
 );
