@@ -41,46 +41,50 @@ $this->params['breadcrumbs'][] = $this->title;
     	
     	<br>
     	
-		<div id="GroupMenu">						<!-- menu -->
+    	<?php if ($isAdministrator): ?>
     	
-    		<?= Html::a('Add Users', ['/search/searchUser'], ['class' => 'btn btn-default']) ?>
-    		
-    		<?= Html::a('Add Photos', ['/photos/index'], ['class' => 'btn btn-default']) ?>
-    		
-    		<br><br>
-		
-			<div class="dropdown inline">
-			   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Select <b class="caret"></b></a>
-			    <?php
-			        echo Dropdown::widget([
-			            'items' => [
-			                [
-			                	'label' 	=> '<div id="SelectButton" class="dropDownButton">Select</div>',
-			                	'encode' 	=> false,
-			                	'options' 	=> ['onclick' => 'setCheckBoxesVisible()']
-			        		],
-			                [
-			                	'label' 	=> '<div id="SelectAllButton" class="dropDownButton">Select All</div>',
-			                	'encode' 	=> false,
-			                	'options' 	=> ['onclick' => 'setAllCheckBoxesVisibleAndChecked()']
-			        		],
-			            	[
-			            		'label' 	=> '<div id="ClearSelectionButton" class="dropDownButton">Clear Selection</div>',
-			            		'encode' 	=> false,
-			            		'options' 	=> ['onclick' => 'clearSelection()']
-			            	],
-			            ],
-			        ]);
-			    ?>			    
+			<div id="GroupMenu">						<!-- menu -->
+	    	
+	    		<?= Html::a('Add Users', ['/search/searchUser'], ['class' => 'btn btn-default']) ?>
+	    		
+	    		<?= Html::a('Add Photos', ['/photos/index'], ['class' => 'btn btn-default']) ?>
+	    		
+	    		<br><br>
+			
+				<div class="dropdown inline">
+				   	<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-default">Select <b class="caret"></b></a>
+				    <?php
+				        echo Dropdown::widget([
+				            'items' => [
+				                [
+				                	'label' 	=> '<div id="SelectButton" class="dropDownButton">Select</div>',
+				                	'encode' 	=> false,
+				                	'options' 	=> ['onclick' => 'setCheckBoxesVisible()']
+				        		],
+				                [
+				                	'label' 	=> '<div id="SelectAllButton" class="dropDownButton">Select All</div>',
+				                	'encode' 	=> false,
+				                	'options' 	=> ['onclick' => 'setAllCheckBoxesVisibleAndChecked()']
+				        		],
+				            	[
+				            		'label' 	=> '<div id="ClearSelectionButton" class="dropDownButton">Clear Selection</div>',
+				            		'encode' 	=> false,
+				            		'options' 	=> ['onclick' => 'clearSelection()']
+				            	],
+				            ],
+				        ]);
+				    ?>			    
+				</div>
+				
+				<div id="RemoveButton" class="btn btn-default" onclick="removePhotosFromGroup('<?= Url::home('http'); ?>', '<?= $group->group_id; ?>')">Remove From Group</div>
+				
+				<?= Html::a('Edit Group', ['/groups/edit/' . $group->group_id], ['class' => 'btn btn-default']) ?>
+				
+				<?= Html::a('Delete Group', ['/groups/delete/' . $group->group_id], ['class' => 'btn btn-default', 'onclick' => 'return confirm(\'Are you sure about delete this group?\')']) ?>
+				
 			</div>
 			
-			<div id="RemoveButton" class="btn btn-default" onclick="removePhotosFromGroup('<?= Url::home('http'); ?>', '<?= $group->group_id; ?>')">Remove From Group</div>
-			
-			<?= Html::a('Edit Group', ['/groups/edit/' . $group->group_id], ['class' => 'btn btn-default']) ?>
-			
-			<?= Html::a('Delete Group', ['/groups/delete/' . $group->group_id], ['class' => 'btn btn-default', 'onclick' => 'return confirm(\'Are you sure about delete this group?\')']) ?>
-			
-		</div>
+		<?php endif; ?>
 		
 		
 		<!-- photos -->

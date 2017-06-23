@@ -199,6 +199,8 @@ class AlbumsController extends Controller
 			}
 		}
 		
+		//render view files by logged in user status(administrator, member, other logged in user or guest)
+		
 		if (!Yii::$app->user->isGuest)	// if user is not guest have to decide logged in user is album's administrator or not
 		{
 			if ($isAdministrator)			// render view page by guest or owner user

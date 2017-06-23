@@ -195,6 +195,7 @@ class GroupsController extends Controller
 		if (!Yii::$app->user->isGuest)							// if user is not guest have to decide logged in user is group's administrator or not
 		{
 			$isAdministrator = $administrator->user_id === Yii::$app->user->identity->user_id;
+			$isMember = count(GroupsUsers::findByGroupIdAndUserId($id, Yii::$app->user->identity->user_id)) === 1 ? true : false;
 		}
 		
 		$query = new Query ();
@@ -214,13 +215,14 @@ class GroupsController extends Controller
 		
 		//render view files by logged in user status(administrator, member, other logged in user or guest)
 		
-		if (!Yii::$app->user->isGuest)		// if user is not guest have to decide logged in user is group's administrator or not
+		if (!Yii::$app->user->isGuest)		// if user is not guest have to decide logged in user is group's administrator or group member
 		{
-			if ($isAdministrator)				// render view page by guest or owner user
+			if ($isAdministrator || $isMember)
 			{
 				return $this->render('viewGroupForAdministrator', [
 						'group' 				=> $group,
 						'administrator'			=> $administrator,
+						'isAdministrator'		=> $isAdministrator,
 						'photosNumber'			=> $photosNumber,
 						'usersNumber'			=> $usersNumber,
 						'groupPublicPhotos' 	=> $groupPublicPhotos,
@@ -229,6 +231,8 @@ class GroupsController extends Controller
 			}
 		}
 	
+		//if user is not administrator or member
+		
 		if ($group->group_visibility === 'private')		// if group is private
 		{
 				return $this->render('viewGroupForOthers', [		// noone can view public or private photos
