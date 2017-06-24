@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				    ?>			    
 				</div>
 				
-				<div id="RemoveButton" class="btn btn-default" onclick="removePhotosFromGroup('<?= Url::home('http'); ?>', '<?= $group->group_id; ?>')">Remove From Group</div>
+				<div id="RemoveButton" class="btn btn-default" onclick="removeFromGroup('<?= Url::home('http'); ?>', '<?= $group->group_id; ?>')">Remove From Group</div>
 				
 				<?= Html::a('Edit Group', ['/groups/edit/' . $group->group_id], ['class' => 'btn btn-default']) ?>
 				
@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 		<br><br>
     	
-	    <div id="UserPhotos">
+	    <div id="UserPhotos" onclick="checkSelection()">
 				
 			<div class="well">
 			
@@ -152,8 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	    			
 	    			<br class="clearBoth">
     			
-	    		<?= Html::endForm(); ?>
-				
+    			
 			</div>		<!-- well class -->
 			
 		</div>		<!-- UserPhotos class -->
@@ -167,8 +166,6 @@ $this->params['breadcrumbs'][] = $this->title;
 	    <div id="UserPhotos">
 				
 			<div class="well">
-			
-				<?= Html::beginForm([''], 'post', ['id' => 'SelectForm']); ?>			<!-- select form -->
 				
 					<h3>Users</h3>
 	    
@@ -177,9 +174,12 @@ $this->params['breadcrumbs'][] = $this->title;
 					    <div class="userPhoto">
 								
 							<?= Html::a(Html::img('@web/' . $user['profile_picture_path']), ['/search/users/view/' . $user['user_id']]); ?>											<!-- user's photo -->
+							
+							<?= Html::checkbox($user['user_id'], false, ['class' => 'imageSelectCheckBox']); ?>
 									
 							<div>
 								<?= $user['user_name']; ?>
+								<?= intval($user['user_id']) === $administrator->user_id ? '<br>Administrator' : ''; ?>
 							</div>
 									
 			    		</div>

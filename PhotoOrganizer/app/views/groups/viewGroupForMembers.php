@@ -106,6 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
 									
 							<div>
 								<?= $user['user_name']; ?>
+								<?= intval($user['user_id']) === $administrator->user_id ? '<br>Administrator' : ''; ?>
 							</div>
 									
 			    		</div>
