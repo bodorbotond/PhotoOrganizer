@@ -29,6 +29,7 @@ class GroupsController extends Controller
 								'index',
 								'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
 								'addUser', 'joinGroup',
+								//'select',
 						],
 						'rules' => [									// access rules
 								[
@@ -37,6 +38,7 @@ class GroupsController extends Controller
 														'index',
 														'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
 														'addUser', 'joinGroup',
+														//'select',
 													],
 									'roles' 	=> ['@'],						// authenticated users
 								],
@@ -53,6 +55,7 @@ class GroupsController extends Controller
 								'viewGroup'		=> ['get', 'post'],
 								'addUser'		=> ['get', 'put', 'post'],
 								'joinGroup'		=> ['get', 'put', 'post'],
+								//'select'		=> ['get', 'delete', 'post'],
 						],
 				],
 		];
@@ -317,10 +320,11 @@ class GroupsController extends Controller
 																'administratorName'	=> Users::findOne($group->user_id)->user_name,
 																'groupName'			=> $group->group_name,
 																'groupVisibility'	=> $group->group_visibility,
+																'groupId'			=> $group->group_id,
 												   			  ])
 					)	
 					{
-						if (GroupNotifications::findByGroupIdAndUserId($group->group_id, $id) !== 0)	// if added user has already a join intension (notification)
+						if (count(GroupNotifications::findByGroupIdAndUserId($group->group_id, $id)) !== 0)	// if added user has already a join intension (notification)
 						{
 							$groupNotification = GroupNotifications::findByGroupIdAndUserId($group->group_id, $id)[0];
 							$groupNotification->delete();													// delete this intension (notification)	

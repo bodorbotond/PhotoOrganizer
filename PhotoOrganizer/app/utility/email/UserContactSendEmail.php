@@ -1,7 +1,7 @@
 <?php
 
 /*
- static class for send email to users who forgot her/his passwords
+ static class for send email to users who want to contact with application
 
  email is sended by call sendEmail() method
 							 - attributes:

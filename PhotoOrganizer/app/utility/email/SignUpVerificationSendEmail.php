@@ -1,7 +1,7 @@
 <?php
 
 /*
- this class provide send e-mail functionality to users whom two step verification is active
+ this class provide send e-mail functionality to users at sign up
 
  email is sended by call sendEmail() method
  				- attributes:
