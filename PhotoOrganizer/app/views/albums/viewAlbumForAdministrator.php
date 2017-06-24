@@ -69,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			    ?>			    
 			</div>
 			
-			<div id="RemoveButton" class="btn btn-default" onclick="removePhotosFromAlbum('<?= Url::home('http'); ?>', '<?= $album->album_id; ?>')">Remove From Album</div>
+			<div id="RemoveButton" class="btn btn-default" style="display:none;" onclick="removePhotosFromAlbum('<?= Url::home('http'); ?>', '<?= $album->album_id; ?>')">Remove From Album</div>
 			
 			<?= Html::a('Edit Album', ['/albums/edit/' . $album->album_id], ['class' => 'btn btn-default']) ?>
 			
@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
     
 	    <br><br>
 			
-		<div id="UserPhotos" onclick="checkSelection()">				<!-- user's photos in this album -->
+		<div id="UserPhotos" onclick="setRemoveButtonVisibility()">				<!-- user's photos in this album -->
 			
 			<div class="well">
 				

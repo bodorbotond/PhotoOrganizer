@@ -203,7 +203,10 @@ $this->params['breadcrumbs'][] = $this->title;
 				
 					<div class="userPhoto">
 					
-						<?= Html::a(Html::img('@web/' . $photo->photo_path), ['']); ?>											<!-- user's photo -->
+						<?= Html::a(Html::img('@web/' . $photo['photo_path']),		// one photo
+								['#PhotosModal'], 
+	    						['data-toggle' => 'modal',
+	    						 'onclick' => "setModalBody('" . Url::home('http') . "', '" . $photo->photo_path . "', '" . $photo->photo_tag . "', '" . $photo->photo_title . "', '" . $photo->photo_description . "')"]); ?>											<!-- user's photo -->
 						
 						<?= Html::checkbox($photo->photo_path, false, ['class' => 'imageSelectCheckBox']); ?>	<!-- select checkbox (checkbox's name = photo access path on the server,
 																												but checkbox's name is not allowed . character, it is replaced with _ character) -->
@@ -226,5 +229,32 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
 		
 	<?php endif; ?>
+	
+	
+	
+	<!-- Bootstrap Modal For Photos-->
+	
+		<div id="PhotosModal" class="modal fade" role="dialog">
+		  	<div class="modal-dialog modal-lg">
+		
+			    <div class="modal-content">
+			    
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			      </div>
+			      
+			      <div id="PhotoModalBody" class="modal-body">
+			      	<!-- here will be set the cliked photo from javascript with setModalBody() function -->
+			      </div>
+			      
+			      <div id="PhotoModalFooter" class="modal-footer">
+			      </div>
+			      
+			    </div>
+		
+		  	</div>
+		</div>
+		
+		
 	
 </div>

@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				    ?>			    
 				</div>
 				
-				<div id="RemoveButton" class="btn btn-default" onclick="removeFromGroup('<?= Url::home('http'); ?>', '<?= $group->group_id; ?>')">Remove From Group</div>
+				<div id="RemoveButton" class="btn btn-default" style="display:none;" onclick="removeFromGroup('<?= Url::home('http'); ?>', '<?= $group->group_id; ?>')">Remove From Group</div>
 				
 				<?= Html::a('Edit Group', ['/groups/edit/' . $group->group_id], ['class' => 'btn btn-default']) ?>
 				
@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 		<br><br>
     	
-	    <div id="UserPhotos" onclick="checkSelection()">
+	    <div id="UserPhotos" onclick="setRemoveButtonVisibility()">
 				
 			<div class="well">
 			

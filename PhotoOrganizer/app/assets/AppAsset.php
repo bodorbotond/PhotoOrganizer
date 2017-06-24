@@ -22,12 +22,11 @@ class AppAsset extends AssetBundle
     	'css/account.css',
     	'css/layout.css',
     	'css/photos.css',
-    	'css/albums.css',
     	'css/search.css',
     ];
     public $js = [
     	'js/photos.js',
-    	'js/album.js',
+    	'js/albums.js',
     	'js/groups.js',
     ];
     public $depends = [
