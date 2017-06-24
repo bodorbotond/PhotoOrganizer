@@ -116,7 +116,7 @@ class GroupMemberSendEmail
 						. $messageParams['userName'] . ' leaved your '
 						. $messageParams['groupName'] . ' '
 						. $messageParams['groupVisibility'] . ' group. <br>'
-						. Html::a('Here', Url::home('http') . 'search/searchUsers')
+						. Html::a('Here', Url::home('http') . 'search/searchUser')
 						. ' you can search for other users to add your groups.
 					</p>
 					<p><b>Photo Organizer Team</b></p>

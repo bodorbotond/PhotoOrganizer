@@ -408,11 +408,21 @@ class GroupsController extends Controller
 			return $this->redirect(['/groups/index']);	// redirect to groups index page
 		}
 		
+		$administrator = Users::findOne($group->user_id);
 		$groupUser = GroupsUsers::findOneByUserId(Yii::$app->user->identity->user_id);
 
 		if ($groupUser !== null && $group->user_id !== Yii::$app->user->identity->user_id)		//if logged in user is group member and not administrator
 		{
-			$groupUser->delete();
+			if($groupUser->delete())		// if user was removed from group successfuly
+			{
+				GroupMemberSendEmail::sendEMail($administrator->e_mail, 'Leave Your Group!',
+				'leaveGroup', [
+								'administratorName' => $administrator->user_name,
+								'userName'			=> Yii::$app->user->identity->user_name,
+								'groupName'			=> $group->group_name,
+								'groupVisibility'	=> $group->group_visibility,
+				]);
+			}
 		}
 		
 		return $this->redirect(['/groups/view/' . $id]);
