@@ -63,6 +63,8 @@ return Array(
     	'groups/view/<id:\d+>'		=> 'groups/view-group',
     	'groups/addUser/<id:\d+>'	=> 'groups/add-user',
     	'groups/join/<id:\d+>'		=> 'groups/join-group',
+    	'groups/leave/<id:\d+>'		=> 'groups/leave-group',
+    	'groups/remove/<id:\d+>'	=> 'groups/remove',
     		
     	'search/index'					=> 'search/index',
     	'search/search'					=> 'search/search',

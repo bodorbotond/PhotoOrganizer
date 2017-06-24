@@ -29,7 +29,8 @@ class GroupsController extends Controller
 								'index',
 								'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
 								'addUser', 'joinGroup',
-								//'select',
+								'leaveGroup',
+								'remove',
 						],
 						'rules' => [									// access rules
 								[
@@ -38,7 +39,8 @@ class GroupsController extends Controller
 														'index',
 														'createGroup', 'editGroup', 'deleteGroup', 'viewGroup',
 														'addUser', 'joinGroup',
-														//'select',
+														'leaveGroup',
+														'remove',
 													],
 									'roles' 	=> ['@'],						// authenticated users
 								],
@@ -55,7 +57,8 @@ class GroupsController extends Controller
 								'viewGroup'		=> ['get', 'post'],
 								'addUser'		=> ['get', 'put', 'post'],
 								'joinGroup'		=> ['get', 'put', 'post'],
-								//'select'		=> ['get', 'delete', 'post'],
+								'leaveGroup'	=> ['get', 'delete', 'post'],
+								'remove'		=> ['get', 'delete', 'post'],
 						],
 				],
 		];
@@ -138,7 +141,7 @@ class GroupsController extends Controller
 		$group = Groups::findOne($id);
 		$model = new EditGroupForm($group);
 	
-		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or group not belong to logged in use
+		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id)	// if id is wrong or group not belong to logged in user
 		{
 			return $this->redirect(['/groups/index']);										// redirect to groups index page
 		}
@@ -385,6 +388,108 @@ class GroupsController extends Controller
 
 			return $this->redirect(['/groups/view/' . $group->group_id]);
 		}
+	}
+	
+	
+	// leave group
+	
+	
+	public function actionLeaveGroup($id)
+	{
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+		
+		$group = Groups::findOne($id);
+		
+		if ($group === null)	// if group id is wrong 
+		{
+			return $this->redirect(['/groups/index']);	// redirect to groups index page
+		}
+		
+		$groupUser = GroupsUsers::findOneByUserId(Yii::$app->user->identity->user_id);
+
+		if ($groupUser !== null && $group->user_id !== Yii::$app->user->identity->user_id)		//if logged in user is group member and not administrator
+		{
+			$groupUser->delete();
+		}
+		
+		return $this->redirect(['/groups/view/' . $id]);
+	}
+	
+	
+	// remove from group
+	
+	
+	public function actionRemove($id)
+	{
+		if (Yii::$app->user->isGuest)
+		{
+			return $this->redirect(['/user/login']);
+		}
+		
+		$group = Groups::findOne($id);
+		
+		if ($group === null || $group->user_id !== Yii::$app->user->identity->user_id)		// if group id is wrong or this group is not belong to logged in user
+		{
+			return $this->redirect(['/groups/index']);
+		}
+		
+		$administrator = Users::findOne($group->user_id);
+		
+		if (Yii::$app->request->isPost)		// if post request arrive
+		{
+			//remove selected photos
+			
+			$query = new Query ();
+			$query->select('p.photo_path, p.photo_id')		// get user's photos path whiches are belong to this album
+				 ->from ('photos p, groups_photos gp')
+				 ->where ('p.photo_id = gp.photo_id and gp.group_id = ' . $id);
+			$photosInGroups = $query->all();
+				
+			foreach ($photosInGroups as $photo)
+			{
+				// in check box name is not allowed . character =>
+				// that is why . character must replace with _ character
+				if (Yii::$app->request->post(str_replace('.', '_', $photo['photo_path'])))
+				{
+					$groupPhoto = GroupsPhotos::findOneByPhotoId($photo['photo_id']);
+					$groupPhoto->delete();
+				}
+			}
+			
+			//remove selected users
+			
+			$query = new Query ();
+			$query->select('u.user_id, u.user_name, u.e_mail')		// get user's photos path whiches are belong to this album
+				  ->from ('users u, groups_users gu')
+				  ->where ('u.user_id = gu.user_id and gu.group_id = ' . $id);
+			$usersInGroups = $query->all();
+			
+			foreach ($usersInGroups as $user)
+			{
+				$selectedUserId = Yii::$app->request->post($user['user_id']);
+				if ($selectedUserId && $selectedUserId !== $group->user_id)			// if any user id in group equal
+				{																	// equal to selected user id
+					$groupUser = GroupsUsers::findOneByUserId($user['user_id']);	// except the administrator id
+					if ($groupUser->delete())
+					{
+						GroupMemberSendEmail::sendEMail($user['e_mail'], 'Remove From Group',
+						'removeUser', [
+										'userName' 			=> $user['user_name'],
+										'administratorName'	=> $administrator->user_name,
+										'groupName'			=> $group->group_name,
+										'groupVisibility'	=> $group->group_visibility,
+						]);
+					}
+				}
+			}
+			
+			
+		}
+		
+		return $this->redirect(['/groups/view/' . $id]);
 	}
 	
 }

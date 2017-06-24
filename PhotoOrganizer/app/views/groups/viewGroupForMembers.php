@@ -35,6 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
 	    		<b class="propertys"><span class="yellow">Number of users: </span><?= $usersNumber; ?></b>
 	    		<br>
 				<b class="propertys"><?= ucfirst($group->group_visibility); ?> Group</b>
+				<br><br>
+				<?= Html::a('Leave Group', ['/groups/leave/' . $group->group_id], ['class' => 'btn btn-danger']); ?>
 	    	</div>
 	    	
     	</div>

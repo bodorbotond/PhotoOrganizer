@@ -72,6 +72,13 @@ class GroupsPhotos extends \yii\db\ActiveRecord
     					->all();
     }
     
+    public static function findOneByPhotoId($id)			// find one photo by photo id
+    {														// (use at remove photos from group)
+    	return self::find()
+    					->where(['photo_id' => $id])
+    					->one();
+    }
+    
     public static function findByGroupIdAndPhotoId($groupId, $photoId)			// check whether exists a photo in a group
     {
     	return self::find()

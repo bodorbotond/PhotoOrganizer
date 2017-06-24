@@ -86,4 +86,11 @@ class GroupsUsers extends \yii\db\ActiveRecord
     					->where(['group_id' => $groupId, 'user_id' => $userId])
     					->all();
     }
+    
+    public static function findOneByUserId($id)			// find one user by user id
+    {													// (use at remove users from group)
+	    return self::find()								// (use at leave group)
+					    ->where(['user_id' => $id])
+					    ->one();
+    }
 }
