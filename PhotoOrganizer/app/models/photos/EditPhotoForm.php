@@ -5,6 +5,7 @@ namespace app\models\photos;
 use Yii;
 use yii\base\Model;
 use app\models\tables\Photos;
+use app\utility\SessionManager;
 
 class EditPhotoForm extends Model
 {
@@ -70,13 +71,26 @@ class EditPhotoForm extends Model
 		return false;
 	}
 	
-	public function editMorePhoto()
+	public function editMorePhoto($photoIds)
 	{
 		if ($this->validate())
 		{
-			return true;
+			foreach ($photoIds as $id)
+			{
+				$photo = Photos::findOne($id);
+				
+				$photo->photo_title 		= $this->title;
+				$photo->photo_tag  			= $this->tag;
+				$photo->photo_description 	= $this->description;
+				$photo->photo_visibility 	= $this->visibility;
+				
+				if (!$photo->update())
+				{
+					return false;
+				}
+			}
 		}
-		return false;
+		return true;
 	}
 
 }

@@ -17,6 +17,7 @@ use app\models\tables\Groups;
 use app\models\tables\GroupsUsers;
 use app\models\tables\GroupsPhotos;
 use app\models\tables\app\models\tables;
+use app\utility\SessionManager;use yii\web\Session;
 
 class PhotosController extends Controller
 {
@@ -274,17 +275,19 @@ class PhotosController extends Controller
 					}
 					
 					if ($a === 'em')			// if action == edit more photos
-					{
-						return $this->redirect(['/photos/editMore']);
+					{					
+						$fileWithPhotosId = fopen(strval(Yii::$app->user->identity->user_id) . '.txt', 'a');
+						fwrite($fileWithPhotosId, strval($photo->photo_id) . PHP_EOL);
+						fclose($fileWithPhotosId);
 					}
 					
 				}
 			}
 			
-			/*if (isset())	// if exist editMore session variable with photos id
+			if (file_exists(strval(Yii::$app->user->identity->user_id) . '.txt'))	// if exist file photos id
 			{
-				$this->redirect(['/photos/editMore']);
-			}*/
+				return $this->redirect(['/photos/editMore']);							// redirect to editMore function
+			}
 		}
 		
 		$this->redirect(['/photos/index']);
@@ -387,9 +390,13 @@ class PhotosController extends Controller
 		
 		$photo = new Photos();
 		$model = new EditPhotoForm();
+
+		$lines = file(strval(Yii::$app->user->identity->user_id) . '.txt', FILE_IGNORE_NEW_LINES);	// read all lines into array and ignore new lines
+		$photosId = array_unique($lines);						// remove duplicate elements (ids) from array
 		
-		if ($model->load(Yii::$app->request->post()) && $model->editMorePhoto())
+		if ($model->load(Yii::$app->request->post()) && $model->editMorePhoto($photosId))
 		{
+			unlink(strval(Yii::$app->user->identity->user_id) . '.txt');
 			return $this->redirect(['/photos/index']);
 		}
 		
