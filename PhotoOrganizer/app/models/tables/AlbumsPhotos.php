@@ -66,8 +66,8 @@ class AlbumsPhotos extends \yii\db\ActiveRecord
     }
     
     public static function findByAlbumIdAndPhotoId($albumId, $photoId)		// check whether already exists a photo in an album by ids
-    {
-    	return self::find()
+    {																		// (use at insert photos to album)
+    	return self::find()													
     					->where(['album_id' => $albumId, 'photo_id' => $photoId])
     					->all();
     }
@@ -80,9 +80,17 @@ class AlbumsPhotos extends \yii\db\ActiveRecord
     }
     
     public static function findOneByPhotoId($id)				// get albums_photos record from database
-    {															//  (use at remove photos from album)
+    {															// (use at remove photos from album)
     	return self::find()
     					->where(['photo_id' => $id])
     					->one();
     }
+    
+    public static function findByPhotoId($id)			// find all albums_photos record by photo id
+    {													// (use at delete photo - have to remove photos from albums too)
+    	return self::find()
+    					->where(['photo_id' => $id])
+    					->all();
+    }
+    
 }

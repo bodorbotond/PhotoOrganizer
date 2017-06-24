@@ -254,8 +254,18 @@ class PhotosController extends Controller
 					
 					if ($a === 'd')				// if action == delete photos
 					{
-						$photo->delete();				// delete from database
-						unlink($photo->photo_path);		// delete from server
+						foreach (AlbumsPhotos::findByPhotoId($photo->photo_id) as $albumPhoto)	//delete photo from all albums
+						{
+							$albumPhoto->delete();
+						}
+						
+						foreach (GroupsPhotos::findByPhotoId($photo->photo_id) as $groupPhoto)	//delete photo from all groups
+						{
+							$groupPhoto->delete();
+						}
+						
+						$photo->delete();				// delete photo from database
+						unlink($photo->photo_path);		// delete photo from server
 					}
 					
 					if ($a === 'e')				// if action == edit photos
@@ -270,6 +280,11 @@ class PhotosController extends Controller
 					
 				}
 			}
+			
+			/*if (isset())	// if exist editMore session variable with photos id
+			{
+				$this->redirect(['/photos/editMore']);
+			}*/
 		}
 		
 		$this->redirect(['/photos/index']);
