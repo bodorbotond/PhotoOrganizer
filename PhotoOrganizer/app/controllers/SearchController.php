@@ -8,6 +8,7 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\db\Query;
 use app\models\search\SearchUserForm;
+use app\models\search\SearchGroupForm;
 use app\models\Users;
 use app\models\tables\Albums;
 use app\models\tables\Groups;
@@ -31,6 +32,7 @@ class SearchController extends Controller
                 			'index',
                 			'search',
                 			'searchUser',
+                			'searchGroup',
                 			'viewUser',
                 		   ],
                 'rules' => [
@@ -39,6 +41,7 @@ class SearchController extends Controller
                         				'index',
 			                			'search',
 			                			'searchUser',
+                						'searchGroup',
                         				'viewUser'
                         			   ],
                         'allow' 	=> true,
@@ -49,6 +52,7 @@ class SearchController extends Controller
                 						'index',
 			                			'search',
 			                			'searchUser',
+                						'searchGroup',
                 						'viewUser'
                 					   ],
                 		'allow' 	=> true,
@@ -62,6 +66,7 @@ class SearchController extends Controller
                 				'index' 		=> ['get'],
                 				'search' 		=> ['get', 'post'],
                 				'searchUser' 	=> ['get', 'post'],
+                				'searchGroup'	=> ['get', 'post'],
                 				'viewUser'		=> ['get'],
                 ],
             ],
@@ -141,6 +146,25 @@ class SearchController extends Controller
     	}
     	
     	return $this->render('searchUser',[
+    			'model' => $model,
+    	]);
+    }
+    
+    
+    public function actionSearchGroup()
+    {
+    	$model = new SearchGroupForm();
+    	 
+    	if ($model->load(Yii::$app->request->post()) && $model->validate())
+    	{
+    		return $this->render('index', [
+    				'users' 	=> [],
+    				'albums'	=> [],
+    				'groups'	=> $model->searchGroup(),
+    		]);
+    	}
+    	 
+    	return $this->render('searchGroup',[
     			'model' => $model,
     	]);
     }

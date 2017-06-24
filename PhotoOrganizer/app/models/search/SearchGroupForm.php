@@ -4,9 +4,9 @@ namespace app\models\search;
 
 use Yii;
 use yii\base\Model;
-use app\models\Users;
+use app\models\tables\Groups;
 
-class SearchUserForm extends Model
+class SearchGroupForm extends Model
 {
 	
 	public $searchText;
@@ -24,7 +24,7 @@ class SearchUserForm extends Model
     public function attributeLabels()						// name of attributes in the browser
     {
     	return [
-    			'searchText' => 'Username',
+    			'searchText' => 'Group Name',
     	];
     }
     
@@ -36,10 +36,10 @@ class SearchUserForm extends Model
     	}
     }
     
-    public function searchUser()
+    public function searchGroup()
     {
-    	$query = 'SELECT * FROM `Users` where `user_name` LIKE \'%' . $this->searchText . '%\'';
-    	return Users::findBySql($query)->all();
+    	$query = 'SELECT * FROM `Groups` WHERE `group_name` LIKE \'%' . $this->searchText . '%\'';
+    	return Groups::findBySql($query)->all();
     }
     
 }
