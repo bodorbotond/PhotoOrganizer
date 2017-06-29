@@ -163,7 +163,7 @@ $this->params['breadcrumbs'][] = $this->title;
     	
     	<br><br>
     	
-	    <div id="UserPhotos">
+	    <div id="UserPhotos" onclick="setRemoveButtonVisibility()">
 				
 			<div class="well">
 				

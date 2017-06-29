@@ -151,4 +151,4 @@ insert into security_questions (question_text) values ('What was your childhood 
 
 -- upload security_questons table
 
-insert into employees (user_name, first_name, last_name, e_mail, profile_picture_path) values ('Boti', 'Bodor', 'Botond-Pál', 'bodor_boti2000@yahoo.com', 'employees/1/boti_profile_picture.jpg');
+insert into employees (user_name, first_name, last_name, e_mail, profile_picture_path) values ('Boti', 'Bodor', 'Botond', 'bodor_boti2000@yahoo.com', 'employees/1/boti_profile_picture.jpg');

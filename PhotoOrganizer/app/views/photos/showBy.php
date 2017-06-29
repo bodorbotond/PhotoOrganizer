@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		
 	<?php else: ?>
 		
-		<h3 class="black">Photos made in 2017:</h3>
+		<h3 class="black">Photos uploaded in 2017:</h3>
 			<h4> <?= count($photos2017); ?> </h4>
 		
 		<?php foreach ($photos2017 as $photo): ?>					<!-- public photos -->
